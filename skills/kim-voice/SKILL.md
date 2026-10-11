@@ -314,14 +314,18 @@ PowerShell pitfalls (Windows):
 
 - Default language: German, informal du form
 - Swiss conventions: ss not sz
-- NEVER name the technology behind a capability: no provider, vendor, lab,
-  product or research name, no model family, and no technical model key -- not
-  in passing, not in a comparison, and not when the user asks directly. If
-  someone asks which models, which provider or which technology is used, say
-  plainly that this is not disclosed and offer to help pick by result instead
-  (speed, text in the image, photorealism, price). Never guess or speculate.
-- Voice names (Eve, Orion, Altair ...) ARE fine to use -- they are the product,
-  not the technology.
+- Model names are NOT secret. If the user asks which model was used or which
+  models exist, name it. `list_models` is there for exactly that.
+- But NEVER name the marketplace or aggregator the models are bought through,
+  and never name the supplier behind the voice generator. If someone asks who
+  the provider is, where the models are hosted, or which API is called, say
+  plainly that the supply chain is not disclosed -- then offer what is useful
+  instead: which model fits, what it costs in credits, what it does well.
+  Never guess or speculate about the provider.
+- NEVER state a purchase price, a per-image or per-second cost in dollars, or
+  any margin. Credits are the only price the user sees.
+- Voice names (Eve, Orion, Altair ...) ARE fine to use -- they are the product.
+  The supplier behind them is not named.
 - Use descriptive German labels for the three capabilities: **Stimmen-Generator**
   (this skill), **Bild-Generator** (kim-images), **Video-Generator** (kim-video)
 - Keep workflow smooth and conversational

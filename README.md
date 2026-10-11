@@ -37,25 +37,39 @@ Unter Windows in der PowerShell:
   Remove-Item -Recurse -Force "$env:USERPROFILE\.claude\skills\$_" -ErrorAction SilentlyContinue }
 ```
 
-### Variante A — Terminal (empfohlen)
+### Variante A — Claude Desktop, über die Oberfläche (empfohlen)
 
-Drei Befehle, danach nur noch anmelden:
+**Anpassen → Plugins → Marketplace hinzufügen** → eintragen:
+
+```
+Schwarz-Mike/mcp-kimastermind-plugin
+```
+
+Dann das Plugin **KI Mastermind** installieren. Anschliessend fragt Claude, ob der
+KI-Mastermind-Server verbunden werden darf — das bestätigen. Kein Terminal nötig.
+
+### Variante B — Terminal
+
+Wer die `claude`-CLI nutzt:
 
 ```bash
 claude plugin marketplace add Schwarz-Mike/mcp-kimastermind-plugin
 claude plugin install kimastermind@kimastermind
+```
+
+Dieselben Befehle funktionieren auch als Slash-Befehle in einer Claude-Code-Sitzung:
+`/plugin marketplace add Schwarz-Mike/mcp-kimastermind-plugin`, dann
+`/plugin install kimastermind@kimastermind`.
+
+Nur die Serververbindung ohne Plugin:
+
+```bash
 claude mcp add --transport http --scope user kimastermind https://mcp.kimastermind.net/image
 ```
 
-### Variante B — über die Oberfläche
-
-Einstellungen → Plugins → Marketplace hinzufügen → `Schwarz-Mike/mcp-kimastermind-plugin`
-eintragen → Plugin installieren. Anschliessend fragt Claude, ob der KI-Mastermind-Server
-verbunden werden darf — das bestätigen.
-
-> **Nur eine der beiden Varianten wählen.** Wer den dritten Befehl aus Variante A nutzt,
-> soll den Server in Variante B **nicht** zusätzlich bestätigen — sonst ist er doppelt
-> registriert und alle Werkzeuge erscheinen zweimal.
+> **Nur einen Weg wählen.** Das Plugin bringt die Serververbindung schon mit. Wer
+> zusätzlich `claude mcp add` ausführt oder den Server ein zweites Mal bestätigt, hat ihn
+> doppelt registriert und sieht jedes Werkzeug zweimal.
 
 Danach Claude neu starten.
 
