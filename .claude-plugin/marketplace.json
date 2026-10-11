@@ -1,0 +1,27 @@
+{
+  "name": "kimastermind",
+  "description": "Plugins rund um KI Mastermind — Bildgenerierung, Videogenerierung und Sprachausgabe für Claude.",
+  "owner": {
+    "name": "Mike Schwarz",
+    "email": "support@kimastermind.net"
+  },
+  "plugins": [
+    {
+      "name": "kimastermind",
+      "source": "./",
+      "description": "Bilder, Videos und Stimmen in Claude erzeugen: 21 Bildmodelle mit Referenzbild-Bearbeitung, Videoclips aus Text oder Bild, Text-zu-Sprache mit 28 mehrsprachigen Stimmen und kostenlosen Hoerproben. Vier Skills fuehren durch den Ablauf und pruefen die Einrichtung. Konto und Credits erforderlich.",
+      "category": "productivity",
+      "homepage": "https://mcp.kimastermind.net",
+      "keywords": [
+        "bildgenerierung",
+        "image-generation",
+        "video",
+        "text-to-video",
+        "text-to-speech",
+        "sprachausgabe",
+        "stimme",
+        "voiceover"
+      ]
+    }
+  ]
+}

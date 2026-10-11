@@ -1,0 +1,236 @@
+{
+  "model": "voice",
+  "sample_url_pattern": "https://mcp.kimastermind.net/api/voice/sample/{voice_id}.mp3",
+  "max_chars": 5000,
+  "download_window_hours": 24,
+  "sample_text": "Willkommen bei KI Mastermind. Hier entstehen Bilder, Videos und Stimmen aus einem einzigen Werkzeug.",
+  "sample_language": "de",
+  "generated": "2026-10-11",
+  "voice_count": 28,
+  "voices": [
+    {
+      "voice_id": "altair",
+      "name": "Altair",
+      "gender": "male",
+      "language": "multilingual",
+      "sample": "altair.mp3",
+      "duration_sec": 6.77
+    },
+    {
+      "voice_id": "ara",
+      "name": "Ara",
+      "gender": "female",
+      "language": "multilingual",
+      "sample": "ara.mp3",
+      "duration_sec": 6.77
+    },
+    {
+      "voice_id": "atlas",
+      "name": "Atlas",
+      "gender": "male",
+      "language": "multilingual",
+      "sample": "atlas.mp3",
+      "duration_sec": 6.77
+    },
+    {
+      "voice_id": "aurora",
+      "name": "Aurora",
+      "gender": "female",
+      "language": "multilingual",
+      "sample": "aurora.mp3",
+      "duration_sec": 6.46
+    },
+    {
+      "voice_id": "carina",
+      "name": "Carina",
+      "gender": "female",
+      "language": "multilingual",
+      "sample": "carina.mp3",
+      "duration_sec": 6.77
+    },
+    {
+      "voice_id": "castor",
+      "name": "Castor",
+      "gender": "male",
+      "language": "multilingual",
+      "sample": "castor.mp3",
+      "duration_sec": 6.12
+    },
+    {
+      "voice_id": "celeste",
+      "name": "Celeste",
+      "gender": "female",
+      "language": "multilingual",
+      "sample": "celeste.mp3",
+      "duration_sec": 6.46
+    },
+    {
+      "voice_id": "cosmo",
+      "name": "Cosmo",
+      "gender": "male",
+      "language": "multilingual",
+      "sample": "cosmo.mp3",
+      "duration_sec": 6.12
+    },
+    {
+      "voice_id": "eve",
+      "name": "Eve",
+      "gender": "female",
+      "language": "multilingual",
+      "sample": "eve.mp3",
+      "duration_sec": 6.46
+    },
+    {
+      "voice_id": "helios",
+      "name": "Helios",
+      "gender": "male",
+      "language": "multilingual",
+      "sample": "helios.mp3",
+      "duration_sec": 6.77
+    },
+    {
+      "voice_id": "helix",
+      "name": "Helix",
+      "gender": "male",
+      "language": "multilingual",
+      "sample": "helix.mp3",
+      "duration_sec": 6.12
+    },
+    {
+      "voice_id": "iris",
+      "name": "Iris",
+      "gender": "female",
+      "language": "multilingual",
+      "sample": "iris.mp3",
+      "duration_sec": 6.46
+    },
+    {
+      "voice_id": "kepler",
+      "name": "Kepler",
+      "gender": "male",
+      "language": "multilingual",
+      "sample": "kepler.mp3",
+      "duration_sec": 6.77
+    },
+    {
+      "voice_id": "leo",
+      "name": "Leo",
+      "gender": "male",
+      "language": "multilingual",
+      "sample": "leo.mp3",
+      "duration_sec": 7.08
+    },
+    {
+      "voice_id": "liora",
+      "name": "Liora",
+      "gender": "female",
+      "language": "multilingual",
+      "sample": "liora.mp3",
+      "duration_sec": 6.77
+    },
+    {
+      "voice_id": "lumen",
+      "name": "Lumen",
+      "gender": "male",
+      "language": "multilingual",
+      "sample": "lumen.mp3",
+      "duration_sec": 5.81
+    },
+    {
+      "voice_id": "luna",
+      "name": "Luna",
+      "gender": "female",
+      "language": "multilingual",
+      "sample": "luna.mp3",
+      "duration_sec": 6.46
+    },
+    {
+      "voice_id": "lux",
+      "name": "Lux",
+      "gender": "male",
+      "language": "multilingual",
+      "sample": "lux.mp3",
+      "duration_sec": 5.81
+    },
+    {
+      "voice_id": "naksh",
+      "name": "Naksh",
+      "gender": "male",
+      "language": "multilingual",
+      "sample": "naksh.mp3",
+      "duration_sec": 6.46
+    },
+    {
+      "voice_id": "orion",
+      "name": "Orion",
+      "gender": "male",
+      "language": "multilingual",
+      "sample": "orion.mp3",
+      "duration_sec": 7.08
+    },
+    {
+      "voice_id": "perseus",
+      "name": "Perseus",
+      "gender": "male",
+      "language": "multilingual",
+      "sample": "perseus.mp3",
+      "duration_sec": 6.77
+    },
+    {
+      "voice_id": "rex",
+      "name": "Rex",
+      "gender": "male",
+      "language": "multilingual",
+      "sample": "rex.mp3",
+      "duration_sec": 6.46
+    },
+    {
+      "voice_id": "rigel",
+      "name": "Rigel",
+      "gender": "male",
+      "language": "multilingual",
+      "sample": "rigel.mp3",
+      "duration_sec": 6.77
+    },
+    {
+      "voice_id": "sal",
+      "name": "Sal",
+      "gender": "male",
+      "language": "multilingual",
+      "sample": "sal.mp3",
+      "duration_sec": 6.77
+    },
+    {
+      "voice_id": "sirius",
+      "name": "Sirius",
+      "gender": "male",
+      "language": "multilingual",
+      "sample": "sirius.mp3",
+      "duration_sec": 5.81
+    },
+    {
+      "voice_id": "ursa",
+      "name": "Ursa",
+      "gender": "female",
+      "language": "multilingual",
+      "sample": "ursa.mp3",
+      "duration_sec": 6.77
+    },
+    {
+      "voice_id": "zagan",
+      "name": "Zagan",
+      "gender": "male",
+      "language": "multilingual",
+      "sample": "zagan.mp3",
+      "duration_sec": 6.46
+    },
+    {
+      "voice_id": "zenith",
+      "name": "Zenith",
+      "gender": "male",
+      "language": "multilingual",
+      "sample": "zenith.mp3",
+      "duration_sec": 6.12
+    }
+  ]
+}
