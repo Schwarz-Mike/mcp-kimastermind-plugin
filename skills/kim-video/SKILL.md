@@ -24,7 +24,7 @@ right one instead of improvising here.
 |---|---|---|
 | **kim-video** (this one) | Video clips: text-to-video, animating an image, reference-to-video | `generate_video` |
 | **kim-images** | Still images: generate, edit, restyle, vary, combine | `generate_image`, `export_image`, `my_gallery` |
-| **kim-voice** | Speech: text read aloud, voice-over, narration | `voice_listing`, `voice_sample`, `voice_generate` |
+| **kim-voice** | Speech: text read aloud, voice-over, narration. TWO engines -- the user picks Express (fast, cheap) or Studio (slower, higher quality) | `voice_listing`, `voice_sample`, `voice_generate` |
 | **kimastermind-setup** | Einrichtung pruefen: Verbindung, Guthaben, Fehlersuche | `my_credits`, `list_models` |
 
 Routing rules:
@@ -35,7 +35,9 @@ Routing rules:
 
 A combined request is handled in sequence and announced as such. Typical chains:
 - "Bild erstellen und animieren" -> kim-images, then this skill with mode `image`
-- "Video mit Sprecherstimme" -> this skill, then kim-voice for the narration.
+- "Video mit Sprecherstimme" -> this skill, then kim-voice for the narration. That
+  skill will ask which speech engine to use; a voice-over someone else hears is
+  usually a Studio case.
   **Note:** the MCP cannot mux audio into the clip. Deliver the MP4 and the MP3
   separately and say so -- do not imply the voice is inside the video.
 

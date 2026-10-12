@@ -20,7 +20,7 @@ passende:
 | **kimastermind-setup** (dieser) | Verbindung, Guthaben, was verfügbar ist, Fehlersuche |
 | **kim-images** | Bilder: erstellen, bearbeiten, umstilisieren, Varianten, kombinieren |
 | **kim-video** | Videoclips: Text-zu-Video, ein Bild animieren, Referenz-zu-Video |
-| **kim-voice** | Sprache: Text vorlesen, Voiceover, Vertonung |
+| **kim-voice** | Sprache: Text vorlesen, Voiceover, Vertonung — zwei Engines zur Wahl |
 
 ## Vorgehen
 
@@ -59,9 +59,12 @@ Nenne die Credit-Kosten pro Bereich, denn die unterscheiden sich in der Einheit:
 
 - Bilder: pro Bild, je nach Qualitätsstufe
 - Videos: pro Sekunde
-- Sprache: pro 1000 Eingabezeichen, mindestens 1 Credit
+- Sprache: pro 1000 Eingabezeichen, mindestens 1 Credit. Es gibt **zwei Engines**
+  mit unterschiedlichem Preis und Tempo — **Express** (schnell, guenstiger) und
+  **Studio** (langsamer, hoehere Qualitaet). `voice_listing` ohne Engine nennt
+  beide mit dem aktuellen Preis.
 
-Für die Stimmen gibt es `voice_listing` und kostenlose Hörproben über `voice_sample` —
+Für die Stimmen gibt es `voice_listing` (beide Engines) und kostenlose Hörproben über `voice_sample` —
 erwähne das, weil es der einzige Bereich ist, in dem man vor dem Bezahlen reinhören kann.
 
 **4. Wenn die Werkzeuge fehlen**

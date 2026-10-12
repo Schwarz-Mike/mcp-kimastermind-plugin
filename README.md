@@ -96,7 +96,7 @@ Ein Remote-MCP-Server mit **12 Werkzeugen**:
 |---|---|
 | **Bilder** | 21 Modelle, Text-zu-Bild, Bearbeiten, Stiltransfer, Varianten, bis zu 16 Referenzbilder, bis 4K |
 | **Videos** | Clips aus Text, ein Bild animieren, Motiv/Stil aus Referenzbildern, 3–15 s, 720p/1080p |
-| **Stimmen** | Text-zu-Sprache als MP3, 28 mehrsprachige Stimmen, kostenlose Hörproben |
+| **Stimmen** | Text-zu-Sprache als MP3, **zwei Engines** zur Wahl, 58 Stimmen zusammen, kostenlose Hörproben |
 | **Export** | Format und Grösse ändern (JPEG, PNG, WebP), Download-Link |
 | **Galerie** | die letzten 30 Bilder mit Modell, Prompt und Datum |
 | **Konto** | aktuelles Credit-Guthaben |
@@ -128,27 +128,42 @@ dauert je nach Länge **1–5 Minuten**; das Fenster muss offen bleiben.
 
 ### Stimmen
 
-Texte als MP3 vorlesen lassen — **28 mehrsprachige Stimmen** (9 weiblich, 19 männlich).
-Gedacht für Sprechertexte, Erklärfilme, Podcast-Intros oder um sich einen Text einfach
-anzuhören.
+Texte als MP3 vorlesen lassen. Es gibt **zwei Engines**, und du wählst:
+
+| | Express | Studio |
+|---|---|---|
+| Stimmen | 28 (9 weiblich, 19 männlich) | 30 (14 weiblich, 16 männlich) |
+| Tempo | fertig in 1–3 Sekunden | mehrere Minuten bei langen Texten |
+| Klang | gleichmässig, neutral | natürlichere Betonung und Satzmelodie |
+| Sprache | wählbar, 15 Sprachen | wird aus dem Text erkannt |
+| Sprechstil | — | steuerbar, z. B. „warm und ruhig" |
+| Credits pro 1 000 Zeichen | 0.90 | 1.60 |
+
+**Express** für den schnellen Fall: etwas kurz anhören, ein Entwurf, eine Ansage.
+**Studio**, wenn es jemand anders hört — Voiceover, Podcast-Intro, eine längere
+Erzählung, bei der eine flache Lesung auffallen würde.
+
+Claude fragt dich, welche Engine du willst, und nennt vorher beide Preise. Die
+Stimmen der beiden Engines sind getrennt: eine Express-Stimme läuft nicht auf
+Studio und umgekehrt.
 
 > „Welche Stimmen gibt es?"
 
-> „Lies das mit Eve vor"
+> „Lies das mit Eve vor" · „Nimm Sulafat, warm und ruhig"
 
-**Hörproben sind kostenlos.** Jede Stimme spricht denselben Satz, du kannst sie also direkt
-vergleichen, bevor du Credits ausgibst — im Browser abspielbar unter
+**Hörproben sind kostenlos.** Alle 58 Stimmen sprechen denselben Satz, du kannst sie also
+direkt vergleichen — auch quer über die beiden Engines. Im Browser abspielbar unter
 `https://mcp.kimastermind.net/api/voice/sample/eve.mp3` (Stimmen-ID austauschen), und als
-MP3 im Skill mitgeliefert.
+MP3 im Skill mitgeliefert, nach Engine sortiert.
 
 Bis 5 000 Zeichen pro Aufruf. Abgerechnet wird nach **Eingabezeichen**, nicht nach
 Audiolänge — die Kosten stehen also vor der Generierung fest. Am Ende bekommst du einen
-Download-Link, der **24 Stunden** gilt; danach wird die Datei gelöscht. Jede Stimme spricht
-jede unterstützte Sprache, ein Stimmwechsel pro Sprache ist nicht nötig.
+Download-Link, der **24 Stunden** gilt; danach wird die Datei gelöscht.
 
-Was die Sprachausgabe **nicht** kann: keine Emotions- oder Stilsteuerung, keine
-Geschwindigkeitsregelung, keine eigenen oder geklonten Stimmen, keine Hintergrundmusik und
-kein Zusammenlegen mit einem Video. Das Ergebnis ist eine reine Sprachaufnahme.
+Was die Sprachausgabe **nicht** kann: keine eigenen oder geklonten Stimmen, keine
+Hintergrundmusik, kein Zusammenlegen mit einem Video, keine Untertitel. Express hat
+zusätzlich keine Stilsteuerung; bei Studio ist der Stil eine Anweisung, keine Garantie, und
+die Sprache lässt sich nicht erzwingen — sie folgt dem Text.
 
 ### Die Skills
 
@@ -163,9 +178,10 @@ vor.
 **`kim-video`** — Videoclips. Bestimmt den Modus aus dem, was du mitlieferst, sammelt
 Format, Auflösung und Dauer und nennt Kosten **und** Wartezeit vorher.
 
-**`kim-voice`** — Sprachausgabe. Listet die Stimmen, lässt dich kostenlos reinhören,
-bereitet den Text fürs Vorlesen auf (Markdown, Abkürzungen, Zahlen) und warnt vor dem
-24-Stunden-Fenster.
+**`kim-voice`** — Sprachausgabe. Fragt zuerst, welche Engine du willst, und nennt beide
+Preise. Listet dann die Stimmen der gewählten Engine, lässt dich kostenlos reinhören,
+bereitet den Text fürs Vorlesen auf (Markdown, Abkürzungen, Zahlen), warnt bei Studio vor
+der Wartezeit und immer vor dem 24-Stunden-Fenster.
 
 **`kimastermind-setup`** — prüft die Einrichtung: Verbindung, Guthaben, was verfügbar ist.
 Greift automatisch bei Fragen wie „funktioniert das?" oder wenn ein Aufruf scheitert, und
@@ -183,7 +199,7 @@ Nach der Installation sind sie als `/kimastermind:kim-images`, `/kimastermind:ki
 |---|---|
 | Bilder | pro Bild, je nach Modell und Qualitätsstufe |
 | Videos | pro Sekunde, je nach Auflösung |
-| Stimmen | pro 1 000 Eingabezeichen, mindestens 1 Credit pro Aufnahme |
+| Stimmen | pro 1 000 Eingabezeichen, je nach Engine, mindestens 1 Credit pro Aufnahme |
 
 Die aktuellen Preise nennt Claude jederzeit — frag einfach „Was kosten die Modelle?",
 oder schau im [Dashboard](https://mcp.kimastermind.net/dashboard) unter *Verfügbare

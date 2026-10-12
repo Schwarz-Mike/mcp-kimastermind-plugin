@@ -1,5 +1,5 @@
 {
-  "model": "voice",
+  "engine": "express",
   "sample_url_pattern": "https://mcp.kimastermind.net/api/voice/sample/{voice_id}.mp3",
   "max_chars": 5000,
   "download_window_hours": 24,
@@ -7,6 +7,8 @@
   "sample_language": "de",
   "generated": "2026-10-11",
   "voice_count": 28,
+  "detects_language": false,
+  "supports_style": false,
   "voices": [
     {
       "voice_id": "altair",

@@ -19,7 +19,7 @@ the right one instead of improvising here.
 |---|---|---|
 | **kim-images** (this one) | Still images: generate, edit, restyle, vary, combine | `generate_image`, `export_image`, `my_gallery` |
 | **kim-video** | Video clips: text-to-video, animating an image, reference-to-video | `generate_video` |
-| **kim-voice** | Speech: text read aloud, voice-over, narration | `voice_listing`, `voice_sample`, `voice_generate` |
+| **kim-voice** | Speech: text read aloud, voice-over, narration. TWO engines -- the user picks Express (fast, cheap) or Studio (slower, higher quality) | `voice_listing`, `voice_sample`, `voice_generate` |
 | **kimastermind-setup** | Einrichtung pruefen: Verbindung, Guthaben, Fehlersuche | `my_credits`, `list_models` |
 
 Routing rules:
@@ -37,7 +37,8 @@ so plainly rather than silently doing only one half. `my_credits` and
 
 - KIMASTERMIND_IMAGES:generate_image -- Generate image with model, prompt, aspect ratio, quality, reference_images
 - KIMASTERMIND_IMAGES:generate_video -- VIDEO clips. Not handled here: use the **kim-video** skill.
-- KIMASTERMIND_IMAGES:voice_listing / voice_sample / voice_generate -- SPEECH. Not handled here: use the **kim-voice** skill.
+- KIMASTERMIND_IMAGES:voice_listing / voice_sample / voice_generate -- SPEECH, with a
+  choice of two engines. Not handled here: use the **kim-voice** skill.
 - KIMASTERMIND_IMAGES:request_upload_url -- PREFERRED for reference uploads. Returns short-lived HTTPS URL for direct binary POST (curl --data-binary). Avoids base64-in-tool-call entirely.
 - KIMASTERMIND_IMAGES:upload_reference -- Fallback ONLY for tiny inline base64 (< 200 KB). Slower because the bytes go through MCP/SSE.
 - KIMASTERMIND_IMAGES:list_models -- All models with prices, strengths, keywords

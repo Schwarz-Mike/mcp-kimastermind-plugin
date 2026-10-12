@@ -1,0 +1,313 @@
+{
+  "engine": "studio",
+  "sample_url_pattern": "https://mcp.kimastermind.net/api/voice/sample/{voice_id}.mp3",
+  "max_chars": 5000,
+  "download_window_hours": 24,
+  "sample_text": "Willkommen bei KI Mastermind. Hier entstehen Bilder, Videos und Stimmen aus einem einzigen Werkzeug.",
+  "detects_language": true,
+  "supports_style": true,
+  "generated": "2026-10-12",
+  "voice_count": 30,
+  "voices": [
+    {
+      "voice_id": "Achernar",
+      "name": "Achernar",
+      "gender": "female",
+      "label": "soft",
+      "label_de": "weich",
+      "file": "achernar.mp3",
+      "duration_s": 10.8,
+      "bytes": 173184
+    },
+    {
+      "voice_id": "Achird",
+      "name": "Achird",
+      "gender": "male",
+      "label": "friendly",
+      "label_de": "freundlich",
+      "file": "achird.mp3",
+      "duration_s": 10.5,
+      "bytes": 169344
+    },
+    {
+      "voice_id": "Algenib",
+      "name": "Algenib",
+      "gender": "male",
+      "label": "gravelly",
+      "label_de": "rauchig",
+      "file": "algenib.mp3",
+      "duration_s": 10.4,
+      "bytes": 168192
+    },
+    {
+      "voice_id": "Algieba",
+      "name": "Algieba",
+      "gender": "male",
+      "label": "smooth",
+      "label_de": "geschmeidig",
+      "file": "algieba.mp3",
+      "duration_s": 11.2,
+      "bytes": 180096
+    },
+    {
+      "voice_id": "Alnilam",
+      "name": "Alnilam",
+      "gender": "male",
+      "label": "firm",
+      "label_de": "bestimmt",
+      "file": "alnilam.mp3",
+      "duration_s": 11.2,
+      "bytes": 180864
+    },
+    {
+      "voice_id": "Aoede",
+      "name": "Aoede",
+      "gender": "female",
+      "label": "breezy",
+      "label_de": "luftig",
+      "file": "aoede.mp3",
+      "duration_s": 11.3,
+      "bytes": 181632
+    },
+    {
+      "voice_id": "Autonoe",
+      "name": "Autonoe",
+      "gender": "female",
+      "label": "bright",
+      "label_de": "hell",
+      "file": "autonoe.mp3",
+      "duration_s": 10,
+      "bytes": 161664
+    },
+    {
+      "voice_id": "Callirrhoe",
+      "name": "Callirrhoe",
+      "gender": "female",
+      "label": "easy-going",
+      "label_de": "gelassen",
+      "file": "callirrhoe.mp3",
+      "duration_s": 10.5,
+      "bytes": 168576
+    },
+    {
+      "voice_id": "Charon",
+      "name": "Charon",
+      "gender": "male",
+      "label": "informative",
+      "label_de": "sachlich",
+      "file": "charon.mp3",
+      "duration_s": 10.3,
+      "bytes": 166272
+    },
+    {
+      "voice_id": "Despina",
+      "name": "Despina",
+      "gender": "female",
+      "label": "smooth",
+      "label_de": "geschmeidig",
+      "file": "despina.mp3",
+      "duration_s": 10.9,
+      "bytes": 175872
+    },
+    {
+      "voice_id": "Enceladus",
+      "name": "Enceladus",
+      "gender": "male",
+      "label": "breathy",
+      "label_de": "hauchig",
+      "file": "enceladus.mp3",
+      "duration_s": 10.1,
+      "bytes": 162816
+    },
+    {
+      "voice_id": "Erinome",
+      "name": "Erinome",
+      "gender": "female",
+      "label": "clear",
+      "label_de": "klar",
+      "file": "erinome.mp3",
+      "duration_s": 10.1,
+      "bytes": 162432
+    },
+    {
+      "voice_id": "Fenrir",
+      "name": "Fenrir",
+      "gender": "male",
+      "label": "excitable",
+      "label_de": "lebhaft",
+      "file": "fenrir.mp3",
+      "duration_s": 10.2,
+      "bytes": 164736
+    },
+    {
+      "voice_id": "Gacrux",
+      "name": "Gacrux",
+      "gender": "female",
+      "label": "mature",
+      "label_de": "reif",
+      "file": "gacrux.mp3",
+      "duration_s": 10.2,
+      "bytes": 164736
+    },
+    {
+      "voice_id": "Iapetus",
+      "name": "Iapetus",
+      "gender": "male",
+      "label": "clear",
+      "label_de": "klar",
+      "file": "iapetus.mp3",
+      "duration_s": 10.1,
+      "bytes": 162816
+    },
+    {
+      "voice_id": "Kore",
+      "name": "Kore",
+      "gender": "female",
+      "label": "firm",
+      "label_de": "bestimmt",
+      "file": "kore.mp3",
+      "duration_s": 10.8,
+      "bytes": 173184
+    },
+    {
+      "voice_id": "Laomedeia",
+      "name": "Laomedeia",
+      "gender": "female",
+      "label": "upbeat",
+      "label_de": "schwungvoll",
+      "file": "laomedeia.mp3",
+      "duration_s": 10.9,
+      "bytes": 175104
+    },
+    {
+      "voice_id": "Leda",
+      "name": "Leda",
+      "gender": "female",
+      "label": "youthful",
+      "label_de": "jugendlich",
+      "file": "leda.mp3",
+      "duration_s": 9.8,
+      "bytes": 158592
+    },
+    {
+      "voice_id": "Orus",
+      "name": "Orus",
+      "gender": "male",
+      "label": "firm",
+      "label_de": "bestimmt",
+      "file": "orus.mp3",
+      "duration_s": 10.6,
+      "bytes": 170112
+    },
+    {
+      "voice_id": "Puck",
+      "name": "Puck",
+      "gender": "male",
+      "label": "upbeat",
+      "label_de": "schwungvoll",
+      "file": "puck.mp3",
+      "duration_s": 10.4,
+      "bytes": 168192
+    },
+    {
+      "voice_id": "Pulcherrima",
+      "name": "Pulcherrima",
+      "gender": "female",
+      "label": "forward",
+      "label_de": "direkt",
+      "file": "pulcherrima.mp3",
+      "duration_s": 10.4,
+      "bytes": 166656
+    },
+    {
+      "voice_id": "Rasalgethi",
+      "name": "Rasalgethi",
+      "gender": "male",
+      "label": "informative",
+      "label_de": "sachlich",
+      "file": "rasalgethi.mp3",
+      "duration_s": 10,
+      "bytes": 160512
+    },
+    {
+      "voice_id": "Sadachbia",
+      "name": "Sadachbia",
+      "gender": "male",
+      "label": "lively",
+      "label_de": "munter",
+      "file": "sadachbia.mp3",
+      "duration_s": 10.5,
+      "bytes": 169344
+    },
+    {
+      "voice_id": "Sadaltager",
+      "name": "Sadaltager",
+      "gender": "male",
+      "label": "knowledgeable",
+      "label_de": "kundig",
+      "file": "sadaltager.mp3",
+      "duration_s": 10.3,
+      "bytes": 166272
+    },
+    {
+      "voice_id": "Schedar",
+      "name": "Schedar",
+      "gender": "male",
+      "label": "even",
+      "label_de": "gleichmaessig",
+      "file": "schedar.mp3",
+      "duration_s": 10.4,
+      "bytes": 168192
+    },
+    {
+      "voice_id": "Sulafat",
+      "name": "Sulafat",
+      "gender": "female",
+      "label": "warm",
+      "label_de": "warm",
+      "file": "sulafat.mp3",
+      "duration_s": 10.4,
+      "bytes": 168192
+    },
+    {
+      "voice_id": "Umbriel",
+      "name": "Umbriel",
+      "gender": "male",
+      "label": "easy-going",
+      "label_de": "gelassen",
+      "file": "umbriel.mp3",
+      "duration_s": 10.6,
+      "bytes": 170496
+    },
+    {
+      "voice_id": "Vindemiatrix",
+      "name": "Vindemiatrix",
+      "gender": "female",
+      "label": "gentle",
+      "label_de": "sanft",
+      "file": "vindemiatrix.mp3",
+      "duration_s": 10.4,
+      "bytes": 166656
+    },
+    {
+      "voice_id": "Zephyr",
+      "name": "Zephyr",
+      "gender": "female",
+      "label": "bright",
+      "label_de": "hell",
+      "file": "zephyr.mp3",
+      "duration_s": 10.1,
+      "bytes": 162816
+    },
+    {
+      "voice_id": "Zubenelgenubi",
+      "name": "Zubenelgenubi",
+      "gender": "male",
+      "label": "casual",
+      "label_de": "locker",
+      "file": "zubenelgenubi.mp3",
+      "duration_s": 11,
+      "bytes": 177792
+    }
+  ]
+}

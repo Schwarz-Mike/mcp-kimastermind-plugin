@@ -1,6 +1,6 @@
 ---
 name: kim-voice
-description: Use whenever the user wants text spoken aloud or an audio voice-over. Triggers: lies das vor, sprich das, vertone das, mach daraus Audio, Stimme, Sprecher, Sprecherin, Voiceover, Vorleser, Narration, Hoerbuch, Podcast-Intro, Ansage, als MP3, welche Stimmen gibt es, Stimme anhoeren, read this aloud, text to speech, narrate this, which voices are available. Guides Claude through an interactive workflow: list the available voices, let the user hear a free sample before spending credits, collect the text and the language, state the exact cost up front (billed per input character, so it is known in advance), call KIMASTERMIND_IMAGES voice_generate, then hand over the MP3 and warn that the download link expires after 24 hours. For still IMAGES use the kim-images skill, for VIDEO clips use the kim-video skill. Provider and model names are never mentioned.
+description: Use whenever the user wants text spoken aloud or an audio voice-over. Triggers: lies das vor, sprich das, vertone das, mach daraus Audio, Stimme, Sprecher, Sprecherin, Voiceover, Vorleser, Narration, Hoerbuch, Podcast-Intro, Ansage, als MP3, welche Stimmen gibt es, Stimme anhoeren, read this aloud, text to speech, narrate this, which voices are available. Guides Claude through an interactive workflow: let the USER choose between the two engines (Express -- fast and cheap, Studio -- slower and higher quality), list that engine's voices, let the user hear a free sample before spending credits, collect the text, state the exact cost up front (billed per input character, so it is known in advance), call KIMASTERMIND_IMAGES voice_generate, then hand over the MP3 and warn that the download link expires after 24 hours. For still IMAGES use the kim-images skill, for VIDEO clips use the kim-video skill. Provider and model names are never mentioned.
 ---
 
 # KIM Voice Skill
@@ -12,6 +12,31 @@ KIMASTERMIND_IMAGES MCP tools. Provider names are NEVER mentioned -- the
 capability is called the **Stimmen-Generator**. Generated audio comes from
 https://mcp.kimastermind.net/aud/ as an MP3 and is available for **24 hours
 only**. Credits are shown after every generation.
+
+## Two engines -- the user picks, never you
+
+There are two speech engines, and they are genuinely different trade-offs. The
+choice belongs to the user:
+
+| Engine | Speed | Quality | Voices | Price |
+|---|---|---|---|---|
+| **Express** | ~1-3 seconds | good, even, neutral | 28, multilingual, language selectable | cheaper |
+| **Studio** | up to ~4 minutes | more natural stress and phrasing | 30, each with a documented character | pricier |
+
+- **Express** is right for a quick read-aloud, a draft, a short announcement, or
+  when the user is in a hurry or watching their credits.
+- **Studio** is right for anything someone else will hear: voice-over, podcast
+  intro, audiobook passage, a long narration where a flat delivery would show.
+  It also accepts a `style` instruction ("warm und ruhig") and works out the
+  language from the text itself.
+
+`voice_listing` without an `engine` returns both with their live credit price per
+1000 characters and per minute of audio. **Show those numbers and ask.** Only
+skip the question when the user has already said which one they want, in their
+own words ("schnell reicht", "bitte in bester Qualitaet", "Express", "Studio").
+
+The voices do NOT overlap: an Express voice cannot be used on Studio or the
+other way round. Switching the engine therefore means picking a new voice.
 
 ## Related Skills -- the KIM family
 
@@ -42,13 +67,16 @@ A combined request is handled in sequence and announced as such. The common one:
 
 ## Available MCP Commands
 
-- KIMASTERMIND_IMAGES:voice_listing -- All available voices with name, gender and
-  a free sample URL. Call this FIRST when the user has not named a voice.
+- KIMASTERMIND_IMAGES:voice_listing -- Called WITHOUT `engine`: both engines with
+  speed, voice count and live credit price. Call this FIRST when the user has not
+  chosen an engine. Called WITH `engine`: that engine's voices with name, gender,
+  character and a free sample URL.
 - KIMASTERMIND_IMAGES:voice_sample -- The sample URL for one voice (or all of
-  them). Costs NO credits. Every sample speaks the same sentence, so voices are
-  directly comparable.
-- KIMASTERMIND_IMAGES:voice_generate -- Generate the MP3 from `text`, with
-  optional `voice` and `language`. Billed per input character. Fast (~1-3 s).
+  them, grouped by engine). Costs NO credits. Every sample speaks the same
+  sentence, so voices are directly comparable across both engines.
+- KIMASTERMIND_IMAGES:voice_generate -- Generate the MP3. `text` and `engine` are
+  REQUIRED; `voice`, `language` and `style` are optional. Billed per input
+  character.
 - KIMASTERMIND_IMAGES:my_credits -- Current credit balance
 - KIMASTERMIND_IMAGES:list_models -- All models with prices (voice model included)
 
@@ -71,16 +99,31 @@ Link: https://mcp.kimastermind.net/login
 Trigger: welche Stimmen gibt es, zeig mir die Stimmen, Stimmenliste,
 which voices, list voices
 
-Call `voice_listing` and present the voices as a **table grouped by gender**, with
-the sample link per voice. Do NOT dump 28 raw ids as a flat list -- that is
-unusable. Mention that every voice is multilingual, so the choice is purely about
-sound, not about language.
+First establish WHICH engine the user means. If they have not said, call
+`voice_listing` without an engine, show both and ask -- do not list 58 voices.
+
+Once the engine is known, call `voice_listing` with it and present the voices as
+a **table grouped by gender**, with the sample link per voice. Do NOT dump the
+raw ids as a flat list -- that is unusable.
+
+Express (gender is all the catalogue knows; every voice is multilingual, so the
+choice is purely about sound, not about language):
 
 ```
 | Stimme | Geschlecht | Anhören |
 |---|---|---|
 | Eve | weiblich | https://mcp.kimastermind.net/api/voice/sample/eve.mp3 |
 | Orion | männlich | https://mcp.kimastermind.net/api/voice/sample/orion.mp3 |
+```
+
+Studio (each voice has a documented character -- use it, it is the only thing
+that tells thirty star names apart):
+
+```
+| Stimme | Geschlecht | Charakter | Anhören |
+|---|---|---|---|
+| Sulafat | weiblich | warm | https://mcp.kimastermind.net/api/voice/sample/sulafat.mp3 |
+| Charon | männlich | sachlich | https://mcp.kimastermind.net/api/voice/sample/charon.mp3 |
 ```
 
 In claude.ai web / mobile, an audio widget is nicer than bare links -- see the
@@ -95,10 +138,15 @@ In claude.ai web / mobile, an audio widget is nicer than bare links -- see the
 Never ask for something the user already gave you. Scan the request for:
 - the **text** to speak (often the whole point of the message, or a document /
   earlier answer the user points at)
-- a **voice** by name ("mit Eve", "eine männliche Stimme", "tiefe Stimme")
+- an **engine** preference, stated as a preference rather than a name
+  ("schnell", "guenstig", "beste Qualitaet", "fuer einen Podcast")
+- a **voice** by name ("mit Eve", "mit Sulafat", "eine männliche Stimme")
 - a **language** ("auf Englisch", "in French")
+- a **style** ("ruhig vorlesen", "sachlich", "lebendig") -- Studio only
 
-If text, voice and language are all clear, skip straight to Step S3.
+A named voice already implies its engine, so do not ask again -- just say which
+engine that is. If text, engine, voice and language are all clear, skip straight
+to Step S3.
 
 ### Step S1: Get the Text
 
@@ -121,11 +169,39 @@ that reads badly aloud, and mention it only if it changes the meaning:
 - Numbers, dates and currency -> write out when pronunciation is ambiguous
 - Tables, code blocks, footnotes -> these do not work as audio; ask what to do
 
+### Step S1b: Pick the Engine
+
+Skip only if the user already made the choice clear (see S0) or named a voice.
+
+1. Call `voice_listing` with no `engine`.
+2. Show both, with the actual numbers the tool returned -- credits per 1000
+   characters AND roughly per minute of audio -- plus the speed difference.
+   Keep it to two lines each, and include what the text at hand would cost:
+
+```
+Zwei Engines:
+
+**Express** -- fertig in 1-2 Sekunden, 28 Stimmen. 0.90 Credits / 1000 Zeichen,
+ca. 0.81 Credits pro Minute Audio. Für diesen Text: 1 Credit.
+
+**Studio** -- natürlichere Betonung, 30 Stimmen mit Charakter, Sprechstil
+steuerbar. Braucht bei langen Texten mehrere Minuten. 1.60 Credits / 1000
+Zeichen, ca. 1.54 Credits pro Minute Audio. Für diesen Text: 2 Credits.
+
+Was nimmst du?
+```
+
+3. If the user is unsure, give ONE recommendation with a reason tied to their
+   purpose -- "wenn das jemand anders hoert, würde ich Studio nehmen" -- and let
+   them overrule it.
+4. **Do not pick silently.** The engines differ in price and in wait time; both
+   are the user's money and the user's patience.
+
 ### Step S2: Pick a Voice (the part users care about most)
 
 If the user has not named a voice:
 
-1. Call `voice_listing`.
+1. Call `voice_listing` with the chosen `engine`.
 2. Suggest **two or three** fitting voices rather than all of them, and say why,
    based on what the audio is for. Keep it short.
 3. Give the sample link for each, and say explicitly that listening is free:
@@ -133,9 +209,14 @@ If the user has not named a voice:
 4. Wait for the choice. Do not generate with a guessed voice: the clip costs
    credits and the user will almost always want a different voice afterwards.
 
-If the user asks for a "deep", "warm", "friendly" or "young" voice, be honest:
-the catalogue only exposes **name and gender**, so a recommendation beyond that
-is a guess. Offer two samples instead of inventing characteristics.
+If the user asks for a "deep", "warm", "friendly" or "young" voice:
+- On **Studio**, each voice has a documented character (warm, sachlich, hauchig,
+  rauchig, jugendlich, bestimmt ...). Match against that and say which label you
+  matched -- that is real information, not a guess.
+- On **Express**, the catalogue only exposes **name and gender**, so anything
+  beyond that is a guess. Say so and offer two samples instead of inventing
+  characteristics. If the user clearly cares about character, that is a good
+  moment to mention Studio.
 
 #### Voice Picker Widget (claude.ai web / mobile)
 
@@ -156,13 +237,13 @@ Where widgets work, a small player beats a list of links:
 </div>
 ```
 
-Repeat the inner `div` per voice. Offer two or three, not twenty-eight.
+Repeat the inner `div` per voice. Offer two or three, not the whole catalogue.
 
 ### Step S3: State the Cost BEFORE Generating
 
 Speech is billed **per input character**, so unlike video the exact price is known
-in advance -- use that. Call `list_models` or `voice_listing` for the current rate
-(credits per 1000 characters), then:
+in advance -- use that. The rate differs per engine, so take it from the
+`voice_listing` response for the engine actually chosen, never from memory:
 
 ```
 credits = max(1, round(characters / 1000 * credits_per_1000))
@@ -171,33 +252,62 @@ credits = max(1, round(characters / 1000 * credits_per_1000))
 Tell the user plainly, e.g.:
 
 "Der Text hat 820 Zeichen -- das sind **1 Credit** und ergibt ca. 55 Sekunden
-Audio. Soll ich mit der Stimme **Eve** loslegen?"
+Audio. Soll ich mit **Eve** auf Express loslegen?"
 
-Two things to be straight about:
+Three things to be straight about:
 - **There is a 1-credit minimum per clip.** A short sentence costs the same as
   half a page. If the user is generating several short clips, mention that
   combining them into one text is cheaper.
-- Generation itself is fast -- a few seconds, not minutes. No wait warning needed.
+- **On Express, generation is fast** -- a few seconds, not minutes. No wait
+  warning needed.
+- **On Studio, warn about the wait BEFORE calling.** Long texts are produced in
+  sections and stitched together. Measured: roughly 40 seconds per 1000
+  characters, so a full 5000-character script takes about three to four minutes.
+  Say so first, then call, and do not abort or retry while the call is running --
+  a retry pays for the same clip twice.
 
 ### Step S4: Generate
+
+Express:
 
 ```
 KIMASTERMIND_IMAGES:voice_generate(
   text = "Willkommen bei KI Mastermind. Hier entstehen Bilder, Videos und Stimmen aus einem einzigen Werkzeug.",
+  engine = "express",
   voice = "eve",
   language = "de"
 )
 ```
 
-Omit `model` -- the default is the current voice model. Omit `voice` only if the
-user truly has no preference. `language` defaults to `de`; set it whenever the
-text is not German. Supported hints: de, en, fr, it, es, pt, nl, pl, ru, tr, ar,
-hi, ja, ko, zh.
+Studio:
+
+```
+KIMASTERMIND_IMAGES:voice_generate(
+  text = "Willkommen bei KI Mastermind. Hier entstehen Bilder, Videos und Stimmen aus einem einzigen Werkzeug.",
+  engine = "studio",
+  voice = "Sulafat",
+  style = "warm und ruhig"
+)
+```
+
+- `engine` is REQUIRED and must be the one the user chose.
+- Omit `voice` only if the user truly has no preference.
+- `language` applies to **Express only** (de, en, fr, it, es, pt, nl, pl, ru, tr,
+  ar, hi, ja, ko, zh; default de). Studio reads the language off the text, so
+  passing it there changes nothing -- do not promise it does.
+- `style` applies to **Studio only** and is a plain instruction, not a tag:
+  "warm und ruhig", "sachlich und zuegig", "lebendig, wie eine Erzaehlerin".
+  Passing it on Express is silently ignored, so never offer style control there.
+- Studio voice ids are capitalised ("Sulafat"), Express ids are lowercase
+  ("eve"). Either spelling is accepted; the response gives the canonical one.
 
 Returns `Download URL: https://mcp.kimastermind.net/aud/UUID.mp3` plus characters,
 file size, credits used and remaining.
 
-NEVER reveal the technical model name -- call it the **Stimmen-Generator**.
+Call the capability the **Stimmen-Generator** and the two options **Express**
+and **Studio**. If the user asks outright which model is behind an engine,
+`list_models` answers that -- model names are not secret. The supply chain is
+(see Language and Tone).
 
 ### Step S5: Deliver the MP3 and Warn About the 24h Window
 
@@ -244,20 +354,33 @@ Each variant is a new generation and costs credits again -- say so.
 
 ---
 
-## What This Voice Model Cannot Do
+## What the Stimmen-Generator Cannot Do
 
-Be upfront instead of letting the user discover it:
+Be upfront instead of letting the user discover it.
 
-- **No emotion or style control.** There is no "fröhlich", "traurig", "flüsternd"
-  parameter and no markup tags like `[lacht]`. Tone comes from the written text
-  and the chosen voice only.
-- **No speed control.** The speaking pace is effectively identical across all
-  voices; only the timbre differs.
-- **No custom or cloned voices.** The catalogue is fixed -- a user's own voice
+Both engines:
+- **No custom or cloned voices.** The catalogues are fixed -- a user's own voice
   cannot be added.
 - **No background music, no mixing, no muxing into video.** The output is a bare
   MP3 of the spoken text.
 - **No subtitle or timestamp output.**
+- **No speed control** as a parameter, and no markup tags like `[lacht]`.
+- **Maximum 5000 characters per clip** on either engine.
+
+Express only:
+- **No emotion or style control at all.** There is no "fröhlich", "traurig",
+  "flüsternd" parameter. Tone comes from the written text and the chosen voice.
+- **The speaking pace is effectively identical across all voices**; only the
+  timbre differs.
+
+Studio only:
+- **Style is an instruction, not a guarantee.** `style` steers the delivery; it
+  does not switch on a named emotion, and the same instruction can land slightly
+  differently between runs.
+- **The language cannot be forced.** It follows the text. A German sentence
+  inside an English text may be read with an English accent.
+- **It is slow.** Roughly 40 seconds of waiting per 1000 characters, so three
+  to four minutes for a full-length 5000-character script.
 
 If the user needs any of these, say it is not available here rather than
 generating something that will disappoint them.
@@ -274,18 +397,33 @@ generating something that will disappoint them.
 | Claude Mobile (iOS/Android) | nicht moeglich | Widget + Download-Link |
 
 Bundled samples: this skill ships one sample clip per voice under
-`samples/<voice_id>.mp3`, so the voices can be compared even without a network
-round-trip. The served URL `https://mcp.kimastermind.net/api/voice/sample/<id>.mp3`
-is the preferred way to let the user listen, because a link actually plays in
-their browser while a local file in the skill folder does not.
+`samples/express/<voice_id>.mp3` and `samples/studio/<voice_id>.mp3`, plus an
+`index.json` per engine with gender and, for Studio, the character of each
+voice. The folder a voice sits in tells you its engine, which matters because
+`voice_generate` rejects a voice from the other one.
+
+The served URL `https://mcp.kimastermind.net/api/voice/sample/<id>.mp3` is the
+preferred way to let the user listen, because a link actually plays in their
+browser while a local file in the skill folder does not. That URL is flat for
+both engines — the id alone identifies the voice.
 
 ---
 
 ## Error Handling
 
 Unknown voice:
-- The tool returns an error naming the voice. Call `voice_listing`, show the
-  closest matches and let the user pick. Do not substitute a voice silently.
+- The tool returns an error naming the voice. Call `voice_listing` for the chosen
+  engine, show the closest matches and let the user pick. Do not substitute a
+  voice silently.
+
+Voice belongs to the other engine:
+- The error says which engine the voice belongs to. Ask the user which they
+  actually want -- the voice or the engine -- and do not quietly switch either.
+  Switching the engine also changes the price, so state the new cost.
+
+Studio rate limited:
+- The error asks the user to retry in a minute or use Express. Offer Express with
+  its price as the immediate alternative; no credits were spent.
 
 Text too long:
 - Over 5000 characters the call is rejected before any credits are spent. Split
@@ -324,8 +462,11 @@ PowerShell pitfalls (Windows):
   Never guess or speculate about the provider.
 - NEVER state a purchase price, a per-image or per-second cost in dollars, or
   any margin. Credits are the only price the user sees.
-- Voice names (Eve, Orion, Altair ...) ARE fine to use -- they are the product.
-  The supplier behind them is not named.
+- Voice names (Eve, Orion, Sulafat, Charon ...) ARE fine to use -- they are the
+  product. The supplier behind them is not named.
+- The two engines are called **Express** and **Studio** in conversation. Those
+  are the names the user chooses from; lead with them rather than with a model
+  name, even though a model name is not secret if asked for directly.
 - Use descriptive German labels for the three capabilities: **Stimmen-Generator**
   (this skill), **Bild-Generator** (kim-images), **Video-Generator** (kim-video)
 - Keep workflow smooth and conversational
