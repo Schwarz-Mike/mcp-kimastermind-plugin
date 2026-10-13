@@ -232,6 +232,7 @@ One server, one credit balance:
 | **kim-voice** | Sprache: Vorlesen, Voiceover, Vertonung — zwei Engines |
 | **kim-images** | Bilder: erstellen, bearbeiten, Varianten |
 | **kim-video** | Videoclips: Text-zu-Video, Bild animieren |
+| **kim-lernfilm** | Der ganze Film: Storyboard, Bilder, Stimme, Musik, Clips, Schnitt |
 | **kimastermind-setup** | Verbindung, Guthaben, Fehlersuche |
 
 **Musik kommt selten allein.** Whoever asks for background music usually wants a

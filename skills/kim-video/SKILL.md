@@ -26,6 +26,7 @@ right one instead of improvising here.
 | **kim-images** | Still images: generate, edit, restyle, vary, combine | `generate_image`, `export_image`, `my_gallery` |
 | **kim-voice** | Speech: text read aloud, voice-over, narration. TWO engines -- the user picks Express (fast, cheap) or Studio (slower, higher quality) | `voice_listing`, `voice_sample`, `voice_generate` |
 | **kim-music** | Music: background score, intro, a sung piece. TWO engines -- Song can sing, Score is instrumental | `music_generate` |
+| **kim-lernfilm** | A whole film: storyboard, scene images, narration, music, clips and the final cut | `film_assemble` plus all of the above |
 | **kimastermind-setup** | Einrichtung pruefen: Verbindung, Guthaben, Fehlersuche | `my_credits`, `list_models` |
 
 Routing rules:

@@ -1,7 +1,7 @@
 # KI Mastermind für Claude
 
 Bilder, Videos und Stimmen direkt in Claude erzeugen — über den KI-Mastermind-Server.
-Das Plugin bringt die Serververbindung und fünf fertige Skills in einem Schritt mit.
+Das Plugin bringt die Serververbindung und sechs fertige Skills in einem Schritt mit.
 
 ---
 
@@ -27,7 +27,7 @@ Dann bitte vorher entfernen, sonst hast du sie doppelt — das Plugin bringt all
 hält sie aktuell:
 
 ```bash
-rm -rf ~/.claude/skills/{kim-images,kim-video,kim-voice,kim-music,kimastermind-setup,image-generator}
+rm -rf ~/.claude/skills/{kim-images,kim-video,kim-voice,kim-music,kim-lernfilm,kimastermind-setup,image-generator}
 ```
 
 Unter Windows in der PowerShell:
@@ -98,6 +98,7 @@ Ein Remote-MCP-Server mit **12 Werkzeugen**:
 | **Videos** | Clips aus Text, ein Bild animieren, Motiv/Stil aus Referenzbildern, 3–15 s, 720p/1080p |
 | **Stimmen** | Text-zu-Sprache als MP3, **zwei Engines** zur Wahl, 58 Stimmen zusammen, kostenlose Hörproben |
 | **Musik** | Hintergrundmusik, Intro oder ein gesungenes Stück, **zwei Engines** — eine davon singt und liefert den Liedtext mit Zeitmarken |
+| **Ganze Filme** | Vom Thema zum fertigen Video: Storyboard, Szenenbilder, Sprecher, Musik, Clips und Zusammenschnitt mit Untertiteln — der Schnitt läuft auf dem Server und kostet nichts |
 | **Export** | Format und Grösse ändern (JPEG, PNG, WebP), Download-Link |
 | **Galerie** | die letzten 30 Bilder mit Modell, Prompt und Datum |
 | **Konto** | aktuelles Credit-Guthaben |

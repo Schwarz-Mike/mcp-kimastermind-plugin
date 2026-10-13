@@ -22,6 +22,7 @@ passende:
 | **kim-video** | Videoclips: Text-zu-Video, ein Bild animieren, Referenz-zu-Video |
 | **kim-voice** | Sprache: Text vorlesen, Voiceover, Vertonung — zwei Engines zur Wahl |
 | **kim-music** | Musik: Hintergrund, Intro, Song mit Gesang — zwei Engines zur Wahl |
+| **kim-lernfilm** | Der ganze Film: Storyboard, Bilder, Stimme, Musik, Clips und Schnitt in einem Ablauf |
 
 ### Welche davon sind hier wirklich aktiv?
 
@@ -35,6 +36,7 @@ deine eigenen Skills — gleiche sie gegen die Liste oben ab und berichte als Ta
 | kim-video | ✅ aktiv / ❌ fehlt | Videoclips |
 | kim-voice | ✅ aktiv / ❌ fehlt | Sprache |
 | kim-music | ✅ aktiv / ❌ fehlt | Musik |
+| kim-lernfilm | ✅ aktiv / ❌ fehlt | Ganze Filme |
 
 `KIMASTERMIND_IMAGES:list_skills` nennt zusätzlich, welche Skill-Dateien der Server
 aktuell anbietet, mit Download-Link. Weicht das von dem ab, was hier geladen ist, ist
@@ -87,6 +89,7 @@ keine davon erzeugt etwas:
 | **Video** | `list_models` → `kind: video` | Videomodell vorhanden, Credits **pro Sekunde** |
 | **Stimmen** | `voice_listing` ohne Engine | beide Engines antworten, mit Preis und Stimmenzahl |
 | **Musik** | `list_models` → `kind: music` | beide Musik-Engines vorhanden, Credits **pro Clip** |
+| **Filmschnitt** | `film_assemble` ist in der Werkzeugliste | Zusammenschnitt moeglich, kostenlos |
 
 Melde das so:
 

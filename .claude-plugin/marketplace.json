@@ -9,7 +9,7 @@
     {
       "name": "kimastermind",
       "source": "./",
-      "description": "Bilder, Videos, Stimmen und Musik in Claude erzeugen: 21 Bildmodelle mit Referenzbild-Bearbeitung, Videoclips aus Text oder Bild, Text-zu-Sprache mit zwei Engines und 58 Stimmen mit kostenlosen Hoerproben, dazu Musik mit oder ohne Gesang. Fuenf Skills fuehren durch den Ablauf und pruefen die Einrichtung. Konto und Credits erforderlich.",
+      "description": "Bilder, Videos, Stimmen und Musik in Claude erzeugen: 21 Bildmodelle mit Referenzbild-Bearbeitung, Videoclips aus Text oder Bild, Text-zu-Sprache mit zwei Engines und 58 Stimmen mit kostenlosen Hoerproben, dazu Musik mit oder ohne Gesang. Sechs Skills fuehren durch den Ablauf und pruefen die Einrichtung. Konto und Credits erforderlich.",
       "category": "productivity",
       "homepage": "https://mcp.kimastermind.net",
       "keywords": [
@@ -26,7 +26,11 @@
         "tts",
         "musik",
         "music",
-        "soundtrack"
+        "soundtrack",
+        "lernvideo",
+        "erklaervideo",
+        "storyboard",
+        "film"
       ]
     }
   ]
