@@ -234,12 +234,12 @@ Skip only if the user already made the choice clear (see S0) or named a voice.
 ```
 Zwei Engines:
 
-**Express** -- fertig in 1-2 Sekunden, 28 Stimmen. 1.80 Credits / 1000 Zeichen,
-ca. 1.62 Credits pro Minute Audio. Für diesen Text: 2 Credits.
+**Express** -- fertig in 1-2 Sekunden, 28 Stimmen. 3.00 Credits / 1000 Zeichen,
+ca. 2.70 Credits pro Minute Audio. Für diesen Text: 3 Credits.
 
 **Studio** -- natürlichere Betonung, 30 Stimmen mit Charakter, Sprechstil
-steuerbar. Braucht bei langen Texten mehrere Minuten. 2.56 Credits / 1000
-Zeichen, ca. 2.46 Credits pro Minute Audio. Für diesen Text: 3 Credits.
+steuerbar. Braucht bei langen Texten mehrere Minuten. 3.84 Credits / 1000
+Zeichen, ca. 3.69 Credits pro Minute Audio. Für diesen Text: 4 Credits.
 
 Was nimmst du?
 ```
@@ -324,29 +324,29 @@ answer for the chosen engine, never from memory, and apply:
 credits = max(1, round(characters / 1000 * credits_per_1000))
 ```
 
-As of 2026-10-13 the rates are **1,8 Credits je 1000 Zeichen auf Express** and
-**2,56 auf Studio**. That gives this orientation table — use it to sanity-check
+As of 2026-10-13 the rates are **3 Credits je 1000 Zeichen auf Express** and
+**3,84 auf Studio**. That gives this orientation table — use it to sanity-check
 your arithmetic, but quote the live rate:
 
 | Zeichen | ca. Woerter | Express | Studio | Audio ca. |
 |---|---|---|---|---|
-| 500 | 80 | 1 Credit | 1 Credit | 0:35 |
-| 1 000 | 165 | 2 Credits | 3 Credits | 1:05 |
-| 2 000 | 330 | 4 Credits | 5 Credits | 2:15 |
-| 3 000 | 500 | 5 Credits | 8 Credits | 3:20 |
-| 5 000 | 830 | 9 Credits | 13 Credits | 5:30 |
+| 500 | 80 | 1 Credit | 2 Credits | 0:35 |
+| 1 000 | 165 | 3 Credits | 4 Credits | 1:05 |
+| 2 000 | 330 | 6 Credits | 8 Credits | 2:15 |
+| 3 000 | 500 | 9 Credits | 12 Credits | 3:20 |
+| 5 000 | 830 | 15 Credits | 19 Credits | 5:30 |
 
-Eine ganze Stunde Audio kostet damit rund 96 Credits auf Express und 144 auf
+Eine ganze Stunde Audio kostet damit rund 156 Credits auf Express und 216 auf
 Studio — nenne das, wenn jemand ein langes Projekt plant.
 
 **Wording for each engine**, to use when you name the engine's terms. These are
 the sentences the listening page shows, so chat and page say the same thing:
 
-> **Express** kostet 1.8 Credits pro 1000 Zeichen (ca. 1.62 Credits pro Minute
+> **Express** kostet 3 Credits pro 1000 Zeichen (ca. 2.7 Credits pro Minute
 > Audio), mindestens 1 Credit pro Clip. Jede Stimme spricht jede unterstuetzte
 > Sprache (de, en, fr, it, es, pt, nl, pl, ru, tr, ar, hi, ja, ko, zh).
 
-> **Studio** kostet 2.56 Credits pro 1000 Zeichen (ca. 2.46 Credits pro Minute
+> **Studio** kostet 3.84 Credits pro 1000 Zeichen (ca. 3.69 Credits pro Minute
 > Audio), mindestens 1 Credit pro Clip. Den Sprechstil kannst du beim Generieren
 > vorgeben, zum Beispiel „ruhig, langsam, tief entspannend".
 
@@ -355,12 +355,12 @@ live rate, and these were right on 2026-10-13.
 
 **3. Say it in one sentence**, cost and balance together:
 
-> „Der Text hat 820 Zeichen — das kostet **1 Credit** auf Express und ergibt ca.
-> 55 Sekunden Audio. Du hast aktuell **23 Credits**, danach noch 22.
+> „Der Text hat 820 Zeichen — das kostet **2 Credits** auf Express und ergibt
+> ca. 55 Sekunden Audio. Du hast aktuell **23 Credits**, danach noch 21.
 > Soll ich mit **Eve** loslegen?"
 
-(820 × 1,8 / 1000 = 1,48, gerundet 1 — die Rundung geht mal zugunsten des
-Nutzers, mal gegen ihn. Rechne, rate nicht.)
+(820 × 3 / 1000 = 2,46, gerundet 2 — die Rundung geht mal zugunsten des Nutzers,
+mal gegen ihn. Rechne, rate nicht.)
 
 **4. Not enough credits?** Say exactly how many are missing, and do not call
 `voice_generate` — it would fail and look like a bug:
