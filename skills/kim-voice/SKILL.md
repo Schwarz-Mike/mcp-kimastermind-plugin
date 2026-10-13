@@ -1,6 +1,6 @@
 ---
 name: kim-voice
-description: Use whenever the user wants text spoken aloud or an audio voice-over. Triggers: lies das vor, sprich das, vertone das, mach daraus Audio, Stimme, Sprecher, Sprecherin, Voiceover, Vorleser, Narration, Hoerbuch, Podcast-Intro, Ansage, als MP3, welche Stimmen gibt es, Stimme anhoeren, read this aloud, text to speech, narrate this, which voices are available. Guides Claude through an interactive workflow: let the USER choose between the two engines (Express -- fast and cheap, Studio -- slower and higher quality), list that engine's voices, point the user at the listening page https://mcp.kimastermind.net/voices/<engine> where every voice plays for free, collect the text, state the exact cost up front (billed per input character, so it is known in advance), call KIMASTERMIND_IMAGES voice_generate, then hand over the MP3 and warn that the download link expires after 24 hours. For still IMAGES use the kim-images skill, for VIDEO clips use the kim-video skill. Provider and model names are never mentioned.
+description: Use whenever the user wants text spoken aloud or an audio voice-over. Triggers: lies das vor, sprich das, vertone das, mach daraus Audio, Stimme, Sprecher, Voiceover, Vorleser, Narration, Hoerbuch, Podcast-Intro, Ansage, als MP3, welche Stimmen gibt es, zeige alle Stimmen, Stimmen anhoeren, Stimmproben, read this aloud, text to speech, narrate this, which voices are available, show me the voices. Guides Claude through the workflow: let the USER pick the engine (Express fast and cheap, Studio slower and better), point at the free listening page https://mcp.kimastermind.net/voices/<engine>, state the balance and the exact cost before generating (billed per input character), call KIMASTERMIND_IMAGES voice_generate, then play the MP3, say what it cost and warn that the link expires after 24 hours. For IMAGES use kim-images, for VIDEO use kim-video. Provider and model names are never mentioned.
 ---
 
 # KIM Voice Skill
@@ -77,10 +77,41 @@ A combined request is handled in sequence and announced as such. The common one:
 - KIMASTERMIND_IMAGES:voice_generate -- Generate the MP3. `text` and `engine` are
   REQUIRED; `voice`, `language` and `style` are optional. Billed per input
   character.
-- KIMASTERMIND_IMAGES:my_credits -- Current credit balance
+- KIMASTERMIND_IMAGES:my_credits -- Current credit balance. **Call this before
+  every generation**, so cost and remaining balance go out together (Step S3).
+  A balance from earlier in the conversation is stale.
 - KIMASTERMIND_IMAGES:list_models -- All models with prices (voice model included)
 
 Login portal: https://mcp.kimastermind.net/login
+
+---
+
+## Offer listening before anything is paid for
+
+**Every time speech comes up, say in one sentence that the voices can be heard
+for free first.** Most people do not know it, and a voice chosen blind is the
+single most common reason a clip gets generated twice. One line is enough:
+
+> „Du kannst alle Stimmen vorher kostenlos anhoeren — sag einfach *zeige alle
+> Stimmen*."
+
+On **„zeige alle Stimmen"** (and anything like it) give BOTH pages, Studio first
+because its voices carry a documented character:
+
+```
+Studio  (30 Stimmen, mit Charakter):  https://mcp.kimastermind.net/voices/studio
+Express (28 Stimmen, schnell):        https://mcp.kimastermind.net/voices/express
+```
+
+**Open the page yourself when a browser tool is available.** In Claude Desktop
+there is a built-in browser pane; open the Studio page in it so the person can
+click a tile right away instead of switching windows:
+
+- built-in browser pane available -> open `https://mcp.kimastermind.net/voices/studio`
+  in it, then name the second link in the text
+- no browser tool -> give both links as text, nothing else
+
+Do NOT open a page the person did not ask about, and never open more than one.
 
 ---
 
@@ -130,6 +161,10 @@ Better than any table: hand out the listening page, where every voice of the
 engine plays on one click -- see "Stimmen anhoeren" below. The table is for
 naming two or three candidates with their character, not for the full catalogue.
 
+If the request was the broad one („zeige alle Stimmen"), do not build a table of
+58 rows at all. Give the two page links, open one in the browser pane if there
+is one, and name three fitting voices with their character as a starting point.
+
 ---
 
 ## Speech Generation Workflow
@@ -155,7 +190,21 @@ If no text was supplied, ask what should be spoken. If the user points at
 something ("lies die Zusammenfassung vor", "vertone den Blogpost"), take that
 text rather than asking them to paste it again.
 
-**The hard limit is 5000 characters per clip.** If the text is longer:
+**Advise against very long clips before the limit even matters.** A clip is
+produced in one go and billed in one go, so a long one means a long wait and a
+single file nobody can edit. Rule of thumb to give the person:
+
+| Laenge | ca. Woerter | Audio | Empfehlung |
+|---|---|---|---|
+| bis 1500 Zeichen | ~250 | ~1,5 Min | ideal, auch auf Studio schnell |
+| 1500–3000 Zeichen | ~250–500 | 1,5–3 Min | geht gut; auf Studio ~2 Min Wartezeit |
+| ueber 3000 Zeichen | ueber 500 | ueber 3 Min | **in Abschnitte teilen anbieten** — je Kapitel eine Datei |
+
+Splitting is not only about the wait: a correction in minute four otherwise
+means paying for the whole clip again.
+
+**The hard limit is 5000 characters per clip**, enforced by the server. If the
+text is longer:
 - Say so with the actual number ("Der Text hat 8400 Zeichen, pro Aufnahme sind
   5000 möglich").
 - Offer to split it at paragraph or sentence boundaries into several clips, and
@@ -255,20 +304,50 @@ artifact -- a `data:` URI is same-origin, so it plays. Without Bash: a table of
 sample links plus the honest note that playing them inside the chat is not
 possible.
 
-### Step S3: State the Cost BEFORE Generating
+### Step S3: Balance and Cost BEFORE Generating
 
-Speech is billed **per input character**, so unlike video the exact price is known
-in advance -- use that. The rate differs per engine, so take it from the
-`voice_listing` response for the engine actually chosen, never from memory:
+Two numbers go out before a single credit is spent: **what it costs** and **what
+is left**. Never generate without having shown both.
+
+**1. Fetch the balance.** Call `KIMASTERMIND_IMAGES:my_credits`. It is one cheap
+call and it is the only way to know; never quote a balance from earlier in the
+conversation, it is stale after every generation.
+
+**2. Work out the price.** Speech is billed **per input character**, so unlike
+video the exact price is known in advance. Take the rate from the `voice_listing`
+answer for the chosen engine, never from memory, and apply:
 
 ```
 credits = max(1, round(characters / 1000 * credits_per_1000))
 ```
 
-Tell the user plainly, e.g.:
+As of 2026-10-13 the rates are **0,9 Credits je 1000 Zeichen auf Express** and
+**1,6 auf Studio**. That gives this orientation table — use it to sanity-check
+your arithmetic, but quote the live rate:
 
-"Der Text hat 820 Zeichen -- das sind **1 Credit** und ergibt ca. 55 Sekunden
-Audio. Soll ich mit **Eve** auf Express loslegen?"
+| Zeichen | ca. Woerter | Express | Studio | Audio ca. |
+|---|---|---|---|---|
+| 500 | 80 | 1 Credit | 1 Credit | 0:35 |
+| 1 000 | 165 | 1 Credit | 2 Credits | 1:05 |
+| 2 000 | 330 | 2 Credits | 3 Credits | 2:15 |
+| 3 000 | 500 | 3 Credits | 5 Credits | 3:20 |
+| 5 000 | 830 | 5 Credits | 8 Credits | 5:30 |
+
+**3. Say it in one sentence**, cost and balance together:
+
+> „Der Text hat 820 Zeichen — das kostet **1 Credit** auf Express und ergibt ca.
+> 55 Sekunden Audio. Du hast aktuell **23 Credits**, danach noch 22.
+> Soll ich mit **Eve** loslegen?"
+
+**4. Not enough credits?** Say exactly how many are missing, and do not call
+`voice_generate` — it would fail and look like a bug:
+
+> „Das kostet 5 Credits, du hast 3. Es fehlen 2 — aufladen unter
+> https://mcp.kimastermind.net/dashboard. Mit Express statt Studio waeren es
+> 3 Credits, das ginge sofort."
+
+Offering the cheaper engine when the balance is tight is genuinely useful; pushing
+the expensive one is not.
 
 Three things to be straight about:
 - **There is a 1-credit minimum per clip.** A short sentence costs the same as
@@ -325,11 +404,44 @@ and **Studio**. If the user asks outright which model is behind an engine,
 `list_models` answers that -- model names are not secret. The supply chain is
 (see Language and Tone).
 
-### Step S5: Deliver the MP3 and Warn About the 24h Window
+### Step S5: Deliver the MP3, Play It, Show What It Cost
 
-**This is the step that must not be skipped.** The download link is valid for
-**24 hours**; after that the file is deleted from the server and the link returns
-an error. Always say this, and always offer to save the file locally.
+Three things belong in this answer, every time:
+
+**a) What it cost.** `voice_generate` returns the charge and the new balance —
+pass both on, do not make the person work it out:
+
+> „Fertig. **1 Credit** verbraucht, **22 Credits** uebrig."
+
+If the charge differs from your estimate in S3, say so and say why (the 1-credit
+minimum on short clips is the usual reason).
+
+**b) The audio, playable.** Try these in order and stop at the first that works:
+
+1. **Inline abspielbar.** Only a `data:` URI plays inside the chat — audio loaded
+   from `mcp.kimastermind.net` is blocked there by the Content Security Policy.
+   So: if a shell is available and the file is **under ~1,5 MB** (roughly 90
+   seconds), download it, base64 it, and put it in a small HTML artifact as
+   `<audio controls src="data:audio/mpeg;base64,...">`. Above that size skip
+   straight to 2 — a huge artifact is slower to build than the clip is to play.
+2. **Mit dem Systemplayer oeffnen.** Download, then hand it to the OS. The file
+   stays, so it survives the 24-hour window:
+   ```powershell
+   $folder = "$env:USERPROFILE\Music\KI-Stimmen"; if (!(Test-Path $folder)) { New-Item -ItemType Directory -Path $folder | Out-Null }; $file = "$folder\AUDIO_FILENAME.mp3"; Invoke-WebRequest -Uri "AUDIO_URL_HERE" -OutFile $file; Start-Process $file
+   ```
+   macOS: `curl -s -o ~/Music/KI-Stimmen/NAME.mp3 "URL" && afplay ~/Music/KI-Stimmen/NAME.mp3`
+   Linux: `curl -s -o ~/Musik/NAME.mp3 "URL" && xdg-open ~/Musik/NAME.mp3`
+   Say which folder it landed in — people look for the file later.
+3. **Nur der Link.** On web and mobile nothing can be played locally. Give the
+   URL plainly and say that it opens in a new tab.
+
+Always give the direct link as well, whichever route worked.
+
+**c) The 24-hour warning.** The link is valid for **24 hours**; after that the
+file is deleted from the server and the link returns an error. Say it every
+time, and offer to save the file — route 2 already does.
+
+Saving without playing, when that is all the person wants:
 
 - **Claude Desktop (Windows)**: save to `$env:USERPROFILE\Music\KI-Stimmen\` via
   Invoke-WebRequest (PowerShell rules: no curl, no &&, no ~).

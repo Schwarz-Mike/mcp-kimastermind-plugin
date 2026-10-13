@@ -1,7 +1,7 @@
 ---
 name: kimastermind-setup
-description: Prüft die Verbindung zu KI Mastermind und führt durch die Einrichtung. Verwende diesen Skill, wenn jemand die Einrichtung prüfen will, fragt ob die Verbindung steht, nach dem Credit-Guthaben fragt, wissen will welche Skills oder Möglichkeiten verfügbar sind, oder wenn ein Aufruf an KI Mastermind scheitert — Trigger: "kimastermind setup", "einrichtung prüfen", "funktioniert kimastermind", "bin ich verbunden", "wie viele credits habe ich", "kimastermind geht nicht", "verbindung testen", "was kann ich hier machen", "welche modelle gibt es", "warum klappt das nicht".
-version: 1.0.0
+description: Prüft die Verbindung zu KI Mastermind und führt durch die Einrichtung. Verwende diesen Skill, wenn jemand die Einrichtung prüfen will, fragt ob die Verbindung steht, nach dem Credit-Guthaben fragt, wissen will welche Skills oder Möglichkeiten verfügbar sind, oder wenn ein Aufruf an KI Mastermind scheitert — Trigger: "kimastermind setup", "einrichtung prüfen", "funktioniert kimastermind", "bin ich verbunden", "wie viele credits habe ich", "kimastermind geht nicht", "verbindung testen", "was kann ich hier machen", "welche modelle gibt es", "welche skills gibt es", "sind die skills installiert", "ist alles eingerichtet", "warum klappt das nicht".
+version: 1.1.0
 ---
 
 # KI Mastermind — Einrichtung prüfen
@@ -22,6 +22,26 @@ passende:
 | **kim-video** | Videoclips: Text-zu-Video, ein Bild animieren, Referenz-zu-Video |
 | **kim-voice** | Sprache: Text vorlesen, Voiceover, Vertonung — zwei Engines zur Wahl |
 
+### Welche davon sind hier wirklich aktiv?
+
+Nenne nicht nur, was es gibt, sondern was **in dieser Sitzung geladen ist**. Du siehst
+deine eigenen Skills — gleiche sie gegen die Liste oben ab und berichte als Tabelle:
+
+| Skill | Status | Wofür |
+|---|---|---|
+| kimastermind-setup | ✅ aktiv | Einrichtung und Fehlersuche |
+| kim-images | ✅ aktiv / ❌ fehlt | Bilder |
+| kim-video | ✅ aktiv / ❌ fehlt | Videoclips |
+| kim-voice | ✅ aktiv / ❌ fehlt | Sprache |
+
+`KIMASTERMIND_IMAGES:list_skills` nennt zusätzlich, welche Skill-Dateien der Server
+aktuell anbietet, mit Download-Link. Weicht das von dem ab, was hier geladen ist, ist
+die Plugin-Version veraltet — dann in den Plugin-Einstellungen auf **Aktualisieren**
+klicken und Claude neu starten.
+
+Fehlt ein Skill ganz, liegt das fast immer daran, dass das Plugin nach der Installation
+noch nicht neu geladen wurde. Claude neu starten löst es.
+
 ## Vorgehen
 
 **1. Verbindung prüfen**
@@ -30,7 +50,9 @@ Rufe `KIMASTERMIND_IMAGES:my_credits` auf. Das ist der günstigste Aufruf und be
 dreierlei zugleich: der Server ist erreichbar, die Anmeldung steht, und das Konto
 existiert.
 
-- **Antwort kommt** → Verbindung steht. Nenne das Guthaben.
+- **Antwort kommt** → Verbindung steht, die Anmeldung ist gültig, das Konto existiert.
+  Nenne das Guthaben. Damit ist „MCP funktioniert" belegt — nicht durch das blosse
+  Vorhandensein der Werkzeuge, sondern durch einen echten Aufruf.
 - **Fehler „not authenticated" / Anmeldefenster** → die Anmeldung fehlt noch. Sag der
   Person, dass sich beim ersten Aufruf ein Browserfenster öffnet, in dem sie sich mit
   ihrem KI-Mastermind-Konto anmeldet und den Zugriff bestätigt. Das passiert einmalig.
@@ -64,8 +86,17 @@ Nenne die Credit-Kosten pro Bereich, denn die unterscheiden sich in der Einheit:
   **Studio** (langsamer, hoehere Qualitaet). `voice_listing` ohne Engine nennt
   beide mit dem aktuellen Preis.
 
-Für die Stimmen gibt es `voice_listing` (beide Engines) und kostenlose Hörproben über `voice_sample` —
-erwähne das, weil es der einzige Bereich ist, in dem man vor dem Bezahlen reinhören kann.
+Für die Stimmen gibt es `voice_listing` (beide Engines) und **kostenlose Hörproben auf
+einer Seite pro Engine** — erwähne das, weil es der einzige Bereich ist, in dem man vor
+dem Bezahlen reinhören kann:
+
+```
+https://mcp.kimastermind.net/voices/studio
+https://mcp.kimastermind.net/voices/express
+```
+
+Eine Kachel pro Stimme, Antippen spielt ab, ohne Anmeldung. Ist ein Browser-Werkzeug
+vorhanden, öffne die Studio-Seite gleich darin.
 
 **4. Wenn die Werkzeuge fehlen**
 
@@ -91,7 +122,8 @@ Danach Claude neu starten. Konto anlegen unter https://mcp.kimastermind.net/regi
 
 **5. Bericht**
 
-Fasse in drei Zeilen zusammen: Verbindung, Guthaben, und was als Nächstes zu tun ist.
+Fasse in vier Zeilen zusammen: Verbindung, Guthaben, geladene Skills, und was als
+Nächstes zu tun ist.
 Wenn alles steht, frag nicht „kann ich sonst helfen?", sondern biete den konkreten
 nächsten Schritt an — ein Bild, einen Clip oder eine Sprachaufnahme.
 
