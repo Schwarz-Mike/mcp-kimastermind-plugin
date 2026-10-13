@@ -137,7 +137,7 @@ Texte als MP3 vorlesen lassen. Es gibt **zwei Engines**, und du wählst:
 | Klang | gleichmässig, neutral | natürlichere Betonung und Satzmelodie |
 | Sprache | wählbar, 15 Sprachen | wird aus dem Text erkannt |
 | Sprechstil | — | steuerbar, z. B. „warm und ruhig" |
-| Credits pro 1 000 Zeichen | 0.90 | 1.60 |
+| Credits pro 1 000 Zeichen | 1.80 | 2.56 |
 
 **Express** für den schnellen Fall: etwas kurz anhören, ein Entwurf, eine Ansage.
 **Studio**, wenn es jemand anders hört — Voiceover, Podcast-Intro, eine längere
