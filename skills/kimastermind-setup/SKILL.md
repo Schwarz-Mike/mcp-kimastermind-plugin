@@ -1,7 +1,7 @@
 ---
 name: kimastermind-setup
 description: Prüft die Verbindung zu KI Mastermind und führt durch die Einrichtung. Verwende diesen Skill, wenn jemand die Einrichtung prüfen will, fragt ob die Verbindung steht, nach dem Credit-Guthaben fragt, wissen will welche Skills oder Möglichkeiten verfügbar sind, oder wenn ein Aufruf an KI Mastermind scheitert — Trigger: "kimastermind setup", "einrichtung prüfen", "funktioniert kimastermind", "bin ich verbunden", "wie viele credits habe ich", "kimastermind geht nicht", "verbindung testen", "was kann ich hier machen", "welche modelle gibt es", "welche skills gibt es", "sind die skills installiert", "ist alles eingerichtet", "warum klappt das nicht".
-version: 1.1.0
+version: 1.2.0
 ---
 
 # KI Mastermind — Einrichtung prüfen
@@ -21,6 +21,7 @@ passende:
 | **kim-images** | Bilder: erstellen, bearbeiten, umstilisieren, Varianten, kombinieren |
 | **kim-video** | Videoclips: Text-zu-Video, ein Bild animieren, Referenz-zu-Video |
 | **kim-voice** | Sprache: Text vorlesen, Voiceover, Vertonung — zwei Engines zur Wahl |
+| **kim-music** | Musik: Hintergrund, Intro, Song mit Gesang — zwei Engines zur Wahl |
 
 ### Welche davon sind hier wirklich aktiv?
 
@@ -33,6 +34,7 @@ deine eigenen Skills — gleiche sie gegen die Liste oben ab und berichte als Ta
 | kim-images | ✅ aktiv / ❌ fehlt | Bilder |
 | kim-video | ✅ aktiv / ❌ fehlt | Videoclips |
 | kim-voice | ✅ aktiv / ❌ fehlt | Sprache |
+| kim-music | ✅ aktiv / ❌ fehlt | Musik |
 
 `KIMASTERMIND_IMAGES:list_skills` nennt zusätzlich, welche Skill-Dateien der Server
 aktuell anbietet, mit Download-Link. Weicht das von dem ab, was hier geladen ist, ist
@@ -71,7 +73,39 @@ Nenne den Stand und ordne ihn ein, statt nur eine Zahl zu melden:
 
 Neue Konten starten mit 20 Credits gratis.
 
-**3. Verfügbare Möglichkeiten zeigen**
+**3. Die vier Fähigkeiten einzeln prüfen**
+
+Ein Check, der nur „Verbindung steht" meldet, ist wertlos — er sagt nichts
+darüber, ob das, was die Person vorhat, auch wirklich geht. Prüfe deshalb jede
+Fähigkeit einzeln und melde sie als Tabelle. **Alle Prüfungen sind kostenlos**,
+keine davon erzeugt etwas:
+
+| Fähigkeit | Prüfung | Beweist |
+|---|---|---|
+| **MCP-Verbindung** | `my_credits` | Server erreichbar, Anmeldung gültig, Konto existiert |
+| **Bilder** | `list_models` → Einträge mit `kind: image` | Bildmodelle vorhanden, mit Credit-Preis je Stufe |
+| **Video** | `list_models` → `kind: video` | Videomodell vorhanden, Credits **pro Sekunde** |
+| **Stimmen** | `voice_listing` ohne Engine | beide Engines antworten, mit Preis und Stimmenzahl |
+| **Musik** | `list_models` → `kind: music` | beide Musik-Engines vorhanden, Credits **pro Clip** |
+
+Melde das so:
+
+```
+Verbindung    ✅  Guthaben 96 Credits
+Bilder        ✅  21 Modelle
+Video         ✅  8.33 Credits/Sekunde (720p)
+Stimmen       ✅  Express 3.0 / Studio 3.84 Credits je 1000 Zeichen, 58 Stimmen
+Musik         ✅  Song 8 / Score 12 Credits je Clip
+```
+
+Fehlt eine Fähigkeit, sag **welche** und was das praktisch heisst — „Musik ist
+gerade nicht verfügbar, Bilder, Video und Stimmen laufen" ist brauchbar,
+„teilweise verfügbar" nicht.
+
+Zahlen immer aus der Antwort nehmen, nie aus dem Gedächtnis: die Preise stehen
+in der Datenbank und ändern sich.
+
+**4. Verfügbare Möglichkeiten zeigen**
 
 Nur wenn die Person danach fragt oder neu ist — nicht ungefragt bei jedem Check.
 
@@ -86,6 +120,10 @@ Nenne die Credit-Kosten pro Bereich, denn die unterscheiden sich in der Einheit:
   **Studio** (langsamer, hoehere Qualitaet). `voice_listing` ohne Engine nennt
   beide mit dem aktuellen Preis.
 
+Musik gibt es in zwei Engines: **Song** kann singen und liefert den Text mit
+Zeitmarken mit, **Score** ist instrumental. Beide erzeugen Clips fester Länge,
+abgerechnet pro Clip.
+
 Für die Stimmen gibt es `voice_listing` (beide Engines) und **kostenlose Hörproben auf
 einer Seite pro Engine** — erwähne das, weil es der einzige Bereich ist, in dem man vor
 dem Bezahlen reinhören kann:
@@ -98,7 +136,7 @@ https://mcp.kimastermind.net/voices/express
 Eine Kachel pro Stimme, Antippen spielt ab, ohne Anmeldung. Ist ein Browser-Werkzeug
 vorhanden, öffne die Studio-Seite gleich darin.
 
-**4. Wenn die Werkzeuge fehlen**
+**5. Wenn die Werkzeuge fehlen**
 
 Dann ist der Server nicht verbunden. Nenne beide Wege und weise auf die Doppelregistrierung
 hin:
@@ -120,10 +158,10 @@ claude mcp add --transport http --scope user kimastermind https://mcp.kimastermi
 
 Danach Claude neu starten. Konto anlegen unter https://mcp.kimastermind.net/register.
 
-**5. Bericht**
+**6. Bericht**
 
-Fasse in vier Zeilen zusammen: Verbindung, Guthaben, geladene Skills, und was als
-Nächstes zu tun ist.
+Fasse zusammen: Verbindung, Guthaben, geladene Skills, die vier Fähigkeiten, und
+was als Nächstes zu tun ist. Fünf Zeilen, keine Prosa.
 Wenn alles steht, frag nicht „kann ich sonst helfen?", sondern biete den konkreten
 nächsten Schritt an — ein Bild, einen Clip oder eine Sprachaufnahme.
 

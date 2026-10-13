@@ -1,6 +1,6 @@
 {
   "name": "kimastermind",
-  "description": "Plugins rund um KI Mastermind — Bildgenerierung, Videogenerierung und Sprachausgabe mit zwei Stimmen-Engines für Claude.",
+  "description": "Plugins rund um KI Mastermind — Bildgenerierung, Videogenerierung, Sprachausgabe und Musikgenerierung für Claude.",
   "owner": {
     "name": "Mike Schwarz",
     "email": "support@kimastermind.net"
@@ -9,7 +9,7 @@
     {
       "name": "kimastermind",
       "source": "./",
-      "description": "Bilder, Videos und Stimmen in Claude erzeugen: 21 Bildmodelle mit Referenzbild-Bearbeitung, Videoclips aus Text oder Bild, und Text-zu-Sprache mit zwei Engines zur Wahl — Express (fertig in Sekunden) oder Studio (natürlichere Betonung, Sprechstil steuerbar) — zusammen 58 Stimmen mit kostenlosen Hoerproben. Vier Skills fuehren durch den Ablauf und pruefen die Einrichtung. Konto und Credits erforderlich.",
+      "description": "Bilder, Videos, Stimmen und Musik in Claude erzeugen: 21 Bildmodelle mit Referenzbild-Bearbeitung, Videoclips aus Text oder Bild, Text-zu-Sprache mit zwei Engines und 58 Stimmen mit kostenlosen Hoerproben, dazu Musik mit oder ohne Gesang. Fuenf Skills fuehren durch den Ablauf und pruefen die Einrichtung. Konto und Credits erforderlich.",
       "category": "productivity",
       "homepage": "https://mcp.kimastermind.net",
       "keywords": [
@@ -23,7 +23,10 @@
         "voiceover",
         "express",
         "studio",
-        "tts"
+        "tts",
+        "musik",
+        "music",
+        "soundtrack"
       ]
     }
   ]

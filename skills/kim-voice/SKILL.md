@@ -52,6 +52,7 @@ right one instead of improvising here.
 | **kim-voice** (this one) | Speech: text read aloud, voice-over, narration | `voice_listing`, `voice_sample`, `voice_generate` |
 | **kim-images** | Still images: generate, edit, restyle, vary, combine | `generate_image`, `export_image`, `my_gallery` |
 | **kim-video** | Video clips: text-to-video, animating an image, reference-to-video | `generate_video` |
+| **kim-music** | Music: background score, intro, a sung piece. TWO engines -- Song can sing, Score is instrumental | `music_generate` |
 | **kimastermind-setup** | Einrichtung pruefen: Verbindung, Guthaben, Fehlersuche | `my_credits`, `list_models` |
 
 Routing rules:
@@ -503,6 +504,8 @@ After delivering, offer the useful next step rather than a generic "noch etwas?"
 - same text with a different voice (so the user can compare in context)
 - the next chunk, if the text was split
 - a different language version
+- **Hintergrundmusik dazu** (kim-music) — besonders bei Voiceover fuer ein Video.
+  Dann gilt: die Sprache ist schon da, die Musik richtet sich nach ihrer Laenge
 
 Each variant is a new generation and costs credits again -- say so.
 

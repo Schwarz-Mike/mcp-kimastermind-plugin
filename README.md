@@ -1,7 +1,7 @@
 # KI Mastermind für Claude
 
 Bilder, Videos und Stimmen direkt in Claude erzeugen — über den KI-Mastermind-Server.
-Das Plugin bringt die Serververbindung und vier fertige Skills in einem Schritt mit.
+Das Plugin bringt die Serververbindung und fünf fertige Skills in einem Schritt mit.
 
 ---
 
@@ -27,7 +27,7 @@ Dann bitte vorher entfernen, sonst hast du sie doppelt — das Plugin bringt all
 hält sie aktuell:
 
 ```bash
-rm -rf ~/.claude/skills/{kim-images,kim-video,kim-voice,kimastermind-setup,image-generator}
+rm -rf ~/.claude/skills/{kim-images,kim-video,kim-voice,kim-music,kimastermind-setup,image-generator}
 ```
 
 Unter Windows in der PowerShell:
@@ -97,6 +97,7 @@ Ein Remote-MCP-Server mit **12 Werkzeugen**:
 | **Bilder** | 21 Modelle, Text-zu-Bild, Bearbeiten, Stiltransfer, Varianten, bis zu 16 Referenzbilder, bis 4K |
 | **Videos** | Clips aus Text, ein Bild animieren, Motiv/Stil aus Referenzbildern, 3–15 s, 720p/1080p |
 | **Stimmen** | Text-zu-Sprache als MP3, **zwei Engines** zur Wahl, 58 Stimmen zusammen, kostenlose Hörproben |
+| **Musik** | Hintergrundmusik, Intro oder ein gesungenes Stück, **zwei Engines** — eine davon singt und liefert den Liedtext mit Zeitmarken |
 | **Export** | Format und Grösse ändern (JPEG, PNG, WebP), Download-Link |
 | **Galerie** | die letzten 30 Bilder mit Modell, Prompt und Datum |
 | **Konto** | aktuelles Credit-Guthaben |
@@ -210,6 +211,7 @@ Nach der Installation sind sie als `/kimastermind:kim-images`, `/kimastermind:ki
 | Bilder | pro Bild, je nach Modell und Qualitätsstufe |
 | Videos | pro Sekunde, je nach Auflösung |
 | Stimmen | pro 1 000 Eingabezeichen, je nach Engine, mindestens 1 Credit pro Aufnahme |
+| Musik | pro Clip von rund 30 Sekunden, je nach Engine |
 
 Die aktuellen Preise nennt Claude jederzeit — frag einfach „Was kosten die Modelle?",
 oder schau im [Dashboard](https://mcp.kimastermind.net/dashboard) unter *Verfügbare
