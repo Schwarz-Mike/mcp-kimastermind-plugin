@@ -16,8 +16,8 @@
       "label": "soft",
       "label_de": "weich",
       "file": "achernar.mp3",
-      "duration_s": 10.4,
-      "bytes": 167424
+      "duration_s": 10.2,
+      "bytes": 164352
     },
     {
       "voice_id": "Achird",
@@ -27,7 +27,7 @@
       "label_de": "freundlich",
       "file": "achird.mp3",
       "duration_s": 9.8,
-      "bytes": 157824
+      "bytes": 158208
     },
     {
       "voice_id": "Algenib",
@@ -36,8 +36,8 @@
       "label": "gravelly",
       "label_de": "rauchig",
       "file": "algenib.mp3",
-      "duration_s": 10,
-      "bytes": 161664
+      "duration_s": 11,
+      "bytes": 177792
     },
     {
       "voice_id": "Algieba",
@@ -46,8 +46,8 @@
       "label": "smooth",
       "label_de": "geschmeidig",
       "file": "algieba.mp3",
-      "duration_s": 11.1,
-      "bytes": 178176
+      "duration_s": 9.5,
+      "bytes": 152832
     },
     {
       "voice_id": "Alnilam",
@@ -56,8 +56,8 @@
       "label": "firm",
       "label_de": "bestimmt",
       "file": "alnilam.mp3",
-      "duration_s": 9.6,
-      "bytes": 155136
+      "duration_s": 10.6,
+      "bytes": 170112
     },
     {
       "voice_id": "Aoede",
@@ -67,7 +67,7 @@
       "label_de": "luftig",
       "file": "aoede.mp3",
       "duration_s": 10.4,
-      "bytes": 166656
+      "bytes": 167040
     },
     {
       "voice_id": "Autonoe",
@@ -76,8 +76,8 @@
       "label": "bright",
       "label_de": "hell",
       "file": "autonoe.mp3",
-      "duration_s": 9.9,
-      "bytes": 158976
+      "duration_s": 10.2,
+      "bytes": 165120
     },
     {
       "voice_id": "Callirrhoe",
@@ -86,8 +86,8 @@
       "label": "easy-going",
       "label_de": "gelassen",
       "file": "callirrhoe.mp3",
-      "duration_s": 10.4,
-      "bytes": 167808
+      "duration_s": 11.1,
+      "bytes": 178560
     },
     {
       "voice_id": "Charon",
@@ -96,8 +96,8 @@
       "label": "informative",
       "label_de": "sachlich",
       "file": "charon.mp3",
-      "duration_s": 11.4,
-      "bytes": 183168
+      "duration_s": 10.2,
+      "bytes": 163968
     },
     {
       "voice_id": "Despina",
@@ -106,8 +106,8 @@
       "label": "smooth",
       "label_de": "geschmeidig",
       "file": "despina.mp3",
-      "duration_s": 10.5,
-      "bytes": 168576
+      "duration_s": 10.3,
+      "bytes": 165888
     },
     {
       "voice_id": "Enceladus",
@@ -116,8 +116,8 @@
       "label": "breathy",
       "label_de": "hauchig",
       "file": "enceladus.mp3",
-      "duration_s": 10,
-      "bytes": 160128
+      "duration_s": 9.7,
+      "bytes": 156672
     },
     {
       "voice_id": "Erinome",
@@ -127,7 +127,7 @@
       "label_de": "klar",
       "file": "erinome.mp3",
       "duration_s": 9.9,
-      "bytes": 159744
+      "bytes": 160128
     },
     {
       "voice_id": "Fenrir",
@@ -136,8 +136,8 @@
       "label": "excitable",
       "label_de": "lebhaft",
       "file": "fenrir.mp3",
-      "duration_s": 10.1,
-      "bytes": 162048
+      "duration_s": 10.4,
+      "bytes": 168192
     },
     {
       "voice_id": "Gacrux",
@@ -147,7 +147,7 @@
       "label_de": "reif",
       "file": "gacrux.mp3",
       "duration_s": 10.6,
-      "bytes": 169728
+      "bytes": 170112
     },
     {
       "voice_id": "Iapetus",
@@ -156,8 +156,8 @@
       "label": "clear",
       "label_de": "klar",
       "file": "iapetus.mp3",
-      "duration_s": 10.3,
-      "bytes": 165888
+      "duration_s": 9.9,
+      "bytes": 160128
     },
     {
       "voice_id": "Kore",
@@ -166,8 +166,8 @@
       "label": "firm",
       "label_de": "bestimmt",
       "file": "kore.mp3",
-      "duration_s": 10.5,
-      "bytes": 168576
+      "duration_s": 11.1,
+      "bytes": 179328
     },
     {
       "voice_id": "Laomedeia",
@@ -176,8 +176,8 @@
       "label": "upbeat",
       "label_de": "schwungvoll",
       "file": "laomedeia.mp3",
-      "duration_s": 9.6,
-      "bytes": 155136
+      "duration_s": 9.8,
+      "bytes": 157440
     },
     {
       "voice_id": "Leda",
@@ -186,8 +186,8 @@
       "label": "youthful",
       "label_de": "jugendlich",
       "file": "leda.mp3",
-      "duration_s": 10.1,
-      "bytes": 162816
+      "duration_s": 10.2,
+      "bytes": 165120
     },
     {
       "voice_id": "Orus",
@@ -197,7 +197,7 @@
       "label_de": "bestimmt",
       "file": "orus.mp3",
       "duration_s": 10.4,
-      "bytes": 166656
+      "bytes": 167040
     },
     {
       "voice_id": "Puck",
@@ -207,7 +207,7 @@
       "label_de": "schwungvoll",
       "file": "puck.mp3",
       "duration_s": 10.3,
-      "bytes": 165504
+      "bytes": 165888
     },
     {
       "voice_id": "Pulcherrima",
@@ -216,8 +216,8 @@
       "label": "forward",
       "label_de": "direkt",
       "file": "pulcherrima.mp3",
-      "duration_s": 10.2,
-      "bytes": 163584
+      "duration_s": 9.9,
+      "bytes": 159360
     },
     {
       "voice_id": "Rasalgethi",
@@ -226,8 +226,8 @@
       "label": "informative",
       "label_de": "sachlich",
       "file": "rasalgethi.mp3",
-      "duration_s": 9.8,
-      "bytes": 157824
+      "duration_s": 12.1,
+      "bytes": 195072
     },
     {
       "voice_id": "Sadachbia",
@@ -237,7 +237,7 @@
       "label_de": "munter",
       "file": "sadachbia.mp3",
       "duration_s": 10.4,
-      "bytes": 166656
+      "bytes": 167040
     },
     {
       "voice_id": "Sadaltager",
@@ -246,8 +246,8 @@
       "label": "knowledgeable",
       "label_de": "kundig",
       "file": "sadaltager.mp3",
-      "duration_s": 9.8,
-      "bytes": 157056
+      "duration_s": 10.4,
+      "bytes": 167040
     },
     {
       "voice_id": "Schedar",
@@ -256,8 +256,8 @@
       "label": "even",
       "label_de": "gleichmäßig",
       "file": "schedar.mp3",
-      "duration_s": 10.1,
-      "bytes": 162048
+      "duration_s": 10.6,
+      "bytes": 170880
     },
     {
       "voice_id": "Sulafat",
@@ -266,8 +266,8 @@
       "label": "warm",
       "label_de": "warm",
       "file": "sulafat.mp3",
-      "duration_s": 10.3,
-      "bytes": 165504
+      "duration_s": 10.2,
+      "bytes": 163968
     },
     {
       "voice_id": "Umbriel",
@@ -276,8 +276,8 @@
       "label": "easy-going",
       "label_de": "gelassen",
       "file": "umbriel.mp3",
-      "duration_s": 10.2,
-      "bytes": 163968
+      "duration_s": 11.2,
+      "bytes": 181248
     },
     {
       "voice_id": "Vindemiatrix",
@@ -286,8 +286,8 @@
       "label": "gentle",
       "label_de": "sanft",
       "file": "vindemiatrix.mp3",
-      "duration_s": 10.1,
-      "bytes": 162816
+      "duration_s": 10.8,
+      "bytes": 174720
     },
     {
       "voice_id": "Zephyr",
@@ -297,7 +297,7 @@
       "label_de": "hell",
       "file": "zephyr.mp3",
       "duration_s": 10.6,
-      "bytes": 171264
+      "bytes": 171648
     },
     {
       "voice_id": "Zubenelgenubi",
@@ -306,8 +306,8 @@
       "label": "casual",
       "label_de": "locker",
       "file": "zubenelgenubi.mp3",
-      "duration_s": 11.4,
-      "bytes": 183936
+      "duration_s": 9.8,
+      "bytes": 158208
     }
   ]
 }
