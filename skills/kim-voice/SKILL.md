@@ -1,6 +1,6 @@
 ---
 name: kim-voice
-description: Use whenever the user wants text spoken aloud or an audio voice-over. Triggers: lies das vor, sprich das, vertone das, mach daraus Audio, Stimme, Sprecher, Sprecherin, Voiceover, Vorleser, Narration, Hoerbuch, Podcast-Intro, Ansage, als MP3, welche Stimmen gibt es, Stimme anhoeren, read this aloud, text to speech, narrate this, which voices are available. Guides Claude through an interactive workflow: let the USER choose between the two engines (Express -- fast and cheap, Studio -- slower and higher quality), list that engine's voices, let the user hear a free sample before spending credits, collect the text, state the exact cost up front (billed per input character, so it is known in advance), call KIMASTERMIND_IMAGES voice_generate, then hand over the MP3 and warn that the download link expires after 24 hours. For still IMAGES use the kim-images skill, for VIDEO clips use the kim-video skill. Provider and model names are never mentioned.
+description: Use whenever the user wants text spoken aloud or an audio voice-over. Triggers: lies das vor, sprich das, vertone das, mach daraus Audio, Stimme, Sprecher, Sprecherin, Voiceover, Vorleser, Narration, Hoerbuch, Podcast-Intro, Ansage, als MP3, welche Stimmen gibt es, Stimme anhoeren, read this aloud, text to speech, narrate this, which voices are available. Guides Claude through an interactive workflow: let the USER choose between the two engines (Express -- fast and cheap, Studio -- slower and higher quality), list that engine's voices, point the user at the listening page https://mcp.kimastermind.net/voices/<engine> where every voice plays for free, collect the text, state the exact cost up front (billed per input character, so it is known in advance), call KIMASTERMIND_IMAGES voice_generate, then hand over the MP3 and warn that the download link expires after 24 hours. For still IMAGES use the kim-images skill, for VIDEO clips use the kim-video skill. Provider and model names are never mentioned.
 ---
 
 # KIM Voice Skill
@@ -126,8 +126,9 @@ that tells thirty star names apart):
 | Charon | männlich | sachlich | https://mcp.kimastermind.net/api/voice/sample/charon.mp3 |
 ```
 
-In claude.ai web / mobile, an audio widget is nicer than bare links -- see the
-"Voice Picker Widget" section below.
+Better than any table: hand out the listening page, where every voice of the
+engine plays on one click -- see "Stimmen anhoeren" below. The table is for
+naming two or three candidates with their character, not for the full catalogue.
 
 ---
 
@@ -218,26 +219,41 @@ If the user asks for a "deep", "warm", "friendly" or "young" voice:
   characteristics. If the user clearly cares about character, that is a good
   moment to mention Studio.
 
-#### Voice Picker Widget (claude.ai web / mobile)
+#### Stimmen anhoeren
 
-Where widgets work, a small player beats a list of links:
+Wants the user to HEAR the voices, give them the listening page. One link, every
+voice of that engine, each playable on one tap, no login, no credits:
 
-```html
-<div style="padding: 1rem 0;">
-  <div style="background: var(--color-background-secondary); border-radius: var(--border-radius-lg); padding: 1rem;">
-    <p style="font-size:14px; color: var(--color-text-primary); margin:0 0 10px; font-weight:600;">Stimmen anhören (kostenlos)</p>
-    <div style="display:flex; flex-direction:column; gap:10px;">
-      <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-        <span style="font-size:13px; color: var(--color-text-primary); min-width:90px;">VOICE_NAME_HERE</span>
-        <audio src="https://mcp.kimastermind.net/api/voice/sample/VOICE_ID_HERE.mp3" controls preload="none" style="height:34px; flex:1; min-width:180px;"></audio>
-      </div>
-    </div>
-    <p style="font-size:12px; color: var(--color-text-tertiary); margin:10px 0 0;">Alle Beispiele sprechen denselben Satz -- so sind sie direkt vergleichbar.</p>
-  </div>
-</div>
+```
+https://mcp.kimastermind.net/voices/express
+https://mcp.kimastermind.net/voices/studio
 ```
 
-Repeat the inner `div` per voice. Offer two or three, not the whole catalogue.
+The link also comes back in the `voice_listing` answer for that engine, so take
+it from there rather than from memory.
+
+Does a purpose fit, append `?for=<zweck>` and the page pre-selects the fitting
+voices: `trance`, `podcast`, `werbung`, `hoerbuch`, `erklaervideo` (German and
+English synonyms work too -- meditation, hypnose, audiobook, ad, tutorial ...).
+Example: `https://mcp.kimastermind.net/voices/studio?for=trance`.
+This needs documented voice characters, so it only has an effect on **Studio**;
+on Express the page says so instead of inventing a selection.
+
+**Do NOT build an inline widget with
+`<audio src="https://mcp.kimastermind.net/...">`.** claude.ai blocks audio from
+other domains (Content Security Policy), so the user gets a dead player and a
+bare "open link" -- which is exactly the complaint this page fixes. The page
+works because the MP3s come from its own domain.
+
+Name two or three fitting voices with their character in the chat on top of the
+link, so the user knows where to start.
+
+Fallback if the page is unreachable AND Bash is available in the workspace:
+download the samples, shrink them (`ffmpeg -i in.mp3 -ac 1 -b:a 56k out.mp3`),
+embed them as base64 `data:` URIs in one HTML page and publish that as an
+artifact -- a `data:` URI is same-origin, so it plays. Without Bash: a table of
+sample links plus the honest note that playing them inside the chat is not
+possible.
 
 ### Step S3: State the Cost BEFORE Generating
 
@@ -321,8 +337,11 @@ an error. Always say this, and always offer to save the file locally.
   $folder = "$env:USERPROFILE\Music\KI-Stimmen"; if (!(Test-Path $folder)) { New-Item -ItemType Directory -Path $folder | Out-Null }; Invoke-WebRequest -Uri "AUDIO_URL_HERE" -OutFile "$folder\AUDIO_FILENAME.mp3"; Get-Item "$folder\AUDIO_FILENAME.mp3" | Select-Object Name, Length
   ```
 - **Claude Desktop (Mac/Linux)**: `curl -s -o ~/Music/KI-Stimmen/AUDIO_FILENAME.mp3 "AUDIO_URL_HERE"`
-- **Web / Mobile / download failure**: show a widget with an HTML5 `<audio controls>`
-  element, the download link, the expiry warning and the updated credit balance:
+- **Web / Mobile / download failure**: give the download link in plain text with
+  the expiry warning and the new balance. A widget may look nicer, but claude.ai
+  blocks audio from `mcp.kimastermind.net`, so the `<audio>` element below stays
+  silent there -- only the link works. Use the widget where you know audio from
+  other domains plays; otherwise drop it and keep link, warning and balance:
 
 ```html
 <div style="padding: 1rem 0;">
@@ -393,8 +412,11 @@ generating something that will disappoint them.
 |---|---|---|
 | Claude Desktop (Windows) | desktop-commander + Invoke-WebRequest | %USERPROFILE%\Music\KI-Stimmen\ |
 | Claude Desktop (Mac/Linux) | bash_tool + curl | ~/Music/KI-Stimmen/ |
-| claude.ai Web | nicht moeglich | Widget + Download-Link |
-| Claude Mobile (iOS/Android) | nicht moeglich | Widget + Download-Link |
+| claude.ai Web | nicht moeglich | Download-Link + Hinweis 24h |
+| Claude Mobile (iOS/Android) | nicht moeglich | Download-Link + Hinweis 24h |
+
+Hoerproben in Web und Mobile: `https://mcp.kimastermind.net/voices/<engine>`.
+Inline-Audio von fremden Domains ist dort gesperrt, die Seite umgeht das.
 
 Bundled samples: this skill ships one sample clip per voice under
 `samples/express/<voice_id>.mp3` and `samples/studio/<voice_id>.mp3`, plus an

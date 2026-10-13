@@ -152,9 +152,19 @@ Studio und umgekehrt.
 > „Lies das mit Eve vor" · „Nimm Sulafat, warm und ruhig"
 
 **Hörproben sind kostenlos.** Alle 58 Stimmen sprechen denselben Satz, du kannst sie also
-direkt vergleichen — auch quer über die beiden Engines. Im Browser abspielbar unter
-`https://mcp.kimastermind.net/api/voice/sample/eve.mp3` (Stimmen-ID austauschen), und als
-MP3 im Skill mitgeliefert, nach Engine sortiert.
+direkt vergleichen — auch quer über die beiden Engines. Am einfachsten auf der
+Hörproben-Seite, eine Kachel pro Stimme, Antippen spielt ab, ohne Anmeldung:
+
+- **Express:** [mcp.kimastermind.net/voices/express](https://mcp.kimastermind.net/voices/express)
+- **Studio:** [mcp.kimastermind.net/voices/studio](https://mcp.kimastermind.net/voices/studio)
+
+Für einen bestimmten Zweck hängst du ihn an, dann sind die passenden Stimmen
+vorgewählt: `?for=trance`, `?for=podcast`, `?for=werbung`, `?for=hoerbuch`,
+`?for=erklaervideo` — das setzt dokumentierte Stimmcharaktere voraus und wirkt
+deshalb nur bei Studio.
+
+Einzeln geht weiterhin `https://mcp.kimastermind.net/api/voice/sample/eve.mp3`
+(Stimmen-ID austauschen); dieselben MP3s liegen auch im Skill, nach Engine sortiert.
 
 Bis 5 000 Zeichen pro Aufruf. Abgerechnet wird nach **Eingabezeichen**, nicht nach
 Audiolänge — die Kosten stehen also vor der Generierung fest. Am Ende bekommst du einen
