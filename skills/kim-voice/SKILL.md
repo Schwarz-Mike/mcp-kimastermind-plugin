@@ -31,7 +31,10 @@ choice belongs to the user:
   language from the text itself.
 
 `voice_listing` without an `engine` returns both with their live credit price per
-1000 characters and per minute of audio. **Show those numbers and ask.** Only
+1000 characters and per minute of audio. **Show those numbers and ask.** The two
+sentences to use are in Step S3 — they name the price, the 1-credit minimum, and
+the one thing that sets the engines apart besides price: Express speaks fifteen
+selectable languages, Studio takes a spoken-style instruction. Only
 skip the question when the user has already said which one they want, in their
 own words ("schnell reicht", "bitte in bester Qualitaet", "Express", "Studio").
 
@@ -332,6 +335,20 @@ your arithmetic, but quote the live rate:
 | 2 000 | 330 | 2 Credits | 3 Credits | 2:15 |
 | 3 000 | 500 | 3 Credits | 5 Credits | 3:20 |
 | 5 000 | 830 | 5 Credits | 8 Credits | 5:30 |
+
+**Wording for each engine**, to use when you name the engine's terms. These are
+the sentences the listening page shows, so chat and page say the same thing:
+
+> **Express** kostet 0.9 Credits pro 1000 Zeichen (ca. 0.81 Credits pro Minute
+> Audio), mindestens 1 Credit pro Clip. Jede Stimme spricht jede unterstuetzte
+> Sprache (de, en, fr, it, es, pt, nl, pl, ru, tr, ar, hi, ja, ko, zh).
+
+> **Studio** kostet 1.6 Credits pro 1000 Zeichen (ca. 1.54 Credits pro Minute
+> Audio), mindestens 1 Credit pro Clip. Den Sprechstil kannst du beim Generieren
+> vorgeben, zum Beispiel „ruhig, langsam, tief entspannend".
+
+Check the numbers against `voice_listing` before quoting them — it carries the
+live rate, and these were right on 2026-10-13.
 
 **3. Say it in one sentence**, cost and balance together:
 
