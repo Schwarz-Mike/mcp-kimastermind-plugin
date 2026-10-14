@@ -1,6 +1,7 @@
 ---
 name: kim-video
-description: Use whenever the user wants to generate or animate a VIDEO clip. Triggers: generiere/erstelle ein Video, mach ein Video daraus, animiere dieses Bild, bring das zum Leben, Text-zu-Video, Bild-zu-Video, Reel, Clip, Kurzvideo, generate/animate a video, make this move. Guides Claude through an interactive workflow: detect the mode (text / image / reference), upload reference images via the binary upload flow, collect prompt, format, resolution and duration, warn about per-second cost AND the 1-5 minute wait, call KIMASTERMIND_IMAGES generate_video, then download or display the clip as a native video artifact. For still IMAGES use the kim-images skill, for SPEECH/text-to-voice use the kim-voice skill. Provider and model names are never mentioned.
+description: "Use whenever the user wants to generate or animate a VIDEO clip. Triggers: generiere/erstelle ein Video, mach ein Video daraus, animiere dieses Bild, bring das zum Leben, Text-zu-Video, Bild-zu-Video, Reel, Clip, Kurzvideo, generate/animate a video, make this move. Guides Claude through an interactive workflow: detect the mode (text / image / reference), upload reference images via the binary upload flow, collect prompt, format, resolution and duration, warn about per-second cost AND the 1-5 minute wait, call KIMASTERMIND_IMAGES generate_video, then download or display the clip as a native video artifact. For still IMAGES use the kim-images skill, for SPEECH/text-to-voice use the kim-voice skill. Provider and model names are never mentioned."
+version: 1.0.0
 ---
 
 # KIM Video Skill

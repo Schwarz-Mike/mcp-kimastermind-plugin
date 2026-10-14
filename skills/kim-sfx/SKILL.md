@@ -1,6 +1,6 @@
 ---
 name: kim-sfx
-description: Use when the user wants a SOUND rather than music or speech -- rain, sea, wind, fire, a gong, a bell, a door, footsteps, room tone, a whoosh, a notification sound, an atmosphere for a video or a meditation. Triggers: Geraeusch, Sound, Soundeffekt, SFX, Atmo, Atmosphaere, Hintergrundgeraeusch, Regen, Meer, Wellen, Feuer, Wind, Gong, Klangschale, Vogelgezwitscher, Tuer, Schritte, Raumklang, Ambience, sound effect, ambience, foley, whoosh, make a rain sound. The length is freely selectable from half a second to 22, and one sound costs the same whatever its length -- so pick the length the material needs, not the cheapest. For music use kim-music, for speech kim-voice -- the music engine cannot make real noises, it returns music that evokes them.
+description: "Use when the user wants a SOUND rather than music or speech -- rain, sea, wind, fire, a gong, a bell, a door, footsteps, room tone, a whoosh, a notification sound, an atmosphere for a video or a meditation. Triggers: Geraeusch, Sound, Soundeffekt, SFX, Atmo, Atmosphaere, Hintergrundgeraeusch, Regen, Meer, Wellen, Feuer, Wind, Gong, Klangschale, Vogelgezwitscher, Tuer, Schritte, Raumklang, Ambience, sound effect, ambience, foley, whoosh, make a rain sound. The length is freely selectable from half a second to 22, and one sound costs the same whatever its length -- so pick the length the material needs, not the cheapest. For music use kim-music, for speech kim-voice -- the music engine cannot make real noises, it returns music that evokes them."
 version: 1.1.1
 ---
 
