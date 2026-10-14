@@ -198,11 +198,30 @@ Nach jedem Clip die **Video-ID** notieren (`/vid/<id>.mp4`).
 
 ---
 
-## Step 7: Musik
+## Step 7: Musik und Geraeusche
+
+### Geraeusche je Szene — optional, aber wirkungsvoll
+
+Ein Erklaervideo braucht sie nicht. Eine Szene mit Regen, Meer, Feuer, einer
+zuschlagenden Tuer oder einem Gong gewinnt enorm. `sfx_generate`, Laenge frei
+von 0,5 bis 22 Sekunden, **2 Credits fuer zehn Sekunden** — gegen 500 fuer die
+Clips ist das nichts.
+
+Frag einmal, nicht je Szene: „Sollen einzelne Szenen Geraeusche bekommen?" Wenn
+ja, nenne die Szenen, bei denen es sich lohnt, und erzeuge sie. Beim Schnitt
+kommen sie als zusaetzliche Tonspur dazu.
+
+Wichtig: Der Videoclip bringt **bereits eigenen Ton** mit, der auf 10 % gedaempft
+wird. Ein zusaetzliches Geraeusch legt sich darueber — also sparsam und nur dort,
+wo es wirklich traegt.
+
+### Musik
 
 Nur wenn gewuenscht. Siehe kim-music fuer die Fragen und die Prompt-Uebersetzung
-ins Englische. Fuer einen Film brauchst du so viele Clips, dass sie die Laenge
-abdecken — ein 60-Sekunden-Film braucht zwei.
+ins Englische. **Ein** Stueck genuegt, auch fuer einen langen Film: es ist bis zu
+drei Minuten lang und wird beim Schnitt geloopt. Erzeuge niemals mehrere Stuecke
+fuer einen laengeren Film — zwei Aufrufe ergeben zwei verschiedene Kompositionen
+mit hoerbarer Naht.
 
 Die Musik wird beim Schnitt automatisch leiser, wenn gesprochen wird, und blendet
 am Ende aus. Du musst nichts dafuer tun.
@@ -287,6 +306,8 @@ kurz, wofuer: zum Zusammenschneiden des Materials.
 | **kim-voice** | Nur Sprache |
 | **kim-music** | Nur Musik |
 | **kim-images** | Nur Bilder |
+| **kim-meditation** | Gefuehrte Meditation: Skript, Musik, Stimme, Abmischung — reines Audio |
+| **kim-sfx** | Geraeusche und Atmosphaeren fuer einzelne Szenen |
 | **kimastermind-setup** | Verbindung, Guthaben, Fehlersuche |
 
 Will jemand nur einen einzelnen Clip, schick ihn zu kim-video — dieser Ablauf

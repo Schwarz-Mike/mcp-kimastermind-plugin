@@ -27,14 +27,14 @@ choice belongs to the user:
   when the user is in a hurry or watching their credits.
 - **Studio** is right for anything someone else will hear: voice-over, podcast
   intro, audiobook passage, a long narration where a flat delivery would show.
-  It also accepts a `style` instruction ("warm und ruhig") and works out the
-  language from the text itself.
+  It works out the language from the text itself.
 
 `voice_listing` without an `engine` returns both with their live credit price per
 1000 characters and per minute of audio. **Show those numbers and ask.** The two
 sentences to use are in Step S3 — they name the price, the 1-credit minimum, and
 the one thing that sets the engines apart besides price: Express speaks fifteen
-selectable languages, Studio takes a spoken-style instruction. Only
+selectable languages, Studio detects the language from the text and offers a
+documented character per voice. Only
 skip the question when the user has already said which one they want, in their
 own words ("schnell reicht", "bitte in bester Qualitaet", "Express", "Studio").
 
@@ -54,6 +54,8 @@ right one instead of improvising here.
 | **kim-video** | Video clips: text-to-video, animating an image, reference-to-video | `generate_video` |
 | **kim-music** | Music: background score, intro, a sung piece. TWO engines -- Advanced can sing, Basic is instrumental | `music_generate` |
 | **kim-lernfilm** | A whole film: storyboard, scene images, narration, music, clips and the final cut | `film_assemble` plus all of the above |
+| **kim-meditation** | A guided meditation: script, music, voice and the mix, in four approved steps | `audio_assemble` plus voice and music |
+| **kim-sfx** | Sound effects and atmospheres: rain, sea, fire, a gong. Free length, billed per second | `sfx_generate` |
 | **kimastermind-setup** | Einrichtung pruefen: Verbindung, Guthaben, Fehlersuche | `my_credits`, `list_models` |
 
 Routing rules:
@@ -183,7 +185,8 @@ Never ask for something the user already gave you. Scan the request for:
   ("schnell", "guenstig", "beste Qualitaet", "fuer einen Podcast")
 - a **voice** by name ("mit Eve", "mit Sulafat", "eine männliche Stimme")
 - a **language** ("auf Englisch", "in French")
-- a **style** ("ruhig vorlesen", "sachlich", "lebendig") -- Studio only
+- a **character wish** ("ruhig", "sachlich", "lebendig") -- this picks the
+  VOICE, not a setting: every Studio voice has a documented character
 
 A named voice already implies its engine, so do not ask again -- just say which
 engine that is. If text, engine, voice and language are all clear, skip straight
@@ -239,8 +242,8 @@ Zwei Engines:
 **Express** -- fertig in 1-2 Sekunden, 28 Stimmen. 3.00 Credits / 1000 Zeichen,
 ca. 2.70 Credits pro Minute Audio. Für diesen Text: 3 Credits.
 
-**Studio** -- natürlichere Betonung, 30 Stimmen mit Charakter, Sprechstil
-steuerbar. Braucht bei langen Texten mehrere Minuten. 3.84 Credits / 1000
+**Studio** -- natürlichere Betonung, 30 Stimmen mit dokumentiertem Charakter.
+Braucht bei langen Texten mehrere Minuten. 3.84 Credits / 1000
 Zeichen, ca. 3.69 Credits pro Minute Audio. Für diesen Text: 4 Credits.
 
 Was nimmst du?
@@ -349,8 +352,9 @@ the sentences the listening page shows, so chat and page say the same thing:
 > Sprache (de, en, fr, it, es, pt, nl, pl, ru, tr, ar, hi, ja, ko, zh).
 
 > **Studio** kostet 3.84 Credits pro 1000 Zeichen (ca. 3.69 Credits pro Minute
-> Audio), mindestens 1 Credit pro Clip. Den Sprechstil kannst du beim Generieren
-> vorgeben, zum Beispiel „ruhig, langsam, tief entspannend".
+> Audio), mindestens 1 Credit pro Clip. Jede der 30 Stimmen hat einen
+> dokumentierten Charakter — darüber wählst du den Klang, nicht über eine
+> Stilangabe.
 
 Check the numbers against `voice_listing` before quoting them — it carries the
 live rate, and these were right on 2026-10-13.
@@ -405,8 +409,7 @@ Studio:
 KIMASTERMIND_IMAGES:voice_generate(
   text = "Willkommen bei KI Mastermind. Hier entstehen Bilder, Videos und Stimmen aus einem einzigen Werkzeug.",
   engine = "studio",
-  voice = "Sulafat",
-  style = "warm und ruhig"
+  voice = "Sulafat"
 )
 ```
 
@@ -415,9 +418,12 @@ KIMASTERMIND_IMAGES:voice_generate(
 - `language` applies to **Express only** (de, en, fr, it, es, pt, nl, pl, ru, tr,
   ar, hi, ja, ko, zh; default de). Studio reads the language off the text, so
   passing it there changes nothing -- do not promise it does.
-- `style` applies to **Studio only** and is a plain instruction, not a tag:
-  "warm und ruhig", "sachlich und zuegig", "lebendig, wie eine Erzaehlerin".
-  Passing it on Express is silently ignored, so never offer style control there.
+- `style` is **accepted and ignored on both engines.** Measured 2026-10-14:
+  the engine that appeared to honour it was reading the instruction out loud --
+  the same sentence took 3.3 s without it and 8.2 s with it. **Never promise
+  style control, and never pass the parameter.** The character comes from the
+  VOICE: `voice_listing` gives one per Studio voice (warm, sachlich, hauchig,
+  rauchig, jugendlich ...), and the listening page lets the user hear them.
 - Studio voice ids are capitalised ("Sulafat"), Express ids are lowercase
   ("eve"). Either spelling is accepted; the response gives the canonical one.
 

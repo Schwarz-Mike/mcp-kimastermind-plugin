@@ -19,9 +19,9 @@ skill's actual job. Never ask the user to write English.
 
 ## Two engines, and the one limit that applies to both
 
-| Engine | Gesang | Clip | Wartezeit | Credits je Clip |
+| Engine | Gesang | Laenge je Stueck | Wartezeit | Credits |
 |---|---|---|---|---|
-| **Mastermind Music Advanced** (`song`, Standard) | **ja**, mit Text und Zeitmarken | 30 Sek | ~12 Sek | **8** |
+| **Mastermind Music Advanced** (`song`, Standard) | **ja**, mit Text und Zeitmarken | **2:30 bis 3:00 am Stueck** | ~30 Sek | **16** |
 | **Mastermind Music Basic** (`score`) | nein, nur instrumental | 33 Sek | ~30 Sek | **12** |
 
 **Use `song` unless there is a reason not to.** It is faster, cheaper and can do
@@ -30,9 +30,16 @@ prompt. Basic exists as the fallback: it runs on a different account, so it
 still works when Advanced is unavailable. Only name the choice to the user when they
 ask or when Advanced fails.
 
-**The one limit both share: the clip length cannot be set.** Advanced returns
-roughly 30 seconds (26 to 30 measured), Basic exactly 33. Quote the length the
-tool reports back, not a round number -- it measures the file. Longer music is several clips joined, 1 to 4 per request, so the
+**Neither lets you set the length.** Advanced returns one continuous piece of
+roughly two and a half to three minutes (148, 149, 168, 174 and 178 seconds
+measured); asking for six minutes in the prompt does not go past three. Basic
+returns exactly 33 seconds. **Quote the length the tool reports**, never a round
+number — it measures the file.
+
+**For anything longer than three minutes, do not generate more pieces.** Two
+pieces from the same prompt are two different compositions and the seam is
+audible — that is exactly the complaint that led here. Generate ONE piece and
+let `audio_assemble` loop it. Looping costs nothing. Longer music is several clips joined, 1 to 4 per request, so the
 length comes in steps: 30 / 60 / 90 / 120 seconds on Advanced, 33 / 66 / 98 / 131 on
 Basic. A piece of exactly 45 seconds does not exist — generate 60 and cut.
 
@@ -79,13 +86,14 @@ Feierlich, spannend, verspielt, episch and so on all work.
 
 **4. Dauer?**
 
-| Wahl | Clips | Advanced | Basic |
-|---|---|---|---|
-| **kurz** | 1 | 30 Sek, 8 Credits | 33 Sek, 12 Credits |
-| **mittel** | 2 | 60 Sek, 16 Credits | 66 Sek, 24 Credits |
-| **lang** | 4 | 120 Sek, 32 Credits | 131 Sek, 48 Credits |
+| Wahl | Advanced | Basic |
+|---|---|---|
+| **kurz** (Jingle, Intro) | 1 Stueck bis 3 Min, 16 Credits | 1 Clip 33 Sek, 12 Credits |
+| **mittel / lang** | dasselbe eine Stueck, beim Mischen geloopt | mehrere Clips noetig |
 
-Three clips work too; offer them when two are too few and four too many.
+Bei Advanced ist „laenger" keine Frage der Anzahl, sondern des Loopens. Frag
+also nicht nach der Laenge der Musik, sondern nach der Laenge des **Projekts**
+— und erzeuge ein Stueck.
 
 Ask all open questions **in one message**, not one at a time. Four short
 questions in a row is a form, not a conversation.
@@ -146,7 +154,7 @@ Same rule as speech: cost and balance together, in one sentence, before the
 call.
 
 1. Call `my_credits`.
-2. Credits are **8 per clip on Advanced, 12 on Basic** (check against
+2. Credits are **16 per piece on Advanced, 12 per clip on Basic** (check against
    `list_models`; the rate lives in the database and can change).
 3. Say it:
 
@@ -156,7 +164,7 @@ call.
 Not enough credits: name the exact shortfall and offer the shorter version,
 which is a real alternative here — half the length is half the price.
 
-**Generation takes about 12 seconds per clip on Advanced, 30 on Basic.** Say so
+**Generation takes about 30 seconds on either engine.** Say so
 before calling, and do not abort or retry while it runs: a retry pays for the
 same music twice.
 
@@ -208,6 +216,8 @@ Without it, a piece they liked is gone the moment the link expires.
   the topic. It also cannot sing in German reliably — assume English.
 - **Basic cannot sing at all.** If the user is on Basic and wants vocals,
   switch to Advanced rather than explaining the limit.
+- **Keine Geraeusche** — Regen, Meer, Feuer, Gong macht **kim-sfx**. Ein
+  Geraeusch-Prompt ergibt hier Musik, die an Regen erinnert
 - **No specific song, artist or band.** It does not reproduce existing music, and
   asking for "wie Hans Zimmer" is both unreliable and a bad idea. Describe the
   sound instead: *epic, cinematic, sweeping orchestral strings and deep drums*.
@@ -233,7 +243,9 @@ One server, one credit balance:
 | **kim-voice** | Sprache: Vorlesen, Voiceover, Vertonung — zwei Engines |
 | **kim-images** | Bilder: erstellen, bearbeiten, Varianten |
 | **kim-video** | Videoclips: Text-zu-Video, Bild animieren |
+| **kim-sfx** | Geraeusche: Regen, Meer, Feuer, Gong, Tuer. Laenge frei waehlbar |
 | **kim-lernfilm** | Der ganze Film: Storyboard, Bilder, Stimme, Musik, Clips, Schnitt |
+| **kim-meditation** | Gefuehrte Meditation: Skript, Musik, Stimme und Abmischung |
 | **kimastermind-setup** | Verbindung, Guthaben, Fehlersuche |
 
 **Musik kommt selten allein.** Whoever asks for background music usually wants a

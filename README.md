@@ -1,7 +1,7 @@
 # KI Mastermind für Claude
 
 Bilder, Videos und Stimmen direkt in Claude erzeugen — über den KI-Mastermind-Server.
-Das Plugin bringt die Serververbindung und sechs fertige Skills in einem Schritt mit.
+Das Plugin bringt die Serververbindung und acht fertige Skills in einem Schritt mit.
 
 ---
 
@@ -27,7 +27,7 @@ Dann bitte vorher entfernen, sonst hast du sie doppelt — das Plugin bringt all
 hält sie aktuell:
 
 ```bash
-rm -rf ~/.claude/skills/{kim-images,kim-video,kim-voice,kim-music,kim-lernfilm,kimastermind-setup,image-generator}
+rm -rf ~/.claude/skills/{kim-images,kim-video,kim-voice,kim-music,kim-sfx,kim-lernfilm,kim-meditation,kimastermind-setup,image-generator}
 ```
 
 Unter Windows in der PowerShell:
@@ -98,7 +98,9 @@ Ein Remote-MCP-Server mit **12 Werkzeugen**:
 | **Videos** | Clips aus Text, ein Bild animieren, Motiv/Stil aus Referenzbildern, 3–15 s, 720p/1080p |
 | **Stimmen** | Text-zu-Sprache als MP3, **zwei Engines** zur Wahl, 58 Stimmen zusammen, kostenlose Hörproben |
 | **Musik** | Hintergrundmusik, Intro oder ein gesungenes Stück, **zwei Engines** — eine davon singt und liefert den Liedtext mit Zeitmarken |
+| **Geräusche** | Regen, Meer, Feuer, Gong, Türen — Länge frei wählbar, pro Sekunde abgerechnet |
 | **Ganze Filme** | Vom Thema zum fertigen Video: Storyboard, Szenenbilder, Sprecher, Musik, Clips und Zusammenschnitt mit Untertiteln — der Schnitt läuft auf dem Server und kostet nichts |
+| **Meditationen** | Skript mit Pausenplan, Musik, Sprecherstimme und Abmischung in vier freigegebenen Schritten |
 | **Export** | Format und Grösse ändern (JPEG, PNG, WebP), Download-Link |
 | **Galerie** | die letzten 30 Bilder mit Modell, Prompt und Datum |
 | **Konto** | aktuelles Credit-Guthaben |
@@ -212,7 +214,8 @@ Nach der Installation sind sie als `/kimastermind:kim-images`, `/kimastermind:ki
 | Bilder | pro Bild, je nach Modell und Qualitätsstufe |
 | Videos | pro Sekunde, je nach Auflösung |
 | Stimmen | pro 1 000 Eingabezeichen, je nach Engine, mindestens 1 Credit pro Aufnahme |
-| Musik | pro Clip von rund 30 Sekunden, je nach Engine |
+| Musik | pro Stück, je nach Engine |
+| Geräusche | pro Sekunde, ab 1 Credit |
 
 Die aktuellen Preise nennt Claude jederzeit — frag einfach „Was kosten die Modelle?",
 oder schau im [Dashboard](https://mcp.kimastermind.net/dashboard) unter *Verfügbare

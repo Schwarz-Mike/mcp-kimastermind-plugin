@@ -27,6 +27,8 @@ right one instead of improvising here.
 | **kim-voice** | Speech: text read aloud, voice-over, narration. TWO engines -- the user picks Express (fast, cheap) or Studio (slower, higher quality) | `voice_listing`, `voice_sample`, `voice_generate` |
 | **kim-music** | Music: background score, intro, a sung piece. TWO engines -- Advanced can sing, Basic is instrumental | `music_generate` |
 | **kim-lernfilm** | A whole film: storyboard, scene images, narration, music, clips and the final cut | `film_assemble` plus all of the above |
+| **kim-meditation** | A guided meditation: script, music, voice and the mix, in four approved steps | `audio_assemble` plus voice and music |
+| **kim-sfx** | Sound effects and atmospheres: rain, sea, fire, a gong. Free length, billed per second | `sfx_generate` |
 | **kimastermind-setup** | Einrichtung pruefen: Verbindung, Guthaben, Fehlersuche | `my_credits`, `list_models` |
 
 Routing rules:
