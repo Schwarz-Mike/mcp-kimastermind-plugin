@@ -264,3 +264,29 @@ In Claude Desktop unter **Customize** hinzufügen.
 
 MIT — siehe `plugin.json`. Der Zugang zum Server selbst läuft über dein
 KI-Mastermind-Konto.
+
+---
+
+## Für Änderungen an diesem Repo
+
+**Die Versionsnummer steht an ZWEI Stellen und muss an beiden stimmen:**
+
+- `.claude-plugin/plugin.json` → `version`
+- `.claude-plugin/marketplace.json` → `plugins[0].version`
+
+Die Update-Prüfung der App liest die **Listung** in `marketplace.json`, nicht
+`plugin.json`. Fehlt dort die Version, hat die App nichts zu vergleichen und
+meldet, dass sie nicht nach Updates schauen kann — ein Bump in `plugin.json`
+allein bleibt dann wirkungslos. Das Feld ist im Schema optional, `claude plugin
+validate` beanstandet es also nicht.
+
+Vor dem Push prüfen:
+
+```bash
+node scripts/check-plugin-version.mjs .
+claude plugin validate .
+claude plugin validate .claude-plugin/plugin.json
+```
+
+Das erste Skript liegt im Server-Repo (`mcp-kimastermind`) und schlägt fehl,
+wenn eine der beiden Zahlen fehlt oder sie auseinanderlaufen.
