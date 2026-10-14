@@ -1,7 +1,7 @@
 {
   "name": "kimastermind",
   "displayName": "KI Mastermind",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Bilder, Videos, Stimmen und Musik in Claude erzeugen — über den KI-Mastermind-Server. 21 Bildmodelle mit Referenzbild-Bearbeitung, Videoclips aus Text oder Bild, Text-zu-Sprache mit zwei Engines und 58 Stimmen samt kostenlosen Hörproben, dazu Musik mit oder ohne Gesang. Sechs Skills führen durch den jeweiligen Ablauf und prüfen die Einrichtung. Konto und Credits erforderlich.",
   "author": {
     "name": "Mike Schwarz",

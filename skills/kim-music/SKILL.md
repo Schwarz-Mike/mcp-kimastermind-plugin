@@ -1,6 +1,6 @@
 ---
 name: kim-music
-description: Use whenever the user wants music, a soundtrack, background music or a musical bed generated. Triggers: mach Musik, generiere Musik, Hintergrundmusik, Musik fuer mein Video, Soundtrack, Jingle, Intro-Musik, Begleitmusik, Musikbett, Lounge-Musik, Entspannungsmusik, make music, background music, soundtrack, generate music, music for my video. Guides Claude through four short questions (with or without vocals, style, mood, length), turns the answers into the ENGLISH prompt the engine requires, states the balance and the exact cost before generating, then plays the result. Two engines: Song can sing and returns the lyrics with second marks, Score is instrumental only. Clips have a fixed length of about 30 seconds. For speech use kim-voice, for video kim-video, for still images kim-images. Provider and model names are never mentioned.
+description: Use whenever the user wants music, a soundtrack, background music or a musical bed generated. Triggers: mach Musik, generiere Musik, Hintergrundmusik, Musik fuer mein Video, Soundtrack, Jingle, Intro-Musik, Begleitmusik, Musikbett, Lounge-Musik, Entspannungsmusik, make music, background music, soundtrack, generate music, music for my video. Guides Claude through four short questions (with or without vocals, style, mood, length), turns the answers into the ENGLISH prompt the engine requires, states the balance and the exact cost before generating, then plays the result. Two engines: Advanced can sing and returns the lyrics with second marks, Basic is instrumental only. Clips run about 30 seconds and the length cannot be set. For speech use kim-voice, for video kim-video, for still images kim-images. Provider and model names are never mentioned.
 version: 1.0.0
 ---
 
@@ -21,19 +21,20 @@ skill's actual job. Never ask the user to write English.
 
 | Engine | Gesang | Clip | Wartezeit | Credits je Clip |
 |---|---|---|---|---|
-| **Song** (`song`, Standard) | **ja**, mit Text und Zeitmarken | 30 Sek | ~12 Sek | **8** |
-| **Score** (`score`) | nein, nur instrumental | 33 Sek | ~30 Sek | **12** |
+| **Mastermind Music Advanced** (`song`, Standard) | **ja**, mit Text und Zeitmarken | 30 Sek | ~12 Sek | **8** |
+| **Mastermind Music Basic** (`score`) | nein, nur instrumental | 33 Sek | ~30 Sek | **12** |
 
 **Use `song` unless there is a reason not to.** It is faster, cheaper and can do
-everything Score can — instrumental included, just say "no vocals" in the
-prompt. Score exists as the fallback: it runs on a different account, so it
-still works when Song is unavailable. Only name the choice to the user when they
-ask or when Song fails.
+everything Basic can — instrumental included, just say "no vocals" in the
+prompt. Basic exists as the fallback: it runs on a different account, so it
+still works when Advanced is unavailable. Only name the choice to the user when they
+ask or when Advanced fails.
 
-**The one limit both share: a clip has a fixed length.** There is no length
-setting at all. Longer music is several clips joined, 1 to 4 per request, so the
-length comes in steps: 30 / 60 / 90 / 120 seconds on Song, 33 / 66 / 98 / 131 on
-Score. A piece of exactly 45 seconds does not exist — generate 60 and cut.
+**The one limit both share: the clip length cannot be set.** Advanced returns
+roughly 30 seconds (26 to 30 measured), Basic exactly 33. Quote the length the
+tool reports back, not a round number -- it measures the file. Longer music is several clips joined, 1 to 4 per request, so the
+length comes in steps: 30 / 60 / 90 / 120 seconds on Advanced, 33 / 66 / 98 / 131 on
+Basic. A piece of exactly 45 seconds does not exist — generate 60 and cut.
 
 **When the piece is sung, the lyrics come back with second marks**, like
 `[2.0:6.0] Oh, the world just got bigger now`. That is a finished subtitle
@@ -46,7 +47,7 @@ saves a separate step.
 
 - KIMASTERMIND_IMAGES:music_generate -- `prompt` (REQUIRED, **English**),
   `engine` (`song` or `score`, default `song`), `clips` (1-4, default 1),
-  `negative_prompt` (English, Score only), `seed` (Score only).
+  `negative_prompt` (English, Basic only), `seed` (Basic only).
 - KIMASTERMIND_IMAGES:my_credits -- current balance. **Call before every
   generation**; a figure from earlier in the conversation is stale.
 - KIMASTERMIND_IMAGES:list_models -- all models with their credit costs.
@@ -62,7 +63,7 @@ Klaviermusik fuer ein Meditationsvideo, etwa eine Minute" has answered all four 
 ask nothing, state the cost and go.
 
 **1. Instrumental oder mit Gesang?**
-This decides nothing about the engine — Song does both — but everything about
+This decides nothing about the engine — Advanced does both — but everything about
 the prompt. With vocals, **the engine writes the words itself**; the user says
 what the song should be ABOUT, not what it should say. If someone brings their
 own lyrics, say plainly that the text cannot be dictated, and offer the
@@ -78,7 +79,7 @@ Feierlich, spannend, verspielt, episch and so on all work.
 
 **4. Dauer?**
 
-| Wahl | Clips | Song | Score |
+| Wahl | Clips | Advanced | Basic |
 |---|---|---|---|
 | **kurz** | 1 | 30 Sek, 8 Credits | 33 Sek, 12 Credits |
 | **mittel** | 2 | 60 Sek, 16 Credits | 66 Sek, 24 Credits |
@@ -145,7 +146,7 @@ Same rule as speech: cost and balance together, in one sentence, before the
 call.
 
 1. Call `my_credits`.
-2. Credits are **8 per clip on Song, 12 on Score** (check against
+2. Credits are **8 per clip on Advanced, 12 on Basic** (check against
    `list_models`; the rate lives in the database and can change).
 3. Say it:
 
@@ -155,7 +156,7 @@ call.
 Not enough credits: name the exact shortfall and offer the shorter version,
 which is a real alternative here — half the length is half the price.
 
-**Generation takes about 12 seconds per clip on Song, 30 on Score.** Say so
+**Generation takes about 12 seconds per clip on Advanced, 30 on Basic.** Say so
 before calling, and do not abort or retry while it runs: a retry pays for the
 same music twice.
 
@@ -205,8 +206,8 @@ Without it, a piece they liked is gone the moment the link expires.
 
 - **The sung text cannot be dictated.** The engine writes its own words from
   the topic. It also cannot sing in German reliably — assume English.
-- **Score cannot sing at all.** If the user is on Score and wants vocals,
-  switch to Song rather than explaining the limit.
+- **Basic cannot sing at all.** If the user is on Basic and wants vocals,
+  switch to Advanced rather than explaining the limit.
 - **No specific song, artist or band.** It does not reproduce existing music, and
   asking for "wie Hans Zimmer" is both unreliable and a bad idea. Describe the
   sound instead: *epic, cinematic, sweeping orchestral strings and deep drums*.

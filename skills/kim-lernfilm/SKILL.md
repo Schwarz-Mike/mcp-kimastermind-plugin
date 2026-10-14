@@ -92,7 +92,7 @@ Rechne die Summe aus und nenne sie. Die Zahlen gegen `list_models` und
 | Clips | **8,33 Credits/Sek** (720p), 14,82 (1080p) | 500 |
 | Szenenbilder | 1 Credit je Bild (Qualitaet „low") | 8 |
 | Sprecher | je Szene mind. 1 Credit | 8 |
-| Musik | 8 Credits je Clip (Song) | 16 |
+| Musik | 8 Credits je Clip (Advanced) | 16 |
 | Schnitt | **0** | 0 |
 | | | **≈ 532 Credits ≈ 22 CHF** |
 

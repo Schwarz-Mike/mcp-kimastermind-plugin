@@ -52,7 +52,7 @@ right one instead of improvising here.
 | **kim-voice** (this one) | Speech: text read aloud, voice-over, narration | `voice_listing`, `voice_sample`, `voice_generate` |
 | **kim-images** | Still images: generate, edit, restyle, vary, combine | `generate_image`, `export_image`, `my_gallery` |
 | **kim-video** | Video clips: text-to-video, animating an image, reference-to-video | `generate_video` |
-| **kim-music** | Music: background score, intro, a sung piece. TWO engines -- Song can sing, Score is instrumental | `music_generate` |
+| **kim-music** | Music: background score, intro, a sung piece. TWO engines -- Advanced can sing, Basic is instrumental | `music_generate` |
 | **kim-lernfilm** | A whole film: storyboard, scene images, narration, music, clips and the final cut | `film_assemble` plus all of the above |
 | **kimastermind-setup** | Einrichtung pruefen: Verbindung, Guthaben, Fehlersuche | `my_credits`, `list_models` |
 

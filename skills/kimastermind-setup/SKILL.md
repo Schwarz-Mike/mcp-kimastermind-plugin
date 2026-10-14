@@ -21,7 +21,7 @@ passende:
 | **kim-images** | Bilder: erstellen, bearbeiten, umstilisieren, Varianten, kombinieren |
 | **kim-video** | Videoclips: Text-zu-Video, ein Bild animieren, Referenz-zu-Video |
 | **kim-voice** | Sprache: Text vorlesen, Voiceover, Vertonung — zwei Engines zur Wahl |
-| **kim-music** | Musik: Hintergrund, Intro, Song mit Gesang — zwei Engines zur Wahl |
+| **kim-music** | Musik: Hintergrund, Intro, Advanced mit Gesang — zwei Engines zur Wahl |
 | **kim-lernfilm** | Der ganze Film: Storyboard, Bilder, Stimme, Musik, Clips und Schnitt in einem Ablauf |
 
 ### Welche davon sind hier wirklich aktiv?
@@ -98,7 +98,7 @@ Verbindung    ✅  Guthaben 96 Credits
 Bilder        ✅  21 Modelle
 Video         ✅  8.33 Credits/Sekunde (720p)
 Stimmen       ✅  Express 3.0 / Studio 3.84 Credits je 1000 Zeichen, 58 Stimmen
-Musik         ✅  Song 8 / Score 12 Credits je Clip
+Musik         ✅  Advanced 8 / Basic 12 Credits je Clip
 ```
 
 Fehlt eine Fähigkeit, sag **welche** und was das praktisch heisst — „Musik ist
@@ -123,8 +123,8 @@ Nenne die Credit-Kosten pro Bereich, denn die unterscheiden sich in der Einheit:
   **Studio** (langsamer, hoehere Qualitaet). `voice_listing` ohne Engine nennt
   beide mit dem aktuellen Preis.
 
-Musik gibt es in zwei Engines: **Song** kann singen und liefert den Text mit
-Zeitmarken mit, **Score** ist instrumental. Beide erzeugen Clips fester Länge,
+Musik gibt es in zwei Engines: **Advanced** kann singen und liefert den Text mit
+  Zeitmarken mit, **Basic** ist instrumental. Beide erzeugen Clips fester Länge,
 abgerechnet pro Clip.
 
 Für die Stimmen gibt es `voice_listing` (beide Engines) und **kostenlose Hörproben auf
