@@ -1,7 +1,7 @@
 ---
 name: kim-sfx
-description: Use when the user wants a SOUND rather than music or speech -- rain, sea, wind, fire, a gong, a bell, a door, footsteps, room tone, a whoosh, a notification sound, an atmosphere for a video or a meditation. Triggers: Geraeusch, Sound, Soundeffekt, SFX, Atmo, Atmosphaere, Hintergrundgeraeusch, Regen, Meer, Wellen, Feuer, Wind, Gong, Klangschale, Vogelgezwitscher, Tuer, Schritte, Raumklang, Ambience, sound effect, ambience, foley, whoosh, make a rain sound. The length is freely selectable from half a second to 22, billed per second. For music use kim-music, for speech kim-voice -- the music engine cannot make real noises, it returns music that evokes them.
-version: 1.0.0
+description: Use when the user wants a SOUND rather than music or speech -- rain, sea, wind, fire, a gong, a bell, a door, footsteps, room tone, a whoosh, a notification sound, an atmosphere for a video or a meditation. Triggers: Geraeusch, Sound, Soundeffekt, SFX, Atmo, Atmosphaere, Hintergrundgeraeusch, Regen, Meer, Wellen, Feuer, Wind, Gong, Klangschale, Vogelgezwitscher, Tuer, Schritte, Raumklang, Ambience, sound effect, ambience, foley, whoosh, make a rain sound. The length is freely selectable from half a second to 22, and one sound costs the same whatever its length -- so pick the length the material needs, not the cheapest. For music use kim-music, for speech kim-voice -- the music engine cannot make real noises, it returns music that evokes them.
+version: 1.1.0
 ---
 
 # KIM SFX Skill
@@ -22,14 +22,19 @@ changes that. Whenever someone wants an actual sound, this is the tool.
 
 | | Geraeusch | Musik |
 |---|---|---|
-| Laenge | **frei, 0,5 bis 22 Sekunden** | fest, 33 Sek oder bis 3 Min |
-| Abrechnung | **pro Sekunde** | pro Stueck |
-| 10 Sekunden kosten | **2 Credits** | — |
-| 22 Sekunden kosten | **5 Credits** | — |
-| Fertig in | ~3 Sekunden | ~30 Sekunden |
+| Laenge | **frei, 0,5 bis 22 Sekunden** | fest 33 Sek, nach Beschreibung bis 3 Min, oder exakt bis 5 Min |
+| Abrechnung | **pro Geraeusch, Laenge egal** | pro Stueck oder pro Minute |
+| Ein Geraeusch kostet | **1 Credit** | 5 bis 16 Credits |
+| Fertig in | ~3 Sekunden | 15-30 Sekunden |
 
-Die freie Laenge ist der eigentliche Grund, warum es hierher gehoert: ein Gong
-braucht vier Sekunden, eine Atmosphaere zwanzig.
+Zwei Dinge folgen daraus, und beide aendern, wie man arbeitet:
+
+**Die Laenge ist frei** — ein Gong braucht vier Sekunden, eine Atmosphaere
+zwanzig. Deshalb gehoert das hierher und nicht zur Musik.
+
+**Die Laenge kostet nichts.** Ein Geraeusch ist ein Credit, ob eine halbe
+Sekunde oder 22. Also nicht am Zehntel sparen, sondern die Laenge nehmen, die
+das Material braucht.
 
 ---
 
@@ -93,17 +98,15 @@ fuer Atmosphaeren; `single`, `once`, `one hit` fuer einzelne Klaenge.
 
 `my_credits` holen, dann in einem Satz:
 
-> „Zehn Sekunden Regen kosten **2 Credits**. Du hast **96**, danach noch 94.
-> Soll ich?"
+> „Ein Geraeusch kostet **1 Credit**, egal wie lang. Du hast **96**, danach noch
+> 95. Ich nehme 20 Sekunden, damit es sich sauber loopen laesst — soll ich?"
 
-| Laenge | Credits |
-|---|---|
-| 5 Sek | 1 |
-| 10 Sek | 2 |
-| 22 Sek | 5 |
+**Ein Geraeusch = 1 Credit, unabhaengig von der Laenge.** Der Satz liegt in der
+Datenbank und steht in `list_models`; diese Zahl hier kann veralten.
 
-Gerechnet wird pro Sekunde; die genauen Werte stehen in `list_models`, denn der
-Satz liegt in der Datenbank.
+Weil die Laenge nichts kostet, ist die Kostenfrage hier schnell erledigt — die
+interessante Frage ist die Laenge, und die richtet sich nach dem Material, nicht
+nach dem Preis.
 
 ---
 

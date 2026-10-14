@@ -1,7 +1,7 @@
 ---
 name: kim-lernfilm
 description: Use when the user wants a complete video produced, not a single clip -- a learning film, explainer, course video, tutorial, product film or social clip with several scenes, narration, music and subtitles. Triggers: Lernvideo, Lernfilm, Erklaervideo, Tutorial-Video, Kursvideo, Schulungsvideo, Imagefilm, Produktvideo, Reel mit Sprecher, Video mit mehreren Szenen, Storyboard, mach mir ein Video ueber, learning video, explainer video, course video, tutorial video. Runs the whole chain: questions, storyboard for approval, scene images, narration, clips, music, and the final cut on the server. Expensive -- a minute of finished film costs roughly 530 credits -- so the budget is named before anything is generated. For ONE clip use kim-video, for speech alone kim-voice, for music alone kim-music.
-version: 1.0.0
+version: 1.1.0
 ---
 
 # KIM Lernfilm Skill
@@ -92,13 +92,14 @@ Rechne die Summe aus und nenne sie. Die Zahlen gegen `list_models` und
 | Clips | **8,33 Credits/Sek** (720p), 14,82 (1080p) | 500 |
 | Szenenbilder | 1 Credit je Bild (Qualitaet „low") | 8 |
 | Sprecher | je Szene mind. 1 Credit | 8 |
-| Musik | 8 Credits je Clip (Advanced) | 16 |
+| Musik | 5 Credits je Minute (Pro, Laenge einstellbar) | 5 |
+| Geraeusche | 1 Credit je Geraeusch, Laenge egal | 3 |
 | Schnitt | **0** | 0 |
-| | | **≈ 532 Credits ≈ 22 CHF** |
+| | | **≈ 524 Credits ≈ 22 CHF** |
 
 Sag es als einen Satz, mit dem Guthaben daneben:
 
-> „Das ergibt 8 Szenen zu je 7,5 Sekunden. Zusammen etwa **532 Credits**, davon
+> „Das ergibt 8 Szenen zu je 7,5 Sekunden. Zusammen etwa **524 Credits**, davon
 > 500 fuer die Clips. Du hast aktuell **900 Credits**. Soll ich?"
 
 **Ab 60 Sekunden Film ausdruecklich bestaetigen lassen** — nicht nur die Zahl
@@ -204,8 +205,9 @@ Nach jedem Clip die **Video-ID** notieren (`/vid/<id>.mp4`).
 
 Ein Erklaervideo braucht sie nicht. Eine Szene mit Regen, Meer, Feuer, einer
 zuschlagenden Tuer oder einem Gong gewinnt enorm. `sfx_generate`, Laenge frei
-von 0,5 bis 22 Sekunden, **2 Credits fuer zehn Sekunden** — gegen 500 fuer die
-Clips ist das nichts.
+von 0,5 bis 22 Sekunden, **1 Credit je Geraeusch unabhaengig von der Laenge** —
+gegen 500 fuer die Clips ist das nichts. Weil die Laenge nichts kostet, nimm die
+Laenge, die die Szene braucht.
 
 Frag einmal, nicht je Szene: „Sollen einzelne Szenen Geraeusche bekommen?" Wenn
 ja, nenne die Szenen, bei denen es sich lohnt, und erzeuge sie. Beim Schnitt
@@ -218,10 +220,17 @@ wo es wirklich traegt.
 ### Musik
 
 Nur wenn gewuenscht. Siehe kim-music fuer die Fragen und die Prompt-Uebersetzung
-ins Englische. **Ein** Stueck genuegt, auch fuer einen langen Film: es ist bis zu
-drei Minuten lang und wird beim Schnitt geloopt. Erzeuge niemals mehrere Stuecke
-fuer einen laengeren Film — zwei Aufrufe ergeben zwei verschiedene Kompositionen
-mit hoerbarer Naht.
+ins Englische.
+
+**Nimm `engine: "pro"` und setze `seconds` auf die Filmlaenge.** Das ist die
+einzige Engine, bei der die Musik genau so lang wird wie bestellt — bis fuenf
+Minuten. Ein Stueck, das dort endet, wo der Film endet, klingt komponiert; ein
+geloopte Flaeche klingt nach Hintergrund. Und sie wird pro Minute abgerechnet,
+ist also fuer einen Film unter drei Minuten auch das Guenstigste.
+
+Ueber fuenf Minuten Film: **ein** Stueck erzeugen und beim Schnitt loopen lassen.
+Erzeuge niemals mehrere Stuecke fuer einen laengeren Film — zwei Aufrufe ergeben
+zwei verschiedene Kompositionen mit hoerbarer Naht.
 
 Die Musik wird beim Schnitt automatisch leiser, wenn gesprochen wird, und blendet
 am Ende aus. Du musst nichts dafuer tun.

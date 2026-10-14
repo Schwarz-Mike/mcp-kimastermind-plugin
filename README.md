@@ -1,7 +1,7 @@
 # KI Mastermind für Claude
 
-Bilder, Videos und Stimmen direkt in Claude erzeugen — über den KI-Mastermind-Server.
-Das Plugin bringt die Serververbindung und acht fertige Skills in einem Schritt mit.
+Bilder, Videos, Stimmen, Musik und Geräusche direkt in Claude erzeugen — über den
+KI-Mastermind-Server. Das Plugin bringt die Serververbindung und acht fertige Skills in einem Schritt mit.
 
 ---
 
@@ -33,7 +33,7 @@ rm -rf ~/.claude/skills/{kim-images,kim-video,kim-voice,kim-music,kim-sfx,kim-le
 Unter Windows in der PowerShell:
 
 ```powershell
-"kim-images","kim-video","kim-voice","kimastermind-setup","image-generator" | ForEach-Object {
+"kim-images","kim-video","kim-voice","kim-music","kim-sfx","kim-meditation","kim-lernfilm","kimastermind-setup","image-generator" | ForEach-Object {
   Remove-Item -Recurse -Force "$env:USERPROFILE\.claude\skills\$_" -ErrorAction SilentlyContinue }
 ```
 
@@ -90,15 +90,15 @@ verfügbar ist.
 
 ### Die Serververbindung
 
-Ein Remote-MCP-Server mit **12 Werkzeugen**:
+Ein Remote-MCP-Server mit **16 Werkzeugen**:
 
 | Bereich | Was möglich ist |
 |---|---|
 | **Bilder** | 21 Modelle, Text-zu-Bild, Bearbeiten, Stiltransfer, Varianten, bis zu 16 Referenzbilder, bis 4K |
 | **Videos** | Clips aus Text, ein Bild animieren, Motiv/Stil aus Referenzbildern, 3–15 s, 720p/1080p |
 | **Stimmen** | Text-zu-Sprache als MP3, **zwei Engines** zur Wahl, 58 Stimmen zusammen, kostenlose Hörproben |
-| **Musik** | Hintergrundmusik, Intro oder ein gesungenes Stück, **zwei Engines** — eine davon singt und liefert den Liedtext mit Zeitmarken |
-| **Geräusche** | Regen, Meer, Feuer, Gong, Türen — Länge frei wählbar, pro Sekunde abgerechnet |
+| **Musik** | Hintergrundmusik, Intro oder ein gesungenes Stück, **drei Engines** — eine liefert exakt die bestellte Länge von 10 Sekunden bis 5 Minuten, eine singt und liefert den Liedtext mit Zeitmarken, eine ist instrumental und günstig |
+| **Geräusche** | Regen, Meer, Feuer, Gong, Türen — Länge frei wählbar von einer halben bis 22 Sekunden, **ein Credit je Geräusch unabhängig von der Länge** |
 | **Ganze Filme** | Vom Thema zum fertigen Video: Storyboard, Szenenbilder, Sprecher, Musik, Clips und Zusammenschnitt mit Untertiteln — der Schnitt läuft auf dem Server und kostet nichts |
 | **Meditationen** | Skript mit Pausenplan, Musik, Sprecherstimme und Abmischung in vier freigegebenen Schritten |
 | **Export** | Format und Grösse ändern (JPEG, PNG, WebP), Download-Link |
@@ -181,7 +181,7 @@ die Sprache lässt sich nicht erzwingen — sie folgt dem Text.
 
 ### Die Skills
 
-Vier Arbeitsanleitungen, die Claude automatisch heranzieht, wenn sie passen. Sie kennen
+Acht Arbeitsanleitungen, die Claude automatisch heranzieht, wenn sie passen. Sie kennen
 einander: fragt jemand im Bild-Skill nach einem Video, gibt er die Anfrage weiter.
 
 **`kim-images`** — Bilder erstellen, bearbeiten, umstilisieren, Varianten und
@@ -202,8 +202,27 @@ Greift automatisch bei Fragen wie „funktioniert das?" oder wenn ein Aufruf sch
 enthält eine Fehlersuch-Tabelle für die häufigen Fälle — doppelt registrierte Werkzeuge,
 abgelaufener Download-Link, scheinbar hängendes Video.
 
-Nach der Installation sind sie als `/kimastermind:kim-images`, `/kimastermind:kim-video`,
-`/kimastermind:kim-voice` und `/kimastermind:kimastermind-setup` auch direkt aufrufbar.
+**`kim-music`** — Musik. Fragt, **wofür** die Musik ist, und wählt danach die Engine:
+eine liefert exakt die bestellte Länge, eine singt, eine ist instrumental und günstig.
+Übersetzt die Beschreibung selbst ins Englische — die Engines verstehen nur Englisch, du
+beschreibst auf Deutsch.
+
+**`kim-sfx`** — echte Geräusche: Regen, Meer, Feuer, Wind, Gong, Tür, Schritte, Raumklang.
+Der einzige Generator, der Geräusche macht — der Musikgenerator liefert nach Regen gefragt
+Musik, die an Regen erinnert. Länge frei, Preis gleich.
+
+**`kim-meditation`** — vom Thema zur fertigen Meditation in vier freigegebenen Schritten:
+Skript mit Pausenplan, Musik, Stimmprobe, dann alle Abschnitte und die Abmischung. Die
+Abmischung läuft **auf dem Server** und kostet nichts.
+
+**`kim-lernfilm`** — der ganze Film: Fragen, Storyboard zur Freigabe, Szenenbilder,
+Sprecherstimme, Clips, Musik, Geräusche und der Schnitt mit Untertiteln. Nennt die Summe
+vorher, denn hier geht es um Hunderte Credits.
+
+Nach der Installation sind alle acht auch direkt aufrufbar, als
+`/kimastermind:kim-images`, `/kimastermind:kim-video`, `/kimastermind:kim-voice`,
+`/kimastermind:kim-music`, `/kimastermind:kim-sfx`, `/kimastermind:kim-meditation`,
+`/kimastermind:kim-lernfilm` und `/kimastermind:kimastermind-setup`.
 
 ---
 
@@ -214,8 +233,8 @@ Nach der Installation sind sie als `/kimastermind:kim-images`, `/kimastermind:ki
 | Bilder | pro Bild, je nach Modell und Qualitätsstufe |
 | Videos | pro Sekunde, je nach Auflösung |
 | Stimmen | pro 1 000 Eingabezeichen, je nach Engine, mindestens 1 Credit pro Aufnahme |
-| Musik | pro Stück, je nach Engine |
-| Geräusche | pro Sekunde, ab 1 Credit |
+| Musik | pro Stück — oder **pro Minute** bei der Engine mit einstellbarer Länge |
+| Geräusche | **1 Credit je Geräusch**, unabhängig von der Länge |
 
 Die aktuellen Preise nennt Claude jederzeit — frag einfach „Was kosten die Modelle?",
 oder schau im [Dashboard](https://mcp.kimastermind.net/dashboard) unter *Verfügbare
@@ -231,6 +250,10 @@ Dashboard unter *Setup MCP / Hilfe* herunter:
 - [kim-images.skill](https://mcp.kimastermind.net/skills/kim-images.skill)
 - [kim-video.skill](https://mcp.kimastermind.net/skills/kim-video.skill)
 - [kim-voice.skill](https://mcp.kimastermind.net/skills/kim-voice.skill)
+- [kim-music.skill](https://mcp.kimastermind.net/skills/kim-music.skill)
+- [kim-sfx.skill](https://mcp.kimastermind.net/skills/kim-sfx.skill)
+- [kim-meditation.skill](https://mcp.kimastermind.net/skills/kim-meditation.skill)
+- [kim-lernfilm.skill](https://mcp.kimastermind.net/skills/kim-lernfilm.skill)
 - [kimastermind-setup.skill](https://mcp.kimastermind.net/skills/kimastermind-setup.skill)
 
 In Claude Desktop unter **Customize** hinzufügen.

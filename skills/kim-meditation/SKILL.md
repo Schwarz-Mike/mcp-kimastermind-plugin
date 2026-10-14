@@ -1,7 +1,7 @@
 ---
 name: kim-meditation
 description: Use when the user wants a guided meditation, a relaxation, a sleep journey, a hypnosis session, a breathing exercise, a body scan or an affirmation track produced as audio. Triggers: Meditation, meditieren, gefuehrte Meditation, Entspannung, Entspannungsreise, Traumreise, Fantasiereise, Einschlafhilfe, Schlafmeditation, Achtsamkeitsuebung, Atemuebung, Bodyscan, Hypnose, Trance, Affirmationen, Autogenes Training, Visualisierung, mach mir eine Meditation, guided meditation, relaxation, sleep story, body scan, breathing exercise, hypnosis session. Leads through the questions that decide quality -- goal, imagery world, tone, intensity, voice, music -- then runs four approved steps: script, music, voice sample, final mix. Mixing happens on the KIMASTERMIND server, never by downloading files. For a plain read-aloud use kim-voice, for music alone kim-music.
-version: 2.0.0
+version: 2.1.0
 ---
 
 # KIM Meditation Skill
@@ -30,8 +30,8 @@ bringst das Handwerk.
 |---|---|---|
 | **Stimme** | `voice_generate` mit `engine: "studio"` | Express traegt die Betonung ueber zehn Minuten nicht |
 | **`style`-Parameter** | **nie setzen** | wird ignoriert; frueher wurde die Anweisung laut mitgesprochen |
-| **Musik** | `music_generate` mit `engine: "song"` (Advanced) | bis zu drei Minuten **am Stueck** statt 33 Sekunden |
-| **Musikmenge** | **genau EIN Stueck**, egal wie lang die Meditation wird | zwei Stuecke sind zwei Kompositionen, die Naht hoert man |
+| **Musik** | `music_generate` mit `engine: "pro"`, `seconds: 120` | einstellbare Laenge, und 120 Sekunden kosten 10 statt 16 Credits |
+| **Musikmenge** | **genau EIN Stueck**, egal wie lang die Meditation wird | zwei Stuecke sind zwei Kompositionen, die Naht hoert man. `audio_assemble` loopt das eine Stueck, und das kostet nichts |
 | **Abmischen** | **`audio_assemble` auf dem Server** | das Material liegt dort; kostet nichts |
 | **Lokal mischen** | **nur wenn `audio_assemble` fehlschlaegt** | sonst wandern hunderte Megabyte hin und her |
 
@@ -47,7 +47,7 @@ Nutzer, dass es der Ausweichweg ist.
 | Schritt | Was passiert | Kostet |
 |---|---|---|
 | **1. Skript** | Text mit Pausenplan, als Tabelle gezeigt | nichts |
-| **2. Musik** | EIN Stueck, angehoert | ~16 Credits |
+| **2. Musik** | EIN Stueck, angehoert | ~10 Credits |
 | **3. Stimmprobe** | NUR der erste Abschnitt, angehoert | 1–3 Credits |
 | **4. Rest + Abmischung** | alle Abschnitte, dann `audio_assemble` | der Hauptteil |
 
@@ -218,9 +218,17 @@ beliebig oft geaendert werden. Erst nach dem Ja kostet es etwas.
 
 ## Schritt 3: Musik
 
-Ein Stueck, `music_generate(engine: "song")`. Es ist zwei bis drei Minuten lang
-und wird beim Abmischen geloopt — eines reicht fuer jede Laenge, auch fuer eine
-halbe Stunde.
+Ein Stueck, `music_generate(engine: "pro", seconds: 120)`. Es wird beim
+Abmischen geloopt — eines reicht fuer jede Laenge, auch fuer eine halbe Stunde,
+und Loopen kostet nichts.
+
+**Warum `pro` und nicht `song`:** die Laenge ist hier einstellbar statt geraten,
+und sie kostet pro Minute. Zwei Minuten sind 10 Credits, waehrend `song` 16
+kostet und selbst entscheidet, ob daraus eine oder drei Minuten werden. Fuer ein
+geloopte Flaeche sind zwei Minuten genug; mehr Material macht die Schleife nur
+unauffaelliger, nicht besser. Bei einer Meditation unter fuenf Minuten kannst du
+die Musik auch genau so lang machen wie die Meditation — dann gibt es ueberhaupt
+keine Schleife.
 
 Der Prompt muss **englisch** sein; du uebersetzt, der Nutzer sieht ihn nie.
 Nach Bildwelt:
@@ -240,7 +248,7 @@ Was zu vermeiden ist und warum:
 - **keine Melodiebogen** — sie ziehen Aufmerksamkeit auf sich
 - **nichts, was sich stark entwickelt** — es wird geloopt
 
-**Vorspielen** und fragen: passt die Stimmung? Ein neues Stueck kostet 16
+**Vorspielen** und fragen: passt die Stimmung? Ein neues Stueck kostet rund 10
 Credits, eine ganze Meditation mit falscher Musik kostet alles.
 
 ---

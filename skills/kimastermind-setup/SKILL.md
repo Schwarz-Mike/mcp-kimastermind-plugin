@@ -1,7 +1,7 @@
 ---
 name: kimastermind-setup
 description: Prüft die Verbindung zu KI Mastermind und führt durch die Einrichtung. Verwende diesen Skill, wenn jemand die Einrichtung prüfen will, fragt ob die Verbindung steht, nach dem Credit-Guthaben fragt, wissen will welche Skills oder Möglichkeiten verfügbar sind, oder wenn ein Aufruf an KI Mastermind scheitert — Trigger: "kimastermind setup", "einrichtung prüfen", "funktioniert kimastermind", "bin ich verbunden", "wie viele credits habe ich", "kimastermind geht nicht", "verbindung testen", "was kann ich hier machen", "welche modelle gibt es", "welche skills gibt es", "sind die skills installiert", "ist alles eingerichtet", "warum klappt das nicht".
-version: 1.2.0
+version: 1.3.0
 ---
 
 # KI Mastermind — Einrichtung prüfen
@@ -21,7 +21,7 @@ passende:
 | **kim-images** | Bilder: erstellen, bearbeiten, umstilisieren, Varianten, kombinieren |
 | **kim-video** | Videoclips: Text-zu-Video, ein Bild animieren, Referenz-zu-Video |
 | **kim-voice** | Sprache: Text vorlesen, Voiceover, Vertonung — zwei Engines zur Wahl |
-| **kim-music** | Musik: Hintergrund, Intro, Advanced mit Gesang — zwei Engines zur Wahl |
+| **kim-music** | Musik: Hintergrund, Intro, Lied mit Gesang — drei Engines, Unterschied ist die Laenge |
 | **kim-lernfilm** | Der ganze Film: Storyboard, Bilder, Stimme, Musik, Clips und Schnitt in einem Ablauf |
 | **kim-meditation** | Gefuehrte Meditation: Skript, Musik, Stimme und Abmischung in vier freigegebenen Schritten |
 | **kim-sfx** | Geraeusche und Atmosphaeren, Laenge frei waehlbar |
@@ -92,8 +92,8 @@ keine davon erzeugt etwas:
 | **Bilder** | `list_models` → Einträge mit `kind: image` | Bildmodelle vorhanden, mit Credit-Preis je Stufe |
 | **Video** | `list_models` → `kind: video` | Videomodell vorhanden, Credits **pro Sekunde** |
 | **Stimmen** | `voice_listing` ohne Engine | beide Engines antworten, mit Preis und Stimmenzahl |
-| **Musik** | `list_models` → `kind: music` | beide Musik-Engines vorhanden, Credits **pro Clip** |
-| **Geraeusche** | `list_models` → `kind: sfx` | Geraeusch-Generator vorhanden, Credits **pro Sekunde** |
+| **Musik** | `list_models` → `kind: music` | **drei** Musik-Engines vorhanden, zwei pro Stueck, eine pro Minute |
+| **Geraeusche** | `list_models` → `kind: sfx` | Geraeusch-Generator vorhanden, **ein Credit je Geraeusch**, Laenge egal |
 | **Filmschnitt** | `film_assemble` ist in der Werkzeugliste | Zusammenschnitt moeglich, kostenlos |
 | **Tonmischung** | `audio_assemble` ist in der Werkzeugliste | Meditation und Hoerbuch mischbar, kostenlos |
 
@@ -104,7 +104,9 @@ Verbindung    ✅  Guthaben 96 Credits
 Bilder        ✅  21 Modelle
 Video         ✅  8.33 Credits/Sekunde (720p)
 Stimmen       ✅  Express 3.0 / Studio 3.84 Credits je 1000 Zeichen, 58 Stimmen
-Musik         ✅  Advanced 8 / Basic 12 Credits je Clip
+Musik         ✅  Pro 5/Minute · Advanced 16 · Basic 12 je Stueck
+Geraeusche    ✅  1 Credit je Geraeusch, 0,5-22 Sekunden
+Schnitt       ✅  film_assemble und audio_assemble verfuegbar
 ```
 
 Fehlt eine Fähigkeit, sag **welche** und was das praktisch heisst — „Musik ist
@@ -129,9 +131,18 @@ Nenne die Credit-Kosten pro Bereich, denn die unterscheiden sich in der Einheit:
   **Studio** (langsamer, hoehere Qualitaet). `voice_listing` ohne Engine nennt
   beide mit dem aktuellen Preis.
 
-Musik gibt es in zwei Engines: **Advanced** kann singen und liefert den Text mit
-  Zeitmarken mit, **Basic** ist instrumental. Beide erzeugen Clips fester Länge,
-abgerechnet pro Clip.
+Musik gibt es in **drei Engines**, die sich in der **Laenge** unterscheiden,
+nicht in der Qualitaet: **Pro** liefert exakt die bestellte Laenge von 10
+Sekunden bis 5 Minuten und wird pro Minute abgerechnet; **Advanced** kann singen
+und liefert den Text mit Zeitmarken, seine Laenge folgt aber der Beschreibung
+und laesst sich nicht einstellen; **Basic** ist nur instrumental und fest bei 33
+Sekunden. Wer eine bestimmte Laenge braucht, nimmt Pro — das ist bei kurzen
+Stuecken sogar das Guenstigste.
+
+Geraeusche sind etwas anderes als Musik: Regen, Meer, Feuer, Gong, Tuer. Die
+Laenge ist frei waehlbar von einer halben bis 22 Sekunden, und **ein Geraeusch
+kostet einen Credit, unabhaengig von der Laenge**. Der Musikgenerator kann keine
+Geraeusche machen — nach Regen gefragt liefert er Musik, die an Regen erinnert.
 
 Für die Stimmen gibt es `voice_listing` (beide Engines) und **kostenlose Hörproben auf
 einer Seite pro Engine** — erwähne das, weil es der einzige Bereich ist, in dem man vor
