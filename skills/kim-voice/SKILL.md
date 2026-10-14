@@ -1,7 +1,7 @@
 ---
 name: kim-voice
 description: "Use whenever the user wants text spoken aloud or an audio voice-over. Triggers: lies das vor, sprich das, vertone das, mach daraus Audio, Stimme, Sprecher, Voiceover, Vorleser, Narration, Hoerbuch, Podcast-Intro, Ansage, als MP3, welche Stimmen gibt es, zeige alle Stimmen, Stimmen anhoeren, Stimmproben, read this aloud, text to speech, narrate this, which voices are available, show me the voices. Guides Claude through the workflow: let the USER pick the engine (Express fast and cheap, Studio slower and better), point at the free listening page https://mcp.kimastermind.net/voices/<engine>, state the balance and the exact cost before generating (billed per input character), call KIMASTERMIND_IMAGES voice_generate, then play the MP3, say what it cost and warn that the link expires after 24 hours. For IMAGES use kim-images, for VIDEO use kim-video. Provider and model names are never mentioned."
-version: 1.0.0
+version: 1.1.0
 ---
 
 # KIM Voice Skill
@@ -419,12 +419,26 @@ KIMASTERMIND_IMAGES:voice_generate(
 - `language` applies to **Express only** (de, en, fr, it, es, pt, nl, pl, ru, tr,
   ar, hi, ja, ko, zh; default de). Studio reads the language off the text, so
   passing it there changes nothing -- do not promise it does.
-- `style` is **accepted and ignored on both engines.** Measured 2026-10-14:
-  the engine that appeared to honour it was reading the instruction out loud --
-  the same sentence took 3.3 s without it and 8.2 s with it. **Never promise
-  style control, and never pass the parameter.** The character comes from the
-  VOICE: `voice_listing` gives one per Studio voice (warm, sachlich, hauchig,
-  rauchig, jugendlich ...), and the listening page lets the user hear them.
+- `style` **works on Studio, and only there.** Express ignores it.
+  Write it in **English**, and give it the DELIVERY, not an emotion label:
+  `speaking slowly, calm and meditative, with long pauses`. Measured
+  15.10.2026, same sentence, same voice, same seed: **7,0 s** ohne Angabe,
+  **14,3 s** mit der langsamen, **5,2 s** mit `speaking very rapidly`.
+  Das Tempo ist also wirklich steuerbar — und zwar in beide Richtungen.
+
+  **Niemals die Anweisung in den `text` schreiben.** Der Text ist ein
+  woertliches Transkript: was dort steht, wird vorgelesen. Genau daran ist es
+  bis zum 14.10.2026 gescheitert — wir haben die Anweisung vorangestellt, sie
+  wurde mitgesprochen, und wir haben daraus geschlossen, die Engine koenne es
+  nicht. Sie kann es, der Kanal ist nur ein anderer: `style` als eigener
+  Parameter.
+
+  Was zuverlaessig wirkt: **Tempo** (`speaking slowly`, `speaking rapidly`),
+  **Pausen** (`with long pauses`), **Grundhaltung** (`calm`, `warm`,
+  `meditative`, `energetic`). Was nur ein Hinweis ist: eine benannte Emotion.
+  Und der Charakter kommt weiterhin zuerst aus der **Stimme** — `voice_listing`
+  nennt ihn je Studio-Stimme (warm, sachlich, hauchig, rauchig, jugendlich ...),
+  die Hoerprobenseite laesst ihn hoeren.
 - Studio voice ids are capitalised ("Sulafat"), Express ids are lowercase
   ("eve"). Either spelling is accepted; the response gives the canonical one.
 
@@ -539,9 +553,9 @@ Express only:
   timbre differs.
 
 Studio only:
-- **Style is an instruction, not a guarantee.** `style` steers the delivery; it
-  does not switch on a named emotion, and the same instruction can land slightly
-  differently between runs.
+- **Style is an instruction, not a guarantee.** `style` steers the delivery —
+  Tempo messbar, Grundhaltung meist, eine benannte Emotion nicht verlaesslich.
+  Dieselbe Anweisung kann zwischen zwei Laeufen etwas anders landen.
 - **The language cannot be forced.** It follows the text. A German sentence
   inside an English text may be read with an English accent.
 - **It is slow.** Roughly 40 seconds of waiting per 1000 characters, so three

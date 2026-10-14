@@ -1,7 +1,7 @@
 ---
 name: kim-meditation
 description: "Use when the user wants a guided meditation, a relaxation, a sleep journey, a hypnosis session, a breathing exercise, a body scan or an affirmation track produced as audio. Triggers: Meditation, meditieren, gefuehrte Meditation, Entspannung, Entspannungsreise, Traumreise, Fantasiereise, Einschlafhilfe, Schlafmeditation, Achtsamkeitsuebung, Atemuebung, Bodyscan, Hypnose, Trance, Affirmationen, Autogenes Training, Visualisierung, mach mir eine Meditation, guided meditation, relaxation, sleep story, body scan, breathing exercise, hypnosis session. Leads through the questions that decide quality -- goal, imagery world, tone, intensity, voice, music -- then runs four approved steps: script, music, voice sample, final mix. Mixing happens on the KIMASTERMIND server, never by downloading files. For a plain read-aloud use kim-voice, for music alone kim-music."
-version: 2.2.1
+version: 2.3.0
 ---
 
 # KIM Meditation Skill
@@ -29,7 +29,7 @@ bringst das Handwerk.
 | | Vorgabe | Warum |
 |---|---|---|
 | **Stimme** | `voice_generate` mit `engine: "studio"` | Express traegt die Betonung ueber zehn Minuten nicht |
-| **`style`-Parameter** | **nie setzen** | wird ignoriert; frueher wurde die Anweisung laut mitgesprochen |
+| **`style`-Parameter** | **setzen**: `speaking slowly, calm and meditative, with long pauses` | das Tempo ist damit wirklich steuerbar — gemessen 7 s ohne, 14 s mit der Angabe. Auf Englisch, und NIEMALS in den Text |
 | **Musik** | `music_generate` mit `engine: "song"` | wird ohnehin geloopt, also zaehlt nur der Preis je Sekunde — und der ist hier mit Abstand der niedrigste |
 | **Musikmenge** | **genau EIN Stueck**, egal wie lang die Meditation wird | zwei Stuecke sind zwei Kompositionen, die Naht hoert man. `audio_assemble` loopt das eine Stueck, und das kostet nichts |
 | **Abmischen** | **`audio_assemble` auf dem Server** | das Material liegt dort; kostet nichts |
@@ -281,12 +281,30 @@ konkret**, mit Charakter und wofuer sie taugen:
 Dann **nur den ersten Abschnitt** erzeugen:
 
 ```
-voice_generate(engine = "studio", voice = <Stimme>, text = <Abschnitt 1>)
+voice_generate(
+  engine = "studio",
+  voice  = <Stimme>,
+  text   = <Abschnitt 1>,
+  style  = "speaking slowly, calm and meditative, with long pauses"
+)
 ```
 
-**Keine `style`-Angabe.** Der Parameter wird ignoriert; bis zum 14.10.2026 wurde
-eine Stilanweisung sogar laut mitgesprochen. Ist es zu schnell, verlaengere die
-**Pausen**; klingt es falsch, nimm eine **andere Stimme**.
+**Die `style`-Angabe ist hier das wichtigste Werkzeug ueberhaupt**, denn eine
+Meditation lebt vom Tempo. Gemessen am 15.10.2026, derselbe Satz, dieselbe
+Stimme: **7,0 s** ohne Angabe, **14,3 s** mit der oben genannten. Das ist keine
+Nuance, das ist die Haelfte der Geschwindigkeit.
+
+Zwei Regeln dazu:
+
+- **Auf Englisch**, auch wenn der Text deutsch ist. Die Anweisung ist technisch,
+  nicht Teil der Aufnahme.
+- **Niemals in den `text` schreiben.** Der Text ist ein woertliches Transkript —
+  was dort steht, wird vorgelesen. Daran ist es bis zum 14.10.2026 gescheitert,
+  und daraus hatten wir den falschen Schluss gezogen, die Engine koenne keinen
+  Stil.
+
+Reicht das Tempo noch nicht, verlaengere zusaetzlich die **Pausen** zwischen den
+Abschnitten; klingt die Stimme selbst falsch, nimm eine **andere Stimme**.
 
 Vorspielen, fragen, erst dann weiter. Eine andere Stimme kostet 1–3 Credits
 statt der ganzen Aufnahme.
