@@ -1,7 +1,7 @@
 ---
 name: kimastermind-setup
 description: Prüft die Verbindung zu KI Mastermind und führt durch die Einrichtung. Verwende diesen Skill, wenn jemand die Einrichtung prüfen will, fragt ob die Verbindung steht, nach dem Credit-Guthaben fragt, wissen will welche Skills oder Möglichkeiten verfügbar sind, oder wenn ein Aufruf an KI Mastermind scheitert — Trigger: "kimastermind setup", "einrichtung prüfen", "funktioniert kimastermind", "bin ich verbunden", "wie viele credits habe ich", "kimastermind geht nicht", "verbindung testen", "was kann ich hier machen", "welche modelle gibt es", "welche skills gibt es", "sind die skills installiert", "ist alles eingerichtet", "warum klappt das nicht".
-version: 1.4.0
+version: 1.4.1
 ---
 
 # KI Mastermind — Einrichtung prüfen
@@ -104,7 +104,7 @@ Verbindung    ✅  Guthaben 96 Credits
 Bilder        ✅  21 Modelle
 Video         ✅  8.33 Credits/Sekunde (720p)
 Stimmen       ✅  Express 3.0 / Studio 3.84 Credits je 1000 Zeichen, 58 Stimmen
-Musik         ✅  Pro 10/Minute · Advanced 16 · Basic 12 je Stueck
+Musik         ✅  Pro 10/Minute · Advanced 16 · Basic 6 je Stueck
 Geraeusche    ✅  1 Credit je Geraeusch, 0,5-22 Sekunden
 Schnitt       ✅  film_assemble und audio_assemble verfuegbar
 ```

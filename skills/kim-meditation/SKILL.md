@@ -1,7 +1,7 @@
 ---
 name: kim-meditation
 description: Use when the user wants a guided meditation, a relaxation, a sleep journey, a hypnosis session, a breathing exercise, a body scan or an affirmation track produced as audio. Triggers: Meditation, meditieren, gefuehrte Meditation, Entspannung, Entspannungsreise, Traumreise, Fantasiereise, Einschlafhilfe, Schlafmeditation, Achtsamkeitsuebung, Atemuebung, Bodyscan, Hypnose, Trance, Affirmationen, Autogenes Training, Visualisierung, mach mir eine Meditation, guided meditation, relaxation, sleep story, body scan, breathing exercise, hypnosis session. Leads through the questions that decide quality -- goal, imagery world, tone, intensity, voice, music -- then runs four approved steps: script, music, voice sample, final mix. Mixing happens on the KIMASTERMIND server, never by downloading files. For a plain read-aloud use kim-voice, for music alone kim-music.
-version: 2.2.0
+version: 2.2.1
 ---
 
 # KIM Meditation Skill
@@ -225,7 +225,7 @@ nichts.
 **Warum `song` und nicht `pro`:** weil die Laenge hier gleichgueltig ist. Das
 Stueck wird ohnehin geloopt, also zaehlt nur der Preis je Sekunde Material — und
 da ist `song` mit 16 Credits fuer rund 165 Sekunden das guenstigste der drei
-(0,10 gegen 0,17 bei `pro` und 0,37 bei `score`). Es liefert ausserdem das
+(0,10 gegen 0,17 bei `pro` und 0,18 bei `score`). Es liefert ausserdem das
 laengste Stueck, und je laenger die Schleife, desto weniger faellt sie auf.
 
 **Eine Ausnahme:** soll die Musik **nicht** loopen, sondern genau mit der

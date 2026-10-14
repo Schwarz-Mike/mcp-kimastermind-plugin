@@ -1,7 +1,7 @@
 ---
 name: kim-music
 description: Use whenever the user wants music, a soundtrack, background music or a musical bed generated. Triggers: mach Musik, generiere Musik, Hintergrundmusik, Musik fuer mein Video, Soundtrack, Jingle, Intro-Musik, Begleitmusik, Musikbett, Lounge-Musik, Entspannungsmusik, make music, background music, soundtrack, generate music, music for my video. Asks what the music is FOR, picks the engine from that, turns the answer into the ENGLISH prompt the engines require, states balance and exact cost before generating, then plays the result. THREE engines that differ in LENGTH and in whether they can sing, not in quality: Pro delivers the exact length that is asked for, from 10 seconds to 5 minutes; Advanced sings but its length follows the description; Basic is instrumental only and fixed at 33 seconds. For noises use kim-sfx, for speech kim-voice, for video kim-video, for still images kim-images. Provider and model names are never mentioned.
-version: 2.1.0
+version: 2.2.0
 ---
 
 # KIM Music Skill
@@ -31,7 +31,7 @@ deal with:
 |---|---|---|---|---|
 | **Mastermind Music Pro** (`pro`) | **ja** | **exakt wie bestellt, 10 Sek bis 5 Min** | ~15-25 Sek | **10 pro Minute** |
 | **Mastermind Music Advanced** (`song`) | **ja**, mit Text und Zeitmarken | 1 bis 3 Min, **folgt der Beschreibung** | ~20-30 Sek | **16 pro Stueck** |
-| **Mastermind Music Basic** (`score`) | **nein, nur instrumental** | **fest 33 Sek** | ~25-30 Sek | **12 pro Stueck** |
+| **Mastermind Music Basic** (`score`) | **nein, nur instrumental** | **fest 33 Sek** | ~25-30 Sek | **6 pro Stueck** |
 
 Alles gemessen am 14.10.2026, nicht aus einem Datenblatt abgeschrieben.
 
@@ -62,12 +62,17 @@ Frage nach dem Preis:
 |---|---|---|
 | **Advanced** | 16 Credits fuer rund 165 Sekunden | **0,10** |
 | **Pro** | 10 Credits je Minute | **0,17** |
-| **Basic** | 12 Credits fuer 33 Sekunden | **0,37** |
+| **Basic** | 6 Credits fuer 33 Sekunden | **0,18** |
 
 Advanced ist also das guenstigste Material, Pro der Aufschlag fuer eine Laenge,
-die genau stimmt. **Basic ist das teuerste pro Sekunde und kann nicht singen** —
-es hat seinen Platz als Ausfallweg, nicht als Sparvariante. Empfiehl es nie mit
-der Begruendung „guenstiger".
+die genau stimmt, und Basic liegt bewusst gleichauf mit Pro.
+
+**Dass Basic billig aussieht, ist kein Grund, es zu empfehlen.** Sechs Credits
+sind wenig, aber es sind sechs Credits fuer 33 Sekunden ohne Gesang und ohne
+jede Einstellmoeglichkeit — pro Sekunde zahlst du dasselbe wie bei Pro und
+bekommst weniger. Der niedrige Preis ist dafuer da, dass ein Ausfall der anderen
+Engines auf der Rechnung nicht auffaellt, nicht als Kaufargument. Empfiehl Basic
+weiterhin nur, wenn Advanced nicht verfuegbar ist.
 
 ### Die Laenge, Engine fuer Engine
 
@@ -198,7 +203,7 @@ vor dem Aufruf.
 
 1. `my_credits` aufrufen.
 2. Kosten rechnen: **Pro 10 Credits pro Minute** (90 Sek = 15, 33 Sek = 6),
-   **Advanced 16 pro Stueck**, **Basic 12 pro Stueck**. Gegen `list_models`
+   **Advanced 16 pro Stueck**, **Basic 6 pro Stueck**. Gegen `list_models`
    pruefen.
 3. Sagen:
 
