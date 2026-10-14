@@ -1,7 +1,7 @@
 ---
 name: kim-meditation
 description: "Use when the user wants a guided meditation, a relaxation, a sleep journey, a hypnosis session, a breathing exercise, a body scan or an affirmation track produced as audio. Triggers: Meditation, meditieren, gefuehrte Meditation, Entspannung, Entspannungsreise, Traumreise, Fantasiereise, Einschlafhilfe, Schlafmeditation, Achtsamkeitsuebung, Atemuebung, Bodyscan, Hypnose, Trance, Affirmationen, Autogenes Training, Visualisierung, mach mir eine Meditation, guided meditation, relaxation, sleep story, body scan, breathing exercise, hypnosis session. Leads through the questions that decide quality -- goal, imagery world, tone, intensity, voice, music -- then runs four approved steps: script, music, voice sample, final mix. Mixing happens on the KIMASTERMIND server, never by downloading files. For a plain read-aloud use kim-voice, for music alone kim-music."
-version: 2.3.0
+version: 2.4.0
 ---
 
 # KIM Meditation Skill
@@ -290,9 +290,34 @@ voice_generate(
 ```
 
 **Die `style`-Angabe ist hier das wichtigste Werkzeug ueberhaupt**, denn eine
-Meditation lebt vom Tempo. Gemessen am 15.10.2026, derselbe Satz, dieselbe
-Stimme: **7,0 s** ohne Angabe, **14,3 s** mit der oben genannten. Das ist keine
-Nuance, das ist die Haelfte der Geschwindigkeit.
+Meditation lebt vom Tempo. Gemessen am 15.10.2026 mit Despina, vier Saetze,
+identischer Text: **16,2 s** ohne Angabe, **27,4 s** mit der oben genannten.
+69 % mehr Zeit fuer dieselben Worte — das ist keine Nuance.
+
+**Du setzt sie selbst, ungefragt.** Niemand bittet um einen `style`; jeder hoert
+aber, wenn eine Meditation im Tempo einer Ansage gelesen wird. Du hast das
+Skript geschrieben, du weisst, welcher Abschnitt wie klingen muss.
+
+**Und du setzt sie pro Abschnitt, nicht einmal fuer alles.** Das ist der
+Unterschied zwischen einer vorgelesenen Meditation und einer gefuehrten: eine
+Trance wird langsamer, nicht gleichmaessig langsam, und am Ende kommt der
+Mensch zurueck.
+
+| Abschnitt | `style` | Warum |
+|---|---|---|
+| **Ankommen** | `calm and warm, unhurried, gentle` | noch nicht fluesternd — der Mensch ist wach und muss dir folgen koennen |
+| **Vertiefen** | `speaking slowly, calm and meditative, with long pauses, soft and warm` | hier entsteht die Trance, hier wirkt das Tempo am meisten |
+| **Hauptteil** | `speaking slowly, calm and meditative, with long pauses, soft and warm` | gleich bleiben — ein Wechsel mitten im Bild weckt auf |
+| **Verankern** | `speaking slowly, warm and affirming, with long pauses` | etwas mehr Traglast auf dem Satz, der mitgenommen wird |
+| **Abschluss, Einschlafen** | `extremely slow, very soft, barely above a whisper, with very long pauses` | es soll ausklingen, nicht enden |
+| **Abschluss, Zurueckholen** | `calm but clearer, gradually more present, moderate pace` | wer zurueckkommt, braucht wieder Kontur |
+
+Zwei Dinge dazu:
+
+- **Zwischen zwei Abschnitten nur eine Stufe wechseln**, nie von fluesternd auf
+  wach. Der Sprung ist hoerbar und reisst heraus.
+- **Die Stimme bleibt dieselbe** ueber alle Abschnitte. Nur der `style` wandert.
+  Eine wechselnde Stimme ist ein Schnittfehler, kein Stilmittel.
 
 Zwei Regeln dazu:
 

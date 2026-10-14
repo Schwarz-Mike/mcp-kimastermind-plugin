@@ -1,7 +1,7 @@
 ---
 name: kim-voice
 description: "Use whenever the user wants text spoken aloud or an audio voice-over. Triggers: lies das vor, sprich das, vertone das, mach daraus Audio, Stimme, Sprecher, Voiceover, Vorleser, Narration, Hoerbuch, Podcast-Intro, Ansage, als MP3, welche Stimmen gibt es, zeige alle Stimmen, Stimmen anhoeren, Stimmproben, read this aloud, text to speech, narrate this, which voices are available, show me the voices. Guides Claude through the workflow: let the USER pick the engine (Express fast and cheap, Studio slower and better), point at the free listening page https://mcp.kimastermind.net/voices/<engine>, state the balance and the exact cost before generating (billed per input character), call KIMASTERMIND_IMAGES voice_generate, then play the MP3, say what it cost and warn that the link expires after 24 hours. For IMAGES use kim-images, for VIDEO use kim-video. Provider and model names are never mentioned."
-version: 1.1.0
+version: 1.2.0
 ---
 
 # KIM Voice Skill
@@ -391,6 +391,74 @@ Three things to be straight about:
   Say so first, then call, and do not abort or retry while the call is running --
   a retry pays for the same clip twice.
 
+### Step S3b: Die Sprechweise ableiten — ungefragt, aus dem Text
+
+**Das ist deine Aufgabe, nicht die des Nutzers.** Niemand sagt „bitte setze
+`style` auf speaking slowly“. Aber jeder merkt, wenn eine Meditation im Tempo
+einer Bahnhofsansage vorgelesen wird. Du hast den Text vor dir und weisst,
+wofuer er ist — also entscheidest du. **Frag nicht nach dem Stil, setz ihn.**
+
+Nur bei **Studio**. Express hat kein solches Feld; dort machen Interpunktion und
+Stimmwahl das Tempo.
+
+**Die Ableitung: woraus du den Stil liest**
+
+Sieh auf den Text, nicht auf den Wunsch. Was fuer eine Art Text ist das?
+
+| Woran du es erkennst | `style` |
+|---|---|
+| Meditation, Hypnose, Einschlafhilfe, Entspannung. Du-Form, Atem, Koerper, kurze Saetze, viele Absaetze | `speaking slowly, calm and meditative, with long pauses, soft and warm` |
+| Hoerbuch, Erzaehlung, Maerchen, laengere Prosa | `calm and measured, warm, natural storytelling pace` |
+| Erklaervideo, Tutorial, Anleitung, Schulung | `clear and even, friendly, moderate pace` |
+| Werbung, Trailer, Produktvorstellung, Social-Clip | `energetic and upbeat, confident, lively pace` |
+| Nachricht, Ansage, Durchsage, Telefonbandtext | `neutral and measured, clear articulation` |
+| Kinder, Gutenachtgeschichte | `warm and gentle, playful, unhurried` |
+| Kondolenz, Trauer, schwere Diagnose, Abschied | `gentle and subdued, unhurried, respectful` |
+| Nichts davon trifft zu | **leer lassen** |
+
+Die letzte Zeile ist wichtig. **Ein Stil ohne Grund ist schlechter als keiner**,
+denn er ueberschreibt die Eigenart der Stimme, die der Nutzer sich ausgesucht
+hat. Im Zweifel nichts setzen.
+
+**Drei Regeln, die nicht verhandelbar sind**
+
+1. **Auf Englisch.** Auch bei deutschem Text. Die Anweisung ist technisch und
+   gehoert nicht zur Aufnahme.
+2. **Niemals in den `text`.** Der Text ist ein woertliches Transkript — was dort
+   steht, wird vorgelesen. „Sprich langsam und warm“ oben im Text bedeutet, dass
+   die Stimme genau diesen Satz sagt. Das ist der eine Fehler, der eine
+   Generierung kostet.
+3. **Sag in einem Halbsatz, was du gewaehlt hast** — auf Deutsch, in der
+   Kostenzeile: „Ich nehme Despina, langsam und meditativ mit langen Pausen.“
+   Dort korrigiert der Nutzer es, falls er es anders will.
+
+**Was wirklich wirkt, und was nur ein Hinweis ist**
+
+| | |
+|---|---|
+| **Tempo** — messbar | `speaking slowly` / `speaking rapidly` / `unhurried` |
+| **Pausen** — deutlich | `with long pauses`, `with very long pauses between sentences` |
+| **Grundhaltung** — meist | `calm`, `warm`, `soft`, `gentle`, `energetic`, `confident` |
+| **Benannte Emotion** — unzuverlaessig | „traurig“, „froehlich“: kann kommen, kann ausbleiben |
+
+Gemessen am 15.10.2026, Stimme Despina, vier Saetze, identischer Text:
+
+| | Dauer |
+|---|---|
+| ohne `style` | 16,2 s |
+| `speaking slowly, calm and meditative, with long pauses, soft and warm` | **27,4 s** |
+
+Das sind 69 % mehr Zeit fuer dieselben Worte — keine Nuance. Und derselbe Test
+mit `speaking very rapidly` ergibt **kuerzer** als ohne Angabe, was zugleich der
+Beweis ist, dass die Anweisung nicht mitgesprochen wird: vorgelesene Worte
+koennen eine Aufnahme nur verlaengern.
+
+**Die Laenge kostet nichts.** Abgerechnet wird nach Zeichen, nicht nach Sekunden
+— eine langsame Lesung ist genauso teuer wie eine schnelle. Es gibt also keinen
+Grund, am Tempo zu sparen.
+
+---
+
 ### Step S4: Generate
 
 Express:
@@ -404,18 +472,32 @@ KIMASTERMIND_IMAGES:voice_generate(
 )
 ```
 
-Studio:
+Studio, mit der in S3b abgeleiteten Sprechweise — hier ein Erklaertext:
 
 ```
 KIMASTERMIND_IMAGES:voice_generate(
   text = "Willkommen bei KI Mastermind. Hier entstehen Bilder, Videos und Stimmen aus einem einzigen Werkzeug.",
   engine = "studio",
-  voice = "Sulafat"
+  voice = "Sulafat",
+  style = "clear and even, friendly, moderate pace"
+)
+```
+
+Dieselbe Stimme, meditativer Text, deshalb ein anderer `style`:
+
+```
+KIMASTERMIND_IMAGES:voice_generate(
+  text = "Komm einen Moment zur Ruhe. Atme tief ein. Und lass den Atem langsam wieder fliessen.",
+  engine = "studio",
+  voice = "Despina",
+  style = "speaking slowly, calm and meditative, with long pauses, soft and warm"
 )
 ```
 
 - `engine` is REQUIRED and must be the one the user chose.
 - Omit `voice` only if the user truly has no preference.
+- `style` on Studio: **you derive it from the text yourself** (Step S3b) and do
+  not wait to be asked. Omit it only when no row in that table fits.
 - `language` applies to **Express only** (de, en, fr, it, es, pt, nl, pl, ru, tr,
   ar, hi, ja, ko, zh; default de). Studio reads the language off the text, so
   passing it there changes nothing -- do not promise it does.
