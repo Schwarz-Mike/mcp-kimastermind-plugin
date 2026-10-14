@@ -1,7 +1,7 @@
 ---
 name: kim-lernfilm
 description: Use when the user wants a complete video produced, not a single clip -- a learning film, explainer, course video, tutorial, product film or social clip with several scenes, narration, music and subtitles. Triggers: Lernvideo, Lernfilm, Erklaervideo, Tutorial-Video, Kursvideo, Schulungsvideo, Imagefilm, Produktvideo, Reel mit Sprecher, Video mit mehreren Szenen, Storyboard, mach mir ein Video ueber, learning video, explainer video, course video, tutorial video. Runs the whole chain: questions, storyboard for approval, scene images, narration, clips, music, and the final cut on the server. Expensive -- a minute of finished film costs roughly 530 credits -- so the budget is named before anything is generated. For ONE clip use kim-video, for speech alone kim-voice, for music alone kim-music.
-version: 1.1.0
+version: 1.2.0
 ---
 
 # KIM Lernfilm Skill
@@ -92,14 +92,14 @@ Rechne die Summe aus und nenne sie. Die Zahlen gegen `list_models` und
 | Clips | **8,33 Credits/Sek** (720p), 14,82 (1080p) | 500 |
 | Szenenbilder | 1 Credit je Bild (Qualitaet „low") | 8 |
 | Sprecher | je Szene mind. 1 Credit | 8 |
-| Musik | 5 Credits je Minute (Pro, Laenge einstellbar) | 5 |
+| Musik | 10 Credits je Minute (Pro, Laenge einstellbar) | 10 |
 | Geraeusche | 1 Credit je Geraeusch, Laenge egal | 3 |
 | Schnitt | **0** | 0 |
-| | | **≈ 524 Credits ≈ 22 CHF** |
+| | | **≈ 529 Credits ≈ 22 CHF** |
 
 Sag es als einen Satz, mit dem Guthaben daneben:
 
-> „Das ergibt 8 Szenen zu je 7,5 Sekunden. Zusammen etwa **524 Credits**, davon
+> „Das ergibt 8 Szenen zu je 7,5 Sekunden. Zusammen etwa **529 Credits**, davon
 > 500 fuer die Clips. Du hast aktuell **900 Credits**. Soll ich?"
 
 **Ab 60 Sekunden Film ausdruecklich bestaetigen lassen** — nicht nur die Zahl

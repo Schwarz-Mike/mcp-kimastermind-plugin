@@ -1,7 +1,7 @@
 ---
 name: kim-music
 description: Use whenever the user wants music, a soundtrack, background music or a musical bed generated. Triggers: mach Musik, generiere Musik, Hintergrundmusik, Musik fuer mein Video, Soundtrack, Jingle, Intro-Musik, Begleitmusik, Musikbett, Lounge-Musik, Entspannungsmusik, make music, background music, soundtrack, generate music, music for my video. Asks what the music is FOR, picks the engine from that, turns the answer into the ENGLISH prompt the engines require, states balance and exact cost before generating, then plays the result. THREE engines that differ in LENGTH and in whether they can sing, not in quality: Pro delivers the exact length that is asked for, from 10 seconds to 5 minutes; Advanced sings but its length follows the description; Basic is instrumental only and fixed at 33 seconds. For noises use kim-sfx, for speech kim-voice, for video kim-video, for still images kim-images. Provider and model names are never mentioned.
-version: 2.0.0
+version: 2.1.0
 ---
 
 # KIM Music Skill
@@ -29,7 +29,7 @@ deal with:
 
 | Engine | Gesang | Laenge | Wartezeit | Credits |
 |---|---|---|---|---|
-| **Mastermind Music Pro** (`pro`) | **ja** | **exakt wie bestellt, 10 Sek bis 5 Min** | ~15-25 Sek | **5 pro Minute** |
+| **Mastermind Music Pro** (`pro`) | **ja** | **exakt wie bestellt, 10 Sek bis 5 Min** | ~15-25 Sek | **10 pro Minute** |
 | **Mastermind Music Advanced** (`song`) | **ja**, mit Text und Zeitmarken | 1 bis 3 Min, **folgt der Beschreibung** | ~20-30 Sek | **16 pro Stueck** |
 | **Mastermind Music Basic** (`score`) | **nein, nur instrumental** | **fest 33 Sek** | ~25-30 Sek | **12 pro Stueck** |
 
@@ -45,17 +45,29 @@ Wahl eindeutig:
   Sekunden bestellt auch 90 Sekunden geliefert heisst (gemessen: 180 bestellt →
   180,04 geliefert, 300 → 300,04). Nichts muss geschnitten oder geloopt werden,
   und das Stueck endet dort, wo der Film endet. Das klingt komponiert.
-- **Ein Lied mit Gesang, Laenge nicht entscheidend** → **Advanced** oder
-  **Pro**. Advanced gibt den gesungenen Text mit Sekundenmarken zurueck, was
-  eine fertige Untertitelspur ist; das kann Pro nicht.
-- **Ein kurzes instrumentales Bett, so guenstig wie moeglich** → **Basic**.
+- **Ein langes Bett, das sowieso geloopt wird** (Meditation, Hoerbuch,
+  Hintergrund fuer eine halbe Stunde) → **Advanced**. Es ist mit Abstand das
+  guenstigste pro Sekunde, und ob das Stueck 150 oder 178 Sekunden lang wird,
+  ist beim Loopen gleichgueltig.
+- **Ein Lied mit Gesang** → **Advanced** oder **Pro**. Advanced gibt den
+  gesungenen Text mit Sekundenmarken zurueck, was eine fertige Untertitelspur
+  ist; das kann Pro nicht.
 - **Advanced faellt aus** → **Basic** laeuft auf einem anderen Zugang und ist
   dann noch da.
 
-**Preis-Falle, die man kennen muss:** Pro kostet 5 Credits pro Minute, also 3
-Credits fuer 33 Sekunden — ein Drittel von Basic bei gleicher Laenge und
-einstellbar obendrein. Wenn jemand ausdruecklich das Guenstigste will, ist das
-heute **Pro mit kurzer Laenge**, nicht Basic. Basic bleibt der Ausfallweg.
+**Was eine Minute Musik wirklich kostet** — danach entscheidet sich fast jede
+Frage nach dem Preis:
+
+| Engine | Rechnung | pro Sekunde |
+|---|---|---|
+| **Advanced** | 16 Credits fuer rund 165 Sekunden | **0,10** |
+| **Pro** | 10 Credits je Minute | **0,17** |
+| **Basic** | 12 Credits fuer 33 Sekunden | **0,37** |
+
+Advanced ist also das guenstigste Material, Pro der Aufschlag fuer eine Laenge,
+die genau stimmt. **Basic ist das teuerste pro Sekunde und kann nicht singen** —
+es hat seinen Platz als Ausfallweg, nicht als Sparvariante. Empfiehl es nie mit
+der Begruendung „guenstiger".
 
 ### Die Laenge, Engine fuer Engine
 
@@ -185,11 +197,12 @@ Dieselbe Regel wie bei Sprache: Kosten und Guthaben zusammen, in einem Satz,
 vor dem Aufruf.
 
 1. `my_credits` aufrufen.
-2. Kosten rechnen: **Pro 5 Credits pro Minute** (90 Sek = 8), **Advanced 16 pro
-   Stueck**, **Basic 12 pro Stueck**. Gegen `list_models` pruefen.
+2. Kosten rechnen: **Pro 10 Credits pro Minute** (90 Sek = 15, 33 Sek = 6),
+   **Advanced 16 pro Stueck**, **Basic 12 pro Stueck**. Gegen `list_models`
+   pruefen.
 3. Sagen:
 
-> „90 Sekunden Ambient kosten **8 Credits**. Du hast **96**, danach noch 88.
+> „90 Sekunden Ambient kosten **15 Credits**. Du hast **96**, danach noch 81.
 > Soll ich?"
 
 Nicht genug Credits: die Fehlmenge exakt nennen und die kuerzere Variante
