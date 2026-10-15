@@ -1,7 +1,7 @@
 ---
 name: kim-meditation
 description: "Use when the user wants a guided meditation, a relaxation, a sleep journey, a hypnosis session, a breathing exercise, a body scan or an affirmation track produced as audio. Triggers: Meditation, meditieren, gefuehrte Meditation, Entspannung, Entspannungsreise, Traumreise, Fantasiereise, Einschlafhilfe, Schlafmeditation, Achtsamkeitsuebung, Atemuebung, Bodyscan, Hypnose, Trance, Affirmationen, Autogenes Training, Visualisierung, mach mir eine Meditation, guided meditation, relaxation, sleep story, body scan, breathing exercise, hypnosis session. Leads through the questions that decide quality -- goal, imagery world, tone, intensity, voice, music -- then runs four approved steps: script, music, voice sample, final mix. Mixing happens on the KIMASTERMIND server, never by downloading files. For a plain read-aloud use kim-voice, for music alone kim-music."
-version: 2.4.0
+version: 3.0.0
 ---
 
 # KIM Meditation Skill
@@ -29,7 +29,8 @@ bringst das Handwerk.
 | | Vorgabe | Warum |
 |---|---|---|
 | **Stimme** | `voice_generate` mit `engine: "studio"` | Express traegt die Betonung ueber zehn Minuten nicht |
-| **`style`-Parameter** | **setzen**: `speaking slowly, calm and meditative, with long pauses` | das Tempo ist damit wirklich steuerbar — gemessen 7 s ohne, 14 s mit der Angabe. Auf Englisch, und NIEMALS in den Text |
+| **`style`-Parameter** | **IMMER setzen, je Abschnitt** — siehe den eigenen Abschnitt unten | das Tempo ist damit wirklich steuerbar. Gemessen mit Despina: 16,2 s ohne, 27,4 s mit. Englisch wirkt doppelt so stark wie Deutsch (+46 % gegen +23 %), und NIEMALS in den Text |
+| **Abmischen mit Zahlen** | `voice_lufs: -18`, `music_lufs: -29`, `duck_amount: 0.05`, SFX `lufs: -42`, `lead_in: 30`, `lead_out: 50`, `fade_out: 40` | alles an einer echten Produktion erhoert, nicht gewaehlt |
 | **Musik** | `music_generate` mit `engine: "song"` | wird ohnehin geloopt, also zaehlt nur der Preis je Sekunde — und der ist hier mit Abstand der niedrigste |
 | **Musikmenge** | **genau EIN Stueck**, egal wie lang die Meditation wird | zwei Stuecke sind zwei Kompositionen, die Naht hoert man. `audio_assemble` loopt das eine Stueck, und das kostet nichts |
 | **Abmischen** | **`audio_assemble` auf dem Server** | das Material liegt dort; kostet nichts |
@@ -48,7 +49,7 @@ Nutzer, dass es der Ausweichweg ist.
 |---|---|---|
 | **1. Skript** | Text mit Pausenplan, als Tabelle gezeigt | nichts |
 | **2. Musik** | EIN Stueck, angehoert | ~16 Credits |
-| **3. Stimmprobe** | NUR der erste Abschnitt, angehoert | 1–3 Credits |
+| **3. Stimmprobe** | NUR der erste Abschnitt, **mit Stil**, angehoert | 1–3 Credits |
 | **4. Rest + Abmischung** | alle Abschnitte, dann `audio_assemble` | der Hauptteil |
 
 Nie zusammenziehen. Nach dem zwanzigsten Abschnitt zu merken, dass die Stimme
@@ -187,18 +188,24 @@ abstrakt (Harmonie, Energie, Balance). „Schwer wie warmer Sand" wirkt,
 
 ### Pausen — die wichtigste Spalte
 
+An einer fertigen Zehn-Minuten-Meditation erhoert, nicht geschaetzt:
+
 | Stelle | Pause |
 |---|---|
-| nach einer Anweisung zum Spueren | 8–15 s |
-| nach einer Atemanweisung | 10–20 s (ein Atemzug ~6 s) |
-| zwischen zwei Saetzen desselben Gedankens | 3–5 s |
-| nach einem Bild, das wirken soll | 15–30 s |
-| nach einer Suggestion | 10–15 s, damit sie sich setzt |
-| vor dem Abschluss | 10 s |
+| zwischen Saetzen in Ankommen und Koerperreise | **5-11 s** |
+| nach einem Bild, das wirken soll | **12-16 s** |
+| nach einer Suggestion | **9-11 s** |
+| in der Ausleitung | **7-8 s** |
+| gefuehrter Atem | nicht nach Gefuehl - **gerechnet**, siehe den Atem-Abschnitt |
 
-**Faustregel: etwa die Haelfte einer Meditation ist Stille.** Wer 10 Minuten
-Text schreibt, bekommt 20 Minuten Audio. Bei „eindringlich" etwas weniger
-Pause, bei „Einschlafen" deutlich mehr.
+Die frueheren Werte (bis 30 s nach einem Bild) waren zu lang: mit gesetztem
+`style` spricht die Stimme ohnehin langsam, und die Pause kommt oben drauf.
+
+**Faustregel: etwa die Haelfte einer Meditation ist Stille.** Und rechne damit,
+dass der Vortrag mit `style` noch **20-30 % langsamer** wird - ein Skript, das
+fuer 8 Minuten geschrieben war, wurde 10 1/2 Minuten lang. Lieber kuerzer
+planen als den Nutzer ueberraschen.
+
 
 ### Darstellung
 
@@ -216,154 +223,230 @@ beliebig oft geaendert werden. Erst nach dem Ja kostet es etwas.
 
 ---
 
-## Schritt 3: Musik
+## Die Sprechweise: der Grundstil plus einer je Teil
 
-Ein Stueck, `music_generate(engine: "song")`. Es wird beim Abmischen geloopt —
-eines reicht fuer jede Laenge, auch fuer eine halbe Stunde, und Loopen kostet
-nichts.
+**Du setzt sie, ungefragt, bei jedem einzelnen Abschnitt.** Niemand bittet um
+einen `style`; jeder hoert aber, wenn eine Meditation im Tempo einer
+Bahnhofsansage gelesen wird.
 
-**Warum `song` und nicht `pro`:** weil die Laenge hier gleichgueltig ist. Das
-Stueck wird ohnehin geloopt, also zaehlt nur der Preis je Sekunde Material — und
-da ist `song` mit 16 Credits fuer rund 165 Sekunden das guenstigste der drei
-(0,10 gegen 0,17 bei `pro` und 0,18 bei `score`). Es liefert ausserdem das
-laengste Stueck, und je laenger die Schleife, desto weniger faellt sie auf.
+**Auf Englisch.** Deutsch wirkt auch, aber messbar schwaecher: dieselbe
+Anweisung ergab auf Deutsch +23 % Laenge, auf Englisch +46 %. Englisch ist also
+rund doppelt so wirksam. Und niemals in den `text` — der ist ein woertliches
+Transkript, was dort steht wird vorgelesen.
 
-**Eine Ausnahme:** soll die Musik **nicht** loopen, sondern genau mit der
-Meditation enden, nimm `music_generate(engine: "pro", seconds: <Laenge>)` — bis
-fuenf Minuten. Das kostet 10 Credits je Minute, also mehr, und lohnt sich nur
-bei einer kurzen Meditation, bei der eine Schleife auffiele.
+**Der Grundstil, an jeden Abschnitt:**
 
-Der Prompt muss **englisch** sein; du uebersetzt, der Nutzer sieht ihn nie.
-Nach Bildwelt:
+```
+Speak like an experienced meditation guide: warm, deep, calm, close and soft.
+Very slow pace, let every phrase ring out, natural breathing pauses at every
+ellipsis, no stress peaks.
+```
 
-| Bildwelt | Prompt |
+**Plus der Zusatz fuer den jeweiligen Teil** — angehaengt, nicht ersetzt:
+
+| Teil | Zusatz |
 |---|---|
-| Natur, Erdung | `calm ambient meditation music, soft warm pad, sparse piano, very slow, organic and grounded, no percussion, no vocals` |
-| Wasser, Loslassen | `flowing ambient meditation music, slow swelling pads, gentle and weightless, no rhythm, no vocals` |
-| Licht, Heilung | `warm ambient meditation music, soft strings and glowing pad, slowly rising, hopeful but very calm, no vocals` |
-| Koerper, Schmerz | `deep ambient meditation music, low warm drone and soft pad, extremely slow, grounding, no vocals` |
-| Atem, Angst | `very sparse ambient music, single soft pad, almost still, reassuring, no melody, no vocals` |
-| Himmel, Trauer | `spacious ambient music, distant soft pad, wide and open, melancholic but gentle, no vocals` |
+| **Ankommen** | `Inviting and friendly, a quiet smile in the voice.` |
+| **Koerperreise** | `Even slower and softer, stretch the body words gently, heavy and warm.` |
+| **Atem erklaeren** | `Calm, clear and even, so the rhythm is easy to follow.` |
+| **Atemkommando Ein** | `Very gentle, drawn out, almost breathed, following a slow inhale.` |
+| **Atemkommando Aus** | `Long and fading like a slow exhale, letting go downwards.` |
+| **Bilder, Visualisierung** | `Dreamlike, quietly marvelling, as if you saw the scene yourself.` |
+| **Suggestionen** | `Deep, carried, grounded, with quiet certainty and confidence.` |
+| **Ausleitung** | `Gently bringing back, gradually a little more awake and brighter.` |
+| **Letzter Satz** | `Friendly, awake, warm-hearted, a quiet smile goodbye.` |
 
-Was zu vermeiden ist und warum:
-- **kein Schlagzeug, kein Beat** — ein Puls zwingt die Atmung in fremdes Tempo
-- **kein Gesang** — Worte ueber Worten
-- **keine Melodiebogen** — sie ziehen Aufmerksamkeit auf sich
-- **nichts, was sich stark entwickelt** — es wird geloopt
+**Die Stimmprobe in Schritt 3 erzeugst du schon mit dem Stil.** Eine Probe ohne
+`style` klingt anders als das Endergebnis — dann hat der Nutzer das Falsche
+freigegeben.
 
-**Vorspielen** und fragen: passt die Stimmung? Ein neues Stueck kostet 16
-Credits, eine ganze Meditation mit falscher Musik kostet alles.
+### Die Textschreibweise, die das Tempo macht
+
+**Drei Punkte zwischen den Phrasen** — `...` — verlangsamen den Vortrag hoerbar
+und sind der Standard fuer jeden Meditationstext. Der Grundstil nennt sie
+ausdruecklich (`natural breathing pauses at every ellipsis`), damit sie als
+Atempause gelesen werden und nicht als Zoegern.
+
+> Komm einen Moment zur Ruhe ... Atme tief ein ... und lass den Atem wieder
+> fliessen ...
+
+---
+
+## Gefuehrte Atemzyklen, zum Beispiel 4-8-4
+
+Das kann kein Fliesstext leisten, denn der Atem braucht **Takt**. Also je
+Kommando ein **eigener kurzer Abschnitt**, und die Phasenlaenge entsteht aus der
+Pause danach:
+
+| Abschnitt | Text | `pause_after_seconds` |
+|---|---|---|
+| Ein | „Atme ein ..." | Phasendauer **minus** Cliplaenge → `4 - Clip` |
+| Aus | „und langsam ausatmen ..." | Phasendauer minus Clip **plus** Haltephase → `8 - Clip + 4` |
+
+**Die Haltephase wird nicht angesagt.** Kein „Ruhe", kein „Halten", kein
+„Jetzt anhalten" — **die Stille ist die Anweisung.** Ein Wort an dieser Stelle
+reisst aus dem Rhythmus, den man gerade aufgebaut hat.
+
+**Die beiden Clips fuer jeden Zyklus wiederverwenden**: dieselbe `audio_id`
+mehrfach in `segments`. `audio_assemble` kann das, und es kostet keinen Credit
+mehr. Acht Zyklen sind also **zwei** Generierungen, nicht sechzehn.
 
 ---
 
-## Schritt 4: Die Stimme
+## Musik: ein Stueck, und kein Klavier
 
-**Zeig immer zuerst die Hoerproben**, auch wenn der Nutzer einen Wunsch
-geaeussert hat — hoeren schlaegt beschreiben:
+`music_generate` mit `engine: "song"`, **ein** Stueck, der Server loopt es.
 
-```
-https://mcp.kimastermind.net/voices/studio?for=trance
-```
-
-Das `?for=trance` waehlt genau die Stimmen vor, deren Charakter traegt. Ist ein
-Browser-Werkzeug da, oeffne die Seite direkt. Nenne zusaetzlich **zwei bis drei
-konkret**, mit Charakter und wofuer sie taugen:
-
-| Stimme | Charakter | Passt zu |
-|---|---|---|
-| **Sulafat** (w) | warm | der sichere Standard, fast alles |
-| **Vindemiatrix** (w) | sanft | Einschlafen, Angst |
-| **Achernar** (w) | weich | Trauer, Selbstmitgefuehl |
-| **Enceladus** (m) | hauchig | Einschlafen, sehr nah |
-| **Algieba** (m) | geschmeidig | Koerperreisen, Erdung |
-| **Schedar** (m) | gleichmaessig | lange Stuecke, Hypnose |
-
-Dann **nur den ersten Abschnitt** erzeugen:
+Bewaehrter Prompt — Klavier wurde als stoerend empfunden, deshalb ist es
+ausdruecklich ausgeschlossen:
 
 ```
-voice_generate(
-  engine = "studio",
-  voice  = <Stimme>,
-  text   = <Abschnitt 1>,
-  style  = "speaking slowly, calm and meditative, with long pauses"
-)
+deep meditative ambient drone, warm soft synth pads slowly swelling and fading,
+sustained gentle tones, very calm and carried, spacious and warm, no piano,
+no melody, no rhythm, no percussion, no vocals, instrumental
 ```
 
-**Die `style`-Angabe ist hier das wichtigste Werkzeug ueberhaupt**, denn eine
-Meditation lebt vom Tempo. Gemessen am 15.10.2026 mit Despina, vier Saetze,
-identischer Text: **16,2 s** ohne Angabe, **27,4 s** mit der oben genannten.
-69 % mehr Zeit fuer dieselben Worte — das ist keine Nuance.
+```
+negative_prompt: piano, keys, melody, drums, beat, percussion, vocals, singing, bright
+```
 
-**Du setzt sie selbst, ungefragt.** Niemand bittet um einen `style`; jeder hoert
-aber, wenn eine Meditation im Tempo einer Ansage gelesen wird. Du hast das
-Skript geschrieben, du weisst, welcher Abschnitt wie klingen muss.
-
-**Und du setzt sie pro Abschnitt, nicht einmal fuer alles.** Das ist der
-Unterschied zwischen einer vorgelesenen Meditation und einer gefuehrten: eine
-Trance wird langsamer, nicht gleichmaessig langsam, und am Ende kommt der
-Mensch zurueck.
-
-| Abschnitt | `style` | Warum |
-|---|---|---|
-| **Ankommen** | `calm and warm, unhurried, gentle` | noch nicht fluesternd — der Mensch ist wach und muss dir folgen koennen |
-| **Vertiefen** | `speaking slowly, calm and meditative, with long pauses, soft and warm` | hier entsteht die Trance, hier wirkt das Tempo am meisten |
-| **Hauptteil** | `speaking slowly, calm and meditative, with long pauses, soft and warm` | gleich bleiben — ein Wechsel mitten im Bild weckt auf |
-| **Verankern** | `speaking slowly, warm and affirming, with long pauses` | etwas mehr Traglast auf dem Satz, der mitgenommen wird |
-| **Abschluss, Einschlafen** | `extremely slow, very soft, barely above a whisper, with very long pauses` | es soll ausklingen, nicht enden |
-| **Abschluss, Zurueckholen** | `calm but clearer, gradually more present, moderate pace` | wer zurueckkommt, braucht wieder Kontur |
-
-Zwei Dinge dazu:
-
-- **Zwischen zwei Abschnitten nur eine Stufe wechseln**, nie von fluesternd auf
-  wach. Der Sprung ist hoerbar und reisst heraus.
-- **Die Stimme bleibt dieselbe** ueber alle Abschnitte. Nur der `style` wandert.
-  Eine wechselnde Stimme ist ein Schnittfehler, kein Stilmittel.
-
-Zwei Regeln dazu:
-
-- **Auf Englisch**, auch wenn der Text deutsch ist. Die Anweisung ist technisch,
-  nicht Teil der Aufnahme.
-- **Niemals in den `text` schreiben.** Der Text ist ein woertliches Transkript —
-  was dort steht, wird vorgelesen. Daran ist es bis zum 14.10.2026 gescheitert,
-  und daraus hatten wir den falschen Schluss gezogen, die Engine koenne keinen
-  Stil.
-
-Reicht das Tempo noch nicht, verlaengere zusaetzlich die **Pausen** zwischen den
-Abschnitten; klingt die Stimme selbst falsch, nimm eine **andere Stimme**.
-
-Vorspielen, fragen, erst dann weiter. Eine andere Stimme kostet 1–3 Credits
-statt der ganzen Aufnahme.
+Eine Melodie zieht Aufmerksamkeit auf sich, ein Puls zwingt die Atmung in ein
+fremdes Tempo. Beides ist in einer Meditation ein Fehler, kein Geschmack.
 
 ---
+
+## Geraeusche: nur zu Bildern, die im Text stehen
+
+Ueber `kim-sfx`, **22 Sekunden**, der Server loopt sie. Nur dort, wo der Text
+das Bild auch nennt — ein Wald, den niemand erwaehnt, ist Deko.
+
+**Bewaehrt:**
+
+| Bild | Prompt | `prompt_influence` |
+|---|---|---|
+| Wald | `calm forest ambience with gentle soft birdsong in the distance, peaceful, quiet and natural, no wind` | 0,35 |
+| Bach | `a quiet small brook flowing softly in the background, distant gentle stream, smooth calm water, no splashing` | 0,45 |
+
+**Nicht bewaehrt, und warum:**
+
+- **Wind** klingt kuenstlich — weglassen, auch wenn der Text ihn nennt
+- **„babbling brook"** gurgelt, statt zu fliessen
+- **„birdsong"** ohne `distant` oder `soft` wird dominant und zieht nach vorn
+
+**Platzierung:** 2–3 Sekunden **vor** dem Satz, der das Bild einfuehrt
+(`start_at_segment` mit `offset_seconds: -2`), und ein paar Sekunden ueber den
+Themenwechsel hinaus (`until_segment`). Nie mit `start_seconds` arbeiten, wenn
+es auch ueber den Abschnitt geht: spricht die Stimme laenger als geplant,
+stimmt eine feste Sekunde nicht mehr.
+
+---
+
+## Die Abmischung: die Zahlen, die funktionieren
+
+Alles an einer echten Produktion erhoert. Diese Werte an `audio_assemble`
+uebergeben:
+
+```
+voice_lufs: -18      music_lufs: -29      duck_amount: 0.05
+sfx lufs:   -42      lead_in: 30          lead_out: 50       fade_out: 40
+```
+
+| Wunsch | Was aendern |
+|---|---|
+| „Musik mehr im Vordergrund" | `music_lufs: -27` |
+| „Geraeusche leiser" | SFX `lufs: -45` |
+| „Musik zu praesent beim Sprechen" | `duck_amount: 0.1` |
+
+**Warum gerade diese Zahlen:**
+
+- **−42 fuer Geraeusche** sind rund 13 dB unter der Musik. Mit −34 bis −39
+  waren sie „zu laut, zu praesent" — ein Geraeusch soll man vermissen, wenn es
+  fehlt, nicht hoeren, wenn es da ist.
+- **`duck_amount: 0.05`** senkt die Musik nur um 5 %. Starkes Ducking zieht sie
+  in jeder Pause wieder hoch, und das ist in einer Meditation Unruhe, nicht
+  Dynamik.
+- **50 s Nachlauf mit 40 s Blende**, weil eine Meditation nicht auf der letzten
+  Silbe enden darf.
+
+`audio_assemble` meldet zurueck, welchen Teil der Musik es als Schleife gewaehlt
+hat und **wie leise die leiseste Sekunde des Bettes ist**. Liegt die mehr als
+6 dB unter dem Ziel, hat die Schleife ein Loch — dann `music_start` und
+`music_end` selbst setzen. Diese Zahl ersetzt das Nachhoeren.
+
+---
+
+## Was es kostet, und wie du es sagst
+
+Ein Credit ist etwa 0,04–0,05 USD Verkaufspreis. Eine vollstaendige
+Zehn-Minuten-Meditation:
+
+| Posten | Credits |
+|---|---|
+| Musik, ein Stueck | 16 |
+| Stimme, ~27 Abschnitte | ~27 |
+| zwei Geraeusche | 2 |
+| Abmischung | **0** |
+| | **≈ 45 Credits** |
+
+Das vorher in einem Satz nennen, mit dem Guthaben daneben. Und der Hinweis, der
+wirklich spart: **die Abmischung kostet nichts**, also ist eine zweite Version
+mit anderen Pegeln gratis — nur neue Sprachaufnahmen kosten wieder.
+
+---
+
+## Wenn `audio_assemble` ausfaellt
+
+Dann, und nur dann, lokal mischen — und dem Nutzer sagen, dass es der
+Ausweichweg ist. Die Referenz-Implementierung liegt als `mix_v3.py` beim
+Besitzer; sie macht genau das, was der Server jetzt auch macht. Lade **nicht**
+im Normalfall Dateien herunter, um sie zu mischen: das Material liegt auf dem
+Server, und dort gehoert die Arbeit hin.
+
 
 ## Schritt 5: Alle Abschnitte und die Abmischung
 
-Restliche Abschnitte **einzeln** mit derselben Stimme. Je Abschnitt die
-**Audio-ID** aus der Download-URL notieren.
+Restliche Abschnitte **einzeln** mit derselben Stimme und dem **Stil des
+jeweiligen Teils**. Je Abschnitt die **Audio-ID** aus der Download-URL notieren.
 
-Vorher Gesamtkosten und Guthaben nennen (`my_credits`). Je Abschnitt mindestens
-1 Credit, bei 600 Zeichen auf Studio etwa 2.
+Vorher Gesamtkosten und Guthaben nennen (`my_credits`).
 
 ```
 audio_assemble(
-  segments = [{ audio_id, pause_after_seconds }, ...],   // in Reihenfolge
-  music_id = <id>,
-  music_volume = 0.25,
-  lead_in_seconds = 8,
-  lead_out_seconds = 15
+  segments = [{ audio_id, pause_after_seconds }, ...],   // in Reihenfolge,
+                                                         // Atemclips mehrfach
+  music_id   = <id>,
+  voice_lufs = -18,
+  music_lufs = -29,
+  duck_amount = 0.05,
+  lead_in_seconds  = 30,
+  lead_out_seconds = 50,
+  fade_out_seconds = 40,
+  sfx_layers = [
+    { audio_id: <wald>, start_at_segment: 17, offset_seconds: -2,
+      until_segment: 21, lufs: -42 },
+    { audio_id: <bach>, start_at_segment: 21, offset_seconds: -3,
+      until_segment: 24, lufs: -42 }
+  ]
 )
 ```
 
-Was von selbst passiert: Musik wird **geloopt**, blendet ein und aus; **jeder
-Abschnitt auf denselben Pegel** gebracht; Musik **unter der Stimme** leiser und
-in den Pausen zurueck; Vor- und Nachlauf sind Musik ohne Worte.
+Was von selbst passiert, und was es dir erspart:
 
-Richtwerte: `music_volume` 0.2–0.3, bei „eindringlich" eher 0.15. Zum
-Einschlafen `lead_out_seconds` auf 30–60.
+- **Die Musik wird in ihrem stabilen Mittelteil geloopt**, mit Ueberblendung.
+  Ein generiertes Stueck schwillt ueber die erste Minute an und blendet am Ende
+  selbst aus — ganz geloopt gaebe das an jeder Naht zehn Sekunden Fast-Stille.
+- **Jeder Abschnitt wird auf `voice_lufs` gemessen und angeglichen**, nicht
+  geschaetzt. Das ist auch bei einem Zwei-Sekunden-Clip exakt.
+- **Die Musik senkt sich sanft unter der Stimme**, mit 0,6-s-Rampe.
+- **Geraeusche werden geloopt, gepegelt und relativ zum Abschnitt platziert.**
 
-**Schlaegt es fehl**, erst dann der lokale Weg — und sag, dass es der Ausweichweg
-ist. Dort dasselbe nachbauen: Pegel angleichen, Musik unter die Stimme,
-Ein- und Ausblende, Pausen.
+Es meldet zurueck: die Startzeit jedes Abschnitts, die jedes Geraeuschs, den
+gewaehlten Schleifenbereich und **die leiseste Sekunde des Musikbettes**. Liegt
+die mehr als 6 dB unter dem Ziel, hat die Schleife ein Loch — dann
+`music_start` und `music_end` selbst setzen.
+
+**Schlaegt es fehl**, erst dann der lokale Weg — und sag, dass es der
+Ausweichweg ist.
 
 ---
 
