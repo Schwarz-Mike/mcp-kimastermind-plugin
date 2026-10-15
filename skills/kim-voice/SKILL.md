@@ -1,7 +1,7 @@
 ---
 name: kim-voice
 description: "Use whenever the user wants text spoken aloud or an audio voice-over. Triggers: lies das vor, sprich das, vertone das, mach daraus Audio, Stimme, Sprecher, Voiceover, Vorleser, Narration, Hoerbuch, Podcast-Intro, Ansage, als MP3, welche Stimmen gibt es, zeige alle Stimmen, Stimmen anhoeren, Stimmproben, read this aloud, text to speech, narrate this, which voices are available, show me the voices. Guides Claude through the workflow: let the USER pick the engine (Express fast and cheap, Studio slower and better), point at the free listening page https://mcp.kimastermind.net/voices/<engine>, state the balance and the exact cost before generating (billed per input character), call KIMASTERMIND_IMAGES voice_generate, then play the MP3, say what it cost and warn that the link expires after 24 hours. For IMAGES use kim-images, for VIDEO use kim-video. Provider and model names are never mentioned."
-version: 1.2.0
+version: 1.2.1
 ---
 
 # KIM Voice Skill

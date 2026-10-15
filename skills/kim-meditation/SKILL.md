@@ -1,7 +1,7 @@
 ---
 name: kim-meditation
 description: "Use when the user wants a guided meditation, a relaxation, a sleep journey, a hypnosis session, a breathing exercise, a body scan or an affirmation track produced as audio. Triggers: Meditation, meditieren, gefuehrte Meditation, Entspannung, Entspannungsreise, Traumreise, Fantasiereise, Einschlafhilfe, Schlafmeditation, Achtsamkeitsuebung, Atemuebung, Bodyscan, Hypnose, Trance, Affirmationen, Autogenes Training, Visualisierung, mach mir eine Meditation, guided meditation, relaxation, sleep story, body scan, breathing exercise, hypnosis session. Leads through the questions that decide quality -- goal, imagery world, tone, intensity, voice, music -- then runs four approved steps: script, music, voice sample, final mix. Mixing happens on the KIMASTERMIND server, never by downloading files. For a plain read-aloud use kim-voice, for music alone kim-music."
-version: 3.0.0
+version: 3.0.1
 ---
 
 # KIM Meditation Skill
@@ -29,7 +29,7 @@ bringst das Handwerk.
 | | Vorgabe | Warum |
 |---|---|---|
 | **Stimme** | `voice_generate` mit `engine: "studio"` | Express traegt die Betonung ueber zehn Minuten nicht |
-| **`style`-Parameter** | **IMMER setzen, je Abschnitt** — siehe den eigenen Abschnitt unten | das Tempo ist damit wirklich steuerbar. Gemessen mit Despina: 16,2 s ohne, 27,4 s mit. Englisch wirkt doppelt so stark wie Deutsch (+46 % gegen +23 %), und NIEMALS in den Text |
+| **`style`-Parameter** | **IMMER setzen, je Abschnitt** — siehe den eigenen Abschnitt unten | das Tempo ist damit wirklich steuerbar. Gemessen mit Despina: 16,2 s ohne, 27,4 s mit. Englisch ODER Deutsch — beides wirkt, welche Formulierung staerker zieht haengt am Satz, nicht an der Sprache. Aber NIEMALS in den Text |
 | **Abmischen mit Zahlen** | `voice_lufs: -18`, `music_lufs: -29`, `duck_amount: 0.05`, SFX `lufs: -42`, `lead_in: 30`, `lead_out: 50`, `fade_out: 40` | alles an einer echten Produktion erhoert, nicht gewaehlt |
 | **Musik** | `music_generate` mit `engine: "song"` | wird ohnehin geloopt, also zaehlt nur der Preis je Sekunde — und der ist hier mit Abstand der niedrigste |
 | **Musikmenge** | **genau EIN Stueck**, egal wie lang die Meditation wird | zwei Stuecke sind zwei Kompositionen, die Naht hoert man. `audio_assemble` loopt das eine Stueck, und das kostet nichts |
@@ -229,9 +229,11 @@ beliebig oft geaendert werden. Erst nach dem Ja kostet es etwas.
 einen `style`; jeder hoert aber, wenn eine Meditation im Tempo einer
 Bahnhofsansage gelesen wird.
 
-**Auf Englisch.** Deutsch wirkt auch, aber messbar schwaecher: dieselbe
-Anweisung ergab auf Deutsch +23 % Laenge, auf Englisch +46 %. Englisch ist also
-rund doppelt so wirksam. Und niemals in den `text` — der ist ein woertliches
+**Englisch ist der Standard**, weil die Beispiele unten darauf abgestimmt sind
+— aber **Deutsch wirkt genauso**. Zwei Messungen, zwei Ergebnisse: beim ersten
+Satzpaar zog Englisch staerker (+46 % gegen +23 %), beim zweiten der deutsche
+Satz (15,6 s gegen 14,6 s). Es haengt an der Formulierung, nicht an der Sprache.
+Was dagegen immer gilt: **niemals in den `text`** — der ist ein woertliches
 Transkript, was dort steht wird vorgelesen.
 
 **Der Grundstil, an jeden Abschnitt:**
