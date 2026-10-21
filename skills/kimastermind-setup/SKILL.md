@@ -1,7 +1,7 @@
 ---
 name: kimastermind-setup
 description: "Prüft die Verbindung zu KI Mastermind und führt durch die Einrichtung. Verwende diesen Skill, wenn jemand die Einrichtung prüfen will, fragt ob die Verbindung steht, nach dem Credit-Guthaben fragt, wissen will welche Skills oder Möglichkeiten verfügbar sind, oder wenn ein Aufruf an KI Mastermind scheitert — Trigger: \"kimastermind setup\", \"einrichtung prüfen\", \"funktioniert kimastermind\", \"bin ich verbunden\", \"wie viele credits habe ich\", \"kimastermind geht nicht\", \"verbindung testen\", \"was kann ich hier machen\", \"welche modelle gibt es\", \"welche skills gibt es\", \"sind die skills installiert\", \"ist alles eingerichtet\", \"warum klappt das nicht\"."
-version: 1.4.1
+version: 1.4.2
 ---
 
 # KI Mastermind — Einrichtung prüfen
@@ -195,6 +195,8 @@ nächsten Schritt an — ein Bild, einen Clip oder eine Sprachaufnahme.
 | „Insufficient credits" | Guthaben zu niedrig für diese Generierung | Die Fehlermeldung nennt die benötigte Zahl. Aufladen im Dashboard |
 | Anmeldefenster kommt immer wieder | Sitzung wird nicht gespeichert | Claude neu starten; hält es dann nicht, an support@kimastermind.net |
 | Download-Link einer Sprachaufnahme liefert einen Fehler | Der Link gilt nur **24 Stunden**, danach wird die Datei gelöscht | Neu generieren (kostet wieder Credits). Vorher speichern |
+| Ältere Bilder oder Filme fehlen in der Bibliothek | Bis 21.10.2026 behielt der Server nur die neuesten 30 Bilder und 20 Filme und löschte beim Schreiben eines neuen sofort das älteste | Behoben: neueste **100 Bilder / 50 Filme** bleiben dauerhaft, alles darüber 30 Tage, dann **E-Mail mit 7 Tagen Vorlauf**. Was vorher wegfiel, ist weg und muss neu generiert werden |
+| Eine ältere Bild-URL wird als Referenz abgelehnt | Die Referenz zeigt auf genau diese Datei; ist sie geloescht, ist die Referenz weg | Bild hochladen (Upload-Referenzen liegen jetzt 30 Tage statt 24 Stunden) oder neu generieren |
 | Generierung bricht ab | Anbieterseitige Störung | Credits werden **automatisch zurückgebucht** — das sagen, damit niemand denkt, der Versuch habe Geld gekostet. Einmal erneut versuchen |
 | Video „hängt" | Videogenerierung läuft synchron und dauert 1–5 Minuten | Nicht abbrechen, nicht neu starten. Es arbeitet |
 | Skills fehlen nach dem Plugin-Install | Plugin lädt erst beim nächsten Sitzungsstart | Claude neu starten, oder `/reload-plugins` |

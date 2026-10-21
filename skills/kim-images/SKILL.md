@@ -1,7 +1,7 @@
 ---
 name: kim-images
 description: "Use whenever the user wants to generate, edit, restyle, vary or combine an IMAGE, attaches images asking to modify them, references their gallery, or asks about credits. Triggers: generiere/erstelle/bearbeite/aendere ein Bild, mache eine Variante, kombiniere Bilder, im Stil von, Logo, Grafik, Foto, generate/edit/restyle this image; meine Galerie, zeig meine Bilder, Credits/Guthaben. Guides Claude through an interactive workflow: detect attached or gallery reference images first, collect prompt/style/format/quality, recommend suitable models (reference-capable when refs are present), call KIMASTERMIND_IMAGES generate_image with up to 16 reference images, and display results as native image artifacts. For VIDEO clips use the kim-video skill, for SPEECH/text-to-voice use the kim-voice skill. Provider and model names are never mentioned."
-version: 1.0.0
+version: 1.1.0
 ---
 
 # KIM Images Skill
@@ -44,7 +44,7 @@ so plainly rather than silently doing only one half. `my_credits` and
 - KIMASTERMIND_IMAGES:upload_reference -- Fallback ONLY for tiny inline base64 (< 200 KB). Slower because the bytes go through MCP/SSE.
 - KIMASTERMIND_IMAGES:list_models -- All models with prices, strengths, keywords
 - KIMASTERMIND_IMAGES:my_credits -- Current credit balance
-- KIMASTERMIND_IMAGES:my_gallery -- Gallery of up to 30 images with URLs, model, prompt, date
+- KIMASTERMIND_IMAGES:my_gallery -- The user's gallery with URLs, model, prompt, date
 
 Login portal: https://mcp.kimastermind.net/login
 
@@ -82,6 +82,32 @@ Gallery widget HTML template:
   </div>
 </div>
 ```
+
+---
+
+### How long images are kept (ask-and-answer)
+
+Trigger: wie lange bleiben meine Bilder, werden Bilder geloescht, Speicherdauer,
+how long are my images kept, do images get deleted
+
+- The newest **100 images** and **50 films** per user stay for as long as the
+  account does, however old they get.
+- Anything beyond that stays **30 days**. Then the owner gets an **email**, and
+  deletion follows **7 days after that email** -- 37 days at the earliest.
+- **Nothing is deleted without that mail having gone out a week earlier.** If the
+  mail cannot be sent, the file stays.
+- Files whose mail has gone out are marked in the library at
+  https://mcp.kimastermind.net/login with the date they go, so they are easy to
+  find and download.
+- Uploaded reference images: **30 days**, no mail (they are an input, not a
+  deliverable).
+- Generated speech is the exception and still **24 hours** -- see kim-voice.
+
+Until 21.10.2026 this was a hard cap instead: the newest 30 images, enforced the
+moment a new one was written, so a batch of ten deleted the ten oldest on the
+spot. If a user says older images or their reference URLs vanished, that is why,
+and it is fixed -- but what was deleted then is gone and has to be generated
+again.
 
 ---
 
@@ -500,7 +526,8 @@ Important rules:
   will return an error. Always select a reference-capable model in Step 6.
 - If the user provided more refs than the chosen model supports, either trim
   the list (use the most relevant first) or switch to gpt-image-2.5-flare (16 max).
-- Reference images are stored on the server for 24h, then purged daily by cron.
+- Uploaded reference images are kept **30 days** (they were kept 24 hours until
+  21.10.2026, which made the upload fallback useless the next day).
 - Never resend the same reference between two separate tool calls -- each turn
   the user re-attaches what they want; if you need the same ref across multiple
   generations in one conversation, save the gallery URL of the first result

@@ -1,7 +1,7 @@
 ---
 name: kim-video
 description: "Use whenever the user wants to generate or animate a VIDEO clip. Triggers: generiere/erstelle ein Video, mach ein Video daraus, animiere dieses Bild, bring das zum Leben, Text-zu-Video, Bild-zu-Video, Reel, Clip, Kurzvideo, generate/animate a video, make this move. Guides Claude through an interactive workflow: detect the mode (text / image / reference), upload reference images via the binary upload flow, collect prompt, format, resolution and duration, warn about per-second cost AND the 1-5 minute wait, call KIMASTERMIND_IMAGES generate_video, then download or display the clip as a native video artifact. For still IMAGES use the kim-images skill, for SPEECH/text-to-voice use the kim-voice skill. Provider and model names are never mentioned."
-version: 1.0.0
+version: 1.1.0
 ---
 
 # KIM Video Skill
@@ -58,7 +58,7 @@ A combined request is handled in sequence and announced as such. Typical chains:
 - KIMASTERMIND_IMAGES:upload_reference -- Fallback ONLY for tiny inline base64 (< 100 KB).
 - KIMASTERMIND_IMAGES:list_models -- All models with prices, strengths, keywords
 - KIMASTERMIND_IMAGES:my_credits -- Current credit balance
-- KIMASTERMIND_IMAGES:my_gallery -- Gallery of up to 30 images with URLs (source frames!)
+- KIMASTERMIND_IMAGES:my_gallery -- The user's image gallery with URLs (source frames!)
 
 Login portal: https://mcp.kimastermind.net/login
 
@@ -198,9 +198,11 @@ NEVER reveal the technical model name -- call it the **Video-Generator**.
 
 Also show the plain link: 📥 Direktlink: https://mcp.kimastermind.net/vid/UUID.mp4
 
-Note: clips are stored on the server and listed in the user's library
-(auto-pruned when the per-user limit is exceeded). Unlike generated speech, video
-links do **not** expire after 24 hours.
+Note: clips are stored on the server and listed in the user's library. Unlike
+generated speech, video links do **not** expire after 24 hours: the newest **50
+films** are kept for as long as the account exists, and anything beyond that is
+kept 30 days, announced by email, and deleted 7 days after that mail. No film
+ever disappears without the owner having been written to a week earlier.
 
 ---
 
