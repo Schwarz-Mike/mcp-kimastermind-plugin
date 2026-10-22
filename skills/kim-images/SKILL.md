@@ -1,7 +1,7 @@
 ---
 name: kim-images
 description: "Use whenever the user wants to generate, edit, restyle, vary or combine an IMAGE, attaches images asking to modify them, references their gallery, or asks about credits. Triggers: generiere/erstelle/bearbeite/aendere ein Bild, mache eine Variante, kombiniere Bilder, im Stil von, Logo, Grafik, Foto, generate/edit/restyle this image; meine Galerie, zeig meine Bilder, Credits/Guthaben. Guides Claude through an interactive workflow: detect attached or gallery reference images first, collect prompt/style/format/quality, recommend suitable models (reference-capable when refs are present), call KIMASTERMIND_IMAGES generate_image with up to 16 reference images, and display results as native image artifacts. For VIDEO clips use the kim-video skill, for SPEECH/text-to-voice use the kim-voice skill. Provider and model names are never mentioned."
-version: 1.1.0
+version: 1.2.0
 ---
 
 # KIM Images Skill
@@ -97,8 +97,16 @@ how long are my images kept, do images get deleted
 - **Nothing is deleted without that mail having gone out a week earlier.** If the
   mail cannot be sent, the file stays.
 - Files whose mail has gone out are marked in the library at
-  https://mcp.kimastermind.net/login with the date they go, so they are easy to
-  find and download.
+  https://mcp.kimastermind.net/library with the date they go, so they are easy
+  to find.
+- **There is a bulk download.** The library has a **Download Bilder (ZIP)**
+  button: pick **all** or **older than 30 days**, and optionally tick *delete
+  after download*. The archive carries readable file names (date, start of the
+  prompt, short id). Ticking the box marks the downloaded files for deletion at
+  the next daily run -- only after the archive transferred **completely**, and
+  a *Loeschung abbrechen* button in the library takes it back until the run
+  happens. Films work the same way. Point users there instead of telling them
+  to save images one by one.
 - Uploaded reference images: **30 days**, no mail (they are an input, not a
   deliverable).
 - Generated speech is the exception and still **24 hours** -- see kim-voice.
