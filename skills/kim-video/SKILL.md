@@ -1,7 +1,7 @@
 ---
 name: kim-video
 description: "Use whenever the user wants to generate, animate or EDIT a VIDEO clip, or make a photo talk. Triggers: generiere/erstelle ein Video, mach ein Video daraus, animiere dieses Bild, bring das zum Leben, Text-zu-Video, Bild-zu-Video, Reel, Clip, Kurzvideo, Video bearbeiten, Figur austauschen, Kleidung aendern, Hintergrund ersetzen, Lippensynchron, sprechendes Portrait, Avatar, generate/animate/edit a video, make this move, lip sync, talking head. FOUR models, four different prices -- show the user the choice before generating. Guides Claude through an interactive workflow: detect the mode (text / image / reference), upload reference images, clips and voice tracks via the binary upload flow, collect prompt, format, resolution and duration, warn about per-second cost AND the 1-5 minute wait, call KIMASTERMIND_IMAGES generate_video, then download or display the clip as a native video artifact. Any CUTTING runs on the user's own machine with FFmpeg and Python, never on the server: muxing a voice-over or music under a clip, joining several clips, trimming. The skill ships the script and checks for FFmpeg before promising it. For still IMAGES use the kim-images skill, for SPEECH/text-to-voice use the kim-voice skill. Provider names are never mentioned."
-version: 1.3.0
+version: 1.4.0
 ---
 
 # KIM Video Skill
@@ -346,7 +346,13 @@ wait. So it runs on the user's machine, with the script this skill ships:
 Reach for it when the user wants any of:
 - a voice-over or music **inside** the clip instead of beside it,
 - several clips **joined** into one file,
-- a clip **padded** to the length of its narration, holding the last frame.
+- a clip **stretched** to the length of its narration — it is slowed down and
+  the missing frames are computed from the motion (`minterpolate`), so it keeps
+  moving instead of freezing on the last frame. Above about x1.5 that reads as
+  slow motion, so a clip should be ordered at the length it will need,
+- a **still image with a camera move** (slow zoom or pan, subpixel-accurate) as
+  a scene of its own,
+- a **caption** burned in as a lower third (`overlays` in the manifest).
 
 ### Step L1: Check FFmpeg and Python — and ask before installing
 
@@ -354,8 +360,11 @@ Reach for it when the user wants any of:
 python film_cut.py check
 ```
 
-Prints the versions of Python, ffmpeg and ffprobe and ends with `BEREIT` or
-`NICHT BEREIT`. If the command does not run at all, Python is missing.
+Prints the versions of Python, ffmpeg, ffprobe and Pillow and ends with
+`BEREIT` or `NICHT BEREIT`. If the command does not run at all, Python is
+missing. **Pillow is listed separately** because only two things need it: a
+still image with a camera move, and a burned-in caption. Putting a voice under
+a clip works without it.
 
 **Nothing gets installed without asking.** Say what is missing, what it is for,
 and wait for an explicit yes:
@@ -370,6 +379,7 @@ and wait for an explicit yes:
 | macOS | `brew install ffmpeg` |
 | Linux (Debian/Ubuntu) | `sudo apt install ffmpeg` |
 | Python fehlt (Windows) | `winget install Python.Python.3.12` |
+| Pillow fehlt (Standbild, Text) | `python -m pip install pillow` |
 
 After a yes, install, run `check` again, and **remember that it is there** — do
 not ask again on the next clip. After a no, hand over the MP4 and the MP3
@@ -405,14 +415,36 @@ are deleted from the server after 24 hours.
 
 What `cut` does by itself: levels the narration to a fixed loudness, keeps the
 clip's own ambience quietly underneath instead of muting it, ducks the music
-while someone speaks, holds the last frame if the narration outlasts the
-picture, and fades the music out at the end.
+while someone speaks, fades the music out at the end, and — when the narration
+outlasts the picture — stretches the clip with motion interpolation instead of
+freezing its last frame, stretching the ambience along with it. Every scene is
+brought to the size and frame rate of the first clip, because clips from
+different models do not share a frame rate.
+
+**It takes a while.** Interpolation computes every in-between frame: roughly one
+to two minutes per scene. Start the command in the background and say so,
+rather than letting the user watch a frozen prompt.
 
 **To join several clips**, list them as several scenes, in order. Each may carry
 its own `voice`. Leave `music` out if there is none, or set `"musicVolume": 0`.
 
 **For subtitles** set `"subtitles": "file"` (an .srt next to the video) or
 `"burn"` (written into the picture), and give each scene a `subtitle` text.
+
+**A still image instead of a clip**: give the scene `image` instead of `video`,
+plus `motion` (`zoom_in` by default, also `zoom_out`, `pan_left`, `pan_right`,
+`pan_up`, `pan_down`, `none`) and optionally `zoom` (strength, default 0.12) and
+`zoomBase`. The camera moves subpixel-accurate, so it does not jump the way
+ffmpeg's `zoompan` does. Length comes from the voice track, or from `seconds`.
+
+**A caption**: an `overlays` block next to `scenes`, e.g.
+`[{ "scene": 1, "title": "Kapitel 1", "sub": "Worum es geht", "at": 0.6 }]`.
+`scene` counts from 1, `at` is seconds after the scene starts. Needs Pillow and
+a system font; without either the caption is skipped and the video still
+finishes, with a note at the end.
+
+The full manifest is documented in the script's own docstring
+(`python film_cut.py` without arguments prints it).
 
 ### What it costs
 

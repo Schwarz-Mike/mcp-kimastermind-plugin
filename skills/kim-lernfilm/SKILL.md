@@ -1,7 +1,7 @@
 ---
 name: kim-lernfilm
-description: "Use when the user wants a complete video produced, not a single clip -- a learning film, explainer, course video, tutorial, product film or social clip with several scenes, narration, music and subtitles. Triggers: Lernvideo, Lernfilm, Erklaervideo, Tutorial-Video, Kursvideo, Schulungsvideo, Imagefilm, Produktvideo, Reel mit Sprecher, Video mit mehreren Szenen, Storyboard, mach mir ein Video ueber, learning video, explainer video, course video, tutorial video. Runs the whole chain: questions, local environment check (FFmpeg and Python), model choice, storyboard for approval, scene images, narration, clips, music, and then the final cut ON THE USER'S OWN MACHINE with FFmpeg -- the server generates, it does not edit. Expensive -- a minute of finished film costs between roughly 180 and 770 credits depending on the video model, so the model is chosen WITH the user and the budget is named before anything is generated. For ONE clip use kim-video, for speech alone kim-voice, for music alone kim-music."
-version: 1.4.0
+description: "Use when the user wants a complete video produced, not a single clip -- a learning film, explainer, course video, tutorial, product film or social clip with several scenes, narration, music and subtitles. Triggers: Lernvideo, Lernfilm, Erklaervideo, Tutorial-Video, Kursvideo, Schulungsvideo, Imagefilm, Produktvideo, Reel mit Sprecher, Video mit mehreren Szenen, Storyboard, mach mir ein Video ueber, learning video, explainer video, course video, tutorial video. Runs the whole chain: questions, local environment check (FFmpeg, Python, Pillow), model choice, storyboard for approval, scene images, narration, clips, music, and then the final cut ON THE USER'S OWN MACHINE with FFmpeg -- the server generates, it does not edit. Expensive -- a minute of finished film costs between roughly 180 and 770 credits depending on the video model, so the model is chosen WITH the user and the budget is named before anything is generated. For ONE clip use kim-video, for speech alone kim-voice, for music alone kim-music."
+version: 1.5.0
 ---
 
 # KIM Lernfilm Skill
@@ -27,11 +27,14 @@ of them has cost someone money.
 at least eight scenes, and each is generated separately.
 
 **2. The narration decides the scene length, never the picture.** Generate the
-narration first, measure it, then order a clip of that length. The other way
-round the picture freezes on its last frame while the voice runs on — the cut
-does that deliberately rather than stretching anything, and it looks like a
-fault. **Keep each scene's text under ~240 characters**, which is about 15
-seconds of speech.
+narration first, measure it, then order a clip of **that** length. Since 11.2026
+the cut no longer freezes a short clip on its last frame: it stretches it and
+computes the missing frames from the motion, so the picture keeps moving. That
+has a limit. **Above roughly x1.5 it reads as slow motion**, whatever the cut
+does. Five seconds of clip under twelve seconds of narration is a bad scene, not
+a cheap one — split it in two, or make it a still image with a camera move,
+which is sharp at any length and costs 1 credit instead of 25 to 60. **Keep each
+scene's text under ~240 characters**, which is about 15 seconds of speech.
 
 **3. Everything must be assembled on the same day.** Narration and music are
 deleted after **24 hours**. A storyboard from yesterday cannot be cut without
@@ -79,8 +82,14 @@ kopier das Skript in den Arbeitsordner des Films, dann sind die Befehle kurz.
 python film_cut.py check
 ```
 
-Die Ausgabe nennt die Version von Python, ffmpeg und ffprobe und endet mit
-`BEREIT` oder `NICHT BEREIT`. Laeuft der Befehl gar nicht, fehlt Python.
+Die Ausgabe nennt die Version von Python, ffmpeg, ffprobe und Pillow und endet
+mit `BEREIT` oder `NICHT BEREIT`. Laeuft der Befehl gar nicht, fehlt Python.
+
+**Pillow steht getrennt**, weil es nur zwei Dinge betrifft: Standbild-Szenen mit
+Kamerafahrt und Text-Einblendungen. Ein Film aus reinen Clips laeuft ohne
+Pillow, und `BEREIT` sagt genau das. Soll eine dieser beiden Sachen vorkommen
+und Pillow fehlt, gilt dieselbe Regel wie fuer FFmpeg: fragen, nicht einfach
+installieren.
 
 **Fehlt etwas, wird NICHTS installiert, ohne zu fragen.** Sag, was fehlt, wofuer
 es gebraucht wird, und warte auf ein ausdrueckliches Ja:
@@ -97,6 +106,7 @@ es gebraucht wird, und warte auf ein ausdrueckliches Ja:
 | macOS | `brew install ffmpeg` |
 | Linux (Debian/Ubuntu) | `sudo apt install ffmpeg` |
 | Python fehlt (Windows) | `winget install Python.Python.3.12` |
+| Pillow fehlt (fuer Standbilder und Text) | `python -m pip install pillow` |
 
 Erst nach dem Ja installieren, danach `check` erneut laufen lassen und **merken,
 dass es jetzt da ist** — nicht bei jedem Film neu fragen.
@@ -234,6 +244,22 @@ Regeln fuer die Spalte Stimme:
 Regeln fuer die Beschreibung: was man **sieht**, nicht was es bedeutet. Der Text
 geht als Bildprompt weiter.
 
+Regeln fuer die Spalte Sek — hier entscheidet sich, ob der Film spaeter ruckelt:
+- **Die Clipdauer wird so bestellt, wie die Szene lang wird**, nicht kuerzer.
+  Der Schnitt streckt einen zu kurzen Clip und rechnet die Zwischenbilder aus,
+  aber ueber etwa x1.5 sieht man es als Zeitlupe
+- Eine Szene, deren Text ueber 15 Sekunden laeuft, wird **geteilt**. Zwei Szenen
+  mit je acht Sekunden sind besser als eine gestreckte mit sechzehn
+- Eine Szene darf auch ein **Standbild mit Kamerafahrt** sein: ein langsamer
+  Zoom oder Schwenk ueber das Szenenbild. Das kostet 1 Credit statt 25 bis 60,
+  ist bei jeder Laenge scharf und ruckelt nie. Bei Diagrammen, Zitaten, Karten,
+  Tabellen und allem, was gelesen werden soll, ist es die bessere Wahl als ein
+  animierter Clip — dort zerfaellt Schrift ohnehin. Markier solche Szenen im
+  Storyboard, etwa mit „Standbild, langsamer Zoom hinein"
+- Diese Mischung ist zugleich der staerkste Hebel auf den Preis. Vier Clips und
+  vier Standbilder kosten ungefaehr die Haelfte von acht Clips, und bei einem
+  Erklaerfilm faellt es kaum auf
+
 **Dann fragen: Korrekturen oder freigeben?** Aendere so lange, bis ein Ja kommt.
 Korrekturen am Storyboard sind gratis — alles danach kostet.
 
@@ -316,6 +342,12 @@ halten.
 fuenf Minuten, bei acht Szenen also gut eine halbe Stunde. Nicht abbrechen, nicht
 neu starten — ein Abbruch bezahlt den Clip trotzdem.
 
+**Die Dauer nicht kuerzen, um zu sparen.** Wer fuer zwoelf Sekunden Text einen
+Clip von fuenf Sekunden bestellt, bekommt keine sieben geschenkten Sekunden,
+sondern eine Szene in Zeitlupe: der Schnitt streckt den Clip auf x2.4 und
+rechnet die fehlenden Bilder dazu. Billiger wird es durch Teilen der Szene oder
+durch ein Standbild mit Kamerafahrt, nie durch einen zu kurzen Clip.
+
 Nach jedem Clip die **Video-ID** notieren (`/vid/<id>.mp4`).
 
 ---
@@ -378,14 +410,44 @@ Storyboards**, mit den URLs, die die Erzeugung geliefert hat:
       "video": "https://mcp.kimastermind.net/vid/<id>.mp4",
       "voice": "https://mcp.kimastermind.net/aud/<id>.mp3",
       "subtitle": "Der Satz, der in dieser Szene gesprochen wird"
+    },
+    {
+      "image": "https://mcp.kimastermind.net/img/<id>.png",
+      "voice": "https://mcp.kimastermind.net/aud/<id>.mp3",
+      "subtitle": "Diese Szene ist ein Standbild mit langsamem Zoom",
+      "motion": "zoom_in",
+      "zoom": 0.12
     }
+  ],
+  "overlays": [
+    { "scene": 1, "title": "Kapitel 1", "sub": "Worum es geht", "at": 0.6 }
   ]
 }
 ```
 
-`subtitles`: `"file"` legt eine .srt daneben, `"burn"` brennt sie ins Bild,
-`"none"` laesst sie weg. Optional sind `musicVolume` (Standard 0.18) und
-`originalVolume` (Standard 0.1, der Eigenton der Clips).
+| Feld | Wofuer |
+|---|---|
+| `subtitles` | `"file"` legt eine .srt daneben, `"burn"` brennt sie ins Bild, `"none"` laesst sie weg |
+| `musicVolume` | Standard 0.18, `0` schaltet die Musik aus |
+| `originalVolume` | Standard 0.1, der Eigenton der Clips |
+| `fps`, `width`, `height` | Nur setzen, wenn es einen Grund gibt. Ohne Angabe nimmt der Schnitt Groesse und Bildrate des **ersten Clips** und bringt alle anderen Szenen darauf |
+
+**Eine Szene ist entweder `video` oder `image`.** Bei `image` faehrt die Kamera
+ueber das Standbild, und zwar subpixelgenau, also ohne Springen:
+
+| Feld | Wofuer |
+|---|---|
+| `motion` | `zoom_in` (Standard), `zoom_out`, `pan_left`, `pan_right`, `pan_up`, `pan_down`, `none` |
+| `zoom` | Staerke der Fahrt, Standard 0.12. Mehr als 0.25 wirkt unruhig |
+| `zoomBase` | Startzoom, z. B. 1.08, um Raender oder Balken wegzuschneiden |
+| `seconds` | Nur noetig, wenn die Szene keine Sprecherspur hat |
+
+**`overlays` sind Text-Einblendungen** als Bauchbinde im unteren Drittel:
+`scene` ist die Szenennummer ab 1, `at` die Sekunden nach Szenenbeginn
+(Standard 0.6), `dur` die Dauer (Standard: bis kurz vor Szenenende, hoechstens
+sieben Sekunden), `sub` ist optional. Dafuer braucht es Pillow und eine Schrift
+im System; fehlt eines von beiden, wird die Einblendung uebersprungen und der
+Film trotzdem fertig — mit einem Hinweis am Ende.
 
 ### 8b: Herunterladen und schneiden
 
@@ -402,9 +464,20 @@ wiederholt werden.
 `cut` arbeitet in drei Durchlaeufen und sagt bei jedem, was es tut.
 
 Was der Schnitt von selbst tut, ohne Zutun:
-- jede Szene dauert so lange wie ihre laengere Haelfte: ein kurzer Clip friert
-  auf dem letzten Bild, eine kurze Sprecherspur bekommt Stille dahinter.
-  Gestreckt wird nichts, das waere hoerbar
+- jede Szene dauert so lange wie ihre laengere Haelfte. Ein zu kurzer Clip wird
+  **gestreckt und interpoliert**: `setpts` verlangsamt, `minterpolate` rechnet
+  aus zwei echten Bildern das Bild dazwischen. Deshalb ruckelt nichts. Mit dem
+  framerate-Filter auf eine andere Bildrate zu gehen wuerde einzelne Bilder
+  verdoppeln, und genau das sieht man als Stottern. Der Eigenton des Clips wird
+  mitgestreckt, sonst endet er mitten in der Szene. Eine kurze Sprecherspur
+  bekommt Stille dahinter
+- **alle Szenen bekommen dieselbe Groesse und Bildrate**, die des ersten Clips.
+  Clips verschiedener Modelle haben verschiedene Bildraten, und ohne diesen
+  Schritt kann der zweite Durchlauf nicht kopieren
+- bei einer Standbild-Szene faehrt die Kamera **subpixelgenau** ueber das Bild,
+  und das Bild wird vorher mit Lanczos passend verkleinert. ffmpeg-zoompan
+  rechnet in ganzen Pixeln, da springt die Fahrt sichtbar, und feine Strukturen
+  flimmern
 - **alle Sprecheraufnahmen werden auf denselben Pegel gebracht** (-16 LUFS) —
   ohne das springt die Lautstaerke von Szene zu Szene
 - die Musik wird gedrueckt, solange gesprochen wird: **die Stimme ist immer
@@ -414,8 +487,15 @@ Was der Schnitt von selbst tut, ohne Zutun:
   also zwangslaeufig synchron
 - die Musik blendet am Ende ueber zwei Sekunden aus
 
-Dauer: deutlich kuerzer als der Film selbst, auf einem normalen Rechner etwa ein
-Viertel bis die Haelfte der Filmlaenge. Zwischendateien liegen im Unterordner
+**Dauer: ungefaehr eine bis zwei Minuten je Szene**, weil jedes Zwischenbild
+gerechnet wird. Acht Szenen sind also gut eine Viertelstunde — deutlich laenger
+als vor 11.2026, und das ist der Preis dafuer, dass nichts mehr stottert.
+**Den Befehl im Hintergrund starten**, nicht im Vordergrund warten, und solange
+nichts anderes am Film tun.
+
+Das Skript meldet je Szene die Laenge, den Streckfaktor und ob interpoliert
+wurde, und sammelt am Ende alle Hinweise, die das Ergebnis betreffen — ein
+Streckfaktor ueber x1.5 steht dort. Zwischendateien liegen im Unterordner
 `_schnitt` und koennen danach weg.
 
 ### Wenn es scheitert
@@ -428,6 +508,9 @@ haeufigsten Faelle:
 | `ffmpeg nicht gefunden` | Step 0 uebersprungen. Nachinstallieren, nachfragen |
 | `Clip ... nicht gefunden` | `fetch` lief nicht, oder im Manifest stehen noch URLs |
 | `Laenge von ... nicht lesbar` | Download abgebrochen, Datei halb. Nochmal `fetch` |
+| `... braucht Pillow` | Standbild-Szene oder Einblendung, aber Pillow fehlt. `python -m pip install pillow`, vorher fragen |
+| `motion "..." gibt es nicht` | Tippfehler. Erlaubt sind zoom_in, zoom_out, pan_left, pan_right, pan_up, pan_down, none |
+| Hinweis `x2.4 gestreckt` | Kein Fehler, der Film ist fertig — aber diese Szene laeuft in Zeitlupe. Clip laenger neu erzeugen oder Szene teilen, dann nur neu schneiden (kostet nichts) |
 
 Ein fehlgeschlagener Schnitt kostet **keine Credits** — das Material liegt schon
 lokal. Sag das, damit niemand glaubt, er muesse neu erzeugen.
@@ -453,8 +536,10 @@ lokal. Sag das, damit niemand glaubt, er muesse neu erzeugen.
     _schnitt/          <- Zwischendateien, koennen weg
   ```
   **Das Manifest nicht loeschen.** Mit ihm laesst sich der Film erneut
-  schneiden — etwa mit eingebrannten Untertiteln statt einer .srt oder mit
-  anderer Musiklautstaerke — ohne ein einziges Credit.
+  schneiden — mit eingebrannten Untertiteln statt einer .srt, mit anderer
+  Musiklautstaerke, mit Text-Einblendungen, oder nachdem eine zu knapp
+  bestellte Szene durch einen laengeren Clip ersetzt wurde — ohne ein einziges
+  Credit.
 - **Die Gesamtkosten nennen**: was verbraucht wurde und was bleibt
 - **Die 24-Stunden-Warnung**: Stimme und Musik verschwinden auf dem Server
   nach 24 Stunden. Nach `fetch` liegt alles lokal, die Warnung ist damit
@@ -473,9 +558,11 @@ lokal. Sag das, damit niemand glaubt, er muesse neu erzeugen.
   **kim-video**, Step V0.6. In den aus Szenenbildern animierten Clips bewegen
   sich keine Lippen passend zum Text
 - **Keine exakte Szenenlaenge ueber 15 Sekunden**
-- **Kein Text im Bild zuverlaessig** — Schrift in generierten Clips wird oft
-  falsch. Titel und Beschriftungen gehoeren in die Untertitel oder in die
-  Nachbearbeitung
+- **Kein Text im Bild aus dem Modell** — Schrift in generierten Clips wird oft
+  falsch. Titel und Beschriftungen gehoeren in die Untertitel oder in den Block
+  `overlays` des Manifests, der sie beim Schnitt als saubere Bauchbinde ins Bild
+  legt. Wo etwas gelesen werden soll, ist ein Standbild mit Kamerafahrt dem
+  animierten Clip ohnehin vorzuziehen
 - **Keine Wiederverwendung**: dieselbe Figur sieht in Szene 2 anders aus als in
   Szene 1. Das Szenenbild als Vorlage mildert es, loest es aber nicht. Bei
   Figuren im Mittelpunkt vorher warnen
