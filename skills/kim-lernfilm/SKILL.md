@@ -1,7 +1,7 @@
 ---
 name: kim-lernfilm
-description: "Use when the user wants a complete video produced, not a single clip -- a learning film, explainer, course video, tutorial, product film or social clip with several scenes, narration, music and subtitles. Triggers: Lernvideo, Lernfilm, Erklaervideo, Tutorial-Video, Kursvideo, Schulungsvideo, Imagefilm, Produktvideo, Reel mit Sprecher, Video mit mehreren Szenen, Storyboard, mach mir ein Video ueber, learning video, explainer video, course video, tutorial video. Runs the whole chain: questions, model choice, storyboard for approval, scene images, narration, clips, music, and the final cut. Expensive -- a minute of finished film costs between roughly 180 and 770 credits depending on the video model, so the model is chosen WITH the user and the budget is named before anything is generated. For ONE clip use kim-video, for speech alone kim-voice, for music alone kim-music."
-version: 1.3.0
+description: "Use when the user wants a complete video produced, not a single clip -- a learning film, explainer, course video, tutorial, product film or social clip with several scenes, narration, music and subtitles. Triggers: Lernvideo, Lernfilm, Erklaervideo, Tutorial-Video, Kursvideo, Schulungsvideo, Imagefilm, Produktvideo, Reel mit Sprecher, Video mit mehreren Szenen, Storyboard, mach mir ein Video ueber, learning video, explainer video, course video, tutorial video. Runs the whole chain: questions, local environment check (FFmpeg and Python), model choice, storyboard for approval, scene images, narration, clips, music, and then the final cut ON THE USER'S OWN MACHINE with FFmpeg -- the server generates, it does not edit. Expensive -- a minute of finished film costs between roughly 180 and 770 credits depending on the video model, so the model is chosen WITH the user and the budget is named before anything is generated. For ONE clip use kim-video, for speech alone kim-voice, for music alone kim-music."
+version: 1.4.0
 ---
 
 # KIM Lernfilm Skill
@@ -36,7 +36,17 @@ seconds of speech.
 **3. Everything must be assembled on the same day.** Narration and music are
 deleted after **24 hours**. A storyboard from yesterday cannot be cut without
 generating the voice again. Say this before a long session, and assemble as soon
-as the material is complete.
+as the material is complete. **Download every piece right after it is
+generated**, not at the end — then a 24-hour boundary in the middle of a long
+session costs nothing.
+
+**4. The cut runs on the user's machine, not on the server.** The server
+generates pictures and sound; joining them is plain computation on files the
+user gets anyway. A two-minute film means a dozen H.264 passes, and while those
+ran on the server every other customer was served worse. So: download the
+parts, cut locally with FFmpeg. That needs **FFmpeg and Python** on the user's
+computer, which is why Step 0 checks for them **before** a single credit is
+spent.
 
 ---
 
@@ -46,8 +56,59 @@ as the material is complete.
 - `music_generate` — music. See kim-music
 - `generate_image` — one reference picture per scene
 - `generate_video` — the clips, mode `image` with the scene picture
-- `film_assemble` — the final cut. **Costs no credits**
 - `my_credits` — balance. Fetch it fresh before the budget line
+
+Der Schnitt ist **kein** MCP-Werkzeug mehr. Er laeuft lokal ueber
+`scripts/film_cut.py` (Step 0 und Step 8). Das serverseitige `film_assemble`
+gibt es im Protokoll noch, wird von diesem Ablauf aber nicht mehr benutzt:
+Filmproduktion gehoert nicht auf den Server.
+
+---
+
+## Step 0: Die Umgebung pruefen, bevor Credits fliessen
+
+Der Schnitt braucht **FFmpeg** und **Python** lokal. Das zuerst zu pruefen ist
+kein Formalismus: wer acht Clips erzeugt und dann merkt, dass er sie nicht
+zusammenfuegen kann, hat mehrere hundert Credits fuer Einzelteile bezahlt.
+
+Der Skill bringt das Werkzeug mit: `scripts/film_cut.py` im Skill-Ordner. Den
+Pfad findest du ueber `${CLAUDE_PLUGIN_ROOT}` oder im entpackten Skill-Ordner;
+kopier das Skript in den Arbeitsordner des Films, dann sind die Befehle kurz.
+
+```
+python film_cut.py check
+```
+
+Die Ausgabe nennt die Version von Python, ffmpeg und ffprobe und endet mit
+`BEREIT` oder `NICHT BEREIT`. Laeuft der Befehl gar nicht, fehlt Python.
+
+**Fehlt etwas, wird NICHTS installiert, ohne zu fragen.** Sag, was fehlt, wofuer
+es gebraucht wird, und warte auf ein ausdrueckliches Ja:
+
+> "Fuer den Schnitt brauche ich FFmpeg auf deinem Rechner — damit werden die
+> Clips, die Sprecherspur und die Musik zu einem Film zusammengefuegt. Das
+> laeuft dann bei dir lokal statt auf dem Server und ist deshalb auch
+> schneller. Installieren mit `winget install Gyan.FFmpeg`. Soll ich das
+> ausfuehren?"
+
+| System | Befehl |
+|---|---|
+| Windows | `winget install Gyan.FFmpeg` |
+| macOS | `brew install ffmpeg` |
+| Linux (Debian/Ubuntu) | `sudo apt install ffmpeg` |
+| Python fehlt (Windows) | `winget install Python.Python.3.12` |
+
+Erst nach dem Ja installieren, danach `check` erneut laufen lassen und **merken,
+dass es jetzt da ist** — nicht bei jedem Film neu fragen.
+
+**Sagt der Nutzer Nein**, ist das in Ordnung, aber es muss klar sein, was dann
+herauskommt: die einzelnen Clips, die Sprecherspuren und die Musik als
+getrennte Dateien, kein fertiger Film. Frag, ob er den Film unter dieser
+Bedingung trotzdem will. Auf den Server wird der Schnitt **nicht** ausgelagert.
+
+Dazu einen **Arbeitsordner** festlegen und nennen, zum Beispiel
+`%USERPROFILE%\Videos\KI-Filme\<thema>-<datum>\`. Dort landet alles: Bilder,
+Sprecherspuren, Clips, Musik, das Manifest, der Film.
 
 ---
 
@@ -297,36 +358,79 @@ am Ende aus. Du musst nichts dafuer tun.
 
 ---
 
-## Step 8: Der Schnitt
+## Step 8: Der Schnitt — lokal, mit FFmpeg
+
+**Kostet keine Credits**, weil nichts erzeugt wird: es wird nur gerechnet, und
+zwar auf dem Rechner des Nutzers. Zwei Befehle.
+
+### 8a: Ein Manifest schreiben
+
+In den Arbeitsordner, als `manifest.json`. Die Szenen **in der Reihenfolge des
+Storyboards**, mit den URLs, die die Erzeugung geliefert hat:
+
+```json
+{
+  "out": "film.mp4",
+  "subtitles": "file",
+  "music": "https://mcp.kimastermind.net/aud/<id>.mp3",
+  "scenes": [
+    {
+      "video": "https://mcp.kimastermind.net/vid/<id>.mp4",
+      "voice": "https://mcp.kimastermind.net/aud/<id>.mp3",
+      "subtitle": "Der Satz, der in dieser Szene gesprochen wird"
+    }
+  ]
+}
+```
+
+`subtitles`: `"file"` legt eine .srt daneben, `"burn"` brennt sie ins Bild,
+`"none"` laesst sie weg. Optional sind `musicVolume` (Standard 0.18) und
+`originalVolume` (Standard 0.1, der Eigenton der Clips).
+
+### 8b: Herunterladen und schneiden
 
 ```
-film_assemble(
-  scenes = [{ video_id, voice_id, subtitle }, ...],   // in Reihenfolge
-  music_id = <id>,
-  subtitles = "none" | "burn" | "file"
-)
+python film_cut.py fetch manifest.json
+python film_cut.py cut manifest.json
 ```
 
-**Kostet keine Credits.** Der Schnitt laeuft auf dem Server, das Material liegt
-schon dort — es wird nichts hochgeladen.
+`fetch` holt alle URLs in den Arbeitsordner und schreibt die lokalen
+Dateinamen ins Manifest zurueck. Danach ist es offline verwendbar — wichtig
+wegen der 24-Stunden-Grenze: nach `fetch` kann der Schnitt auch morgen noch
+wiederholt werden.
+
+`cut` arbeitet in drei Durchlaeufen und sagt bei jedem, was es tut.
 
 Was der Schnitt von selbst tut, ohne Zutun:
-- jede Szene dauert so lange wie ihre laengere Haelfte
-- **alle Sprecheraufnahmen werden auf denselben Pegel gebracht** — ohne das
-  springt die Lautstaerke von Szene zu Szene
+- jede Szene dauert so lange wie ihre laengere Haelfte: ein kurzer Clip friert
+  auf dem letzten Bild, eine kurze Sprecherspur bekommt Stille dahinter.
+  Gestreckt wird nichts, das waere hoerbar
+- **alle Sprecheraufnahmen werden auf denselben Pegel gebracht** (-16 LUFS) —
+  ohne das springt die Lautstaerke von Szene zu Szene
 - die Musik wird gedrueckt, solange gesprochen wird: **die Stimme ist immer
-  lauter als die Musik**
+  lauter als die Musik**, und in den Pausen kommt die Musik von selbst zurueck
 - der Originalton der Clips bleibt leise darunter (10 %) statt stumm
-- Untertitel entstehen aus den Szenentexten und den gemessenen Laengen, sind
+- Untertitel entstehen aus den Szenentexten und den **gemessenen** Laengen, sind
   also zwangslaeufig synchron
+- die Musik blendet am Ende ueber zwei Sekunden aus
 
-Dauer: etwa so lange wie der Film selbst, bei einer Minute also rund eine Minute.
+Dauer: deutlich kuerzer als der Film selbst, auf einem normalen Rechner etwa ein
+Viertel bis die Haelfte der Filmlaenge. Zwischendateien liegen im Unterordner
+`_schnitt` und koennen danach weg.
 
-**Faellt der Server-Schnitt aus**, lade alles in den lokalen Ordner und schneide
-dort mit ffmpeg. Fehlt ffmpeg, richte es einmalig ein
-(`winget install Gyan.FFmpeg`, macOS `brew install ffmpeg`) und **merke dir, dass
-es jetzt da ist**, damit nicht bei jedem Film neu gefragt wird. Erklaer dabei
-kurz, wofuer: zum Zusammenschneiden des Materials.
+### Wenn es scheitert
+
+Das Skript nennt den Durchlauf und die letzte ffmpeg-Meldung. Die drei
+haeufigsten Faelle:
+
+| Meldung | Ursache |
+|---|---|
+| `ffmpeg nicht gefunden` | Step 0 uebersprungen. Nachinstallieren, nachfragen |
+| `Clip ... nicht gefunden` | `fetch` lief nicht, oder im Manifest stehen noch URLs |
+| `Laenge von ... nicht lesbar` | Download abgebrochen, Datei halb. Nochmal `fetch` |
+
+Ein fehlgeschlagener Schnitt kostet **keine Credits** — das Material liegt schon
+lokal. Sag das, damit niemand glaubt, er muesse neu erzeugen.
 
 ---
 
@@ -334,20 +438,29 @@ kurz, wofuer: zum Zusammenschneiden des Materials.
 
 - **Den Film abspielen oder oeffnen**, nicht nur verlinken — wie in kim-voice:
   herunterladen und dem Systemplayer uebergeben, sonst der Link
-- **Alles in den lokalen Ordner** legen, sauber benannt:
+- **Alles liegt schon im Arbeitsordner** — `fetch` hat es dorthin geholt.
+  Aufraeumen und benennen:
   ```
-  <Ordner>/
+  <Arbeitsordner>/
     01-szene.png  02-szene.png  ...
-    01-stimme.mp3 02-stimme.mp3 ...
-    01-clip.mp4   02-clip.mp4   ...
+    szene-01-voice.mp3  szene-02-voice.mp3  ...
+    szene-01-video.mp4  szene-02-video.mp4  ...
     musik.mp3
+    manifest.json      <- der Schnitt ist damit wiederholbar
     film.mp4
     film.srt
     storyboard.md
+    _schnitt/          <- Zwischendateien, koennen weg
   ```
+  **Das Manifest nicht loeschen.** Mit ihm laesst sich der Film erneut
+  schneiden — etwa mit eingebrannten Untertiteln statt einer .srt oder mit
+  anderer Musiklautstaerke — ohne ein einziges Credit.
 - **Die Gesamtkosten nennen**: was verbraucht wurde und was bleibt
-- **Die 24-Stunden-Warnung**: Stimme und Musik verschwinden, der Film ebenso.
-  Jetzt speichern, nicht morgen
+- **Die 24-Stunden-Warnung**: Stimme und Musik verschwinden auf dem Server
+  nach 24 Stunden. Nach `fetch` liegt alles lokal, die Warnung ist damit
+  abgehakt — sag aber, dass die URLs selbst bald ins Leere zeigen. Die Clips
+  bleiben laenger: die neuesten 50 Filme dauerhaft, der Rest 30 Tage mit
+  Vorwarnung per Mail
 
 ---
 
@@ -355,7 +468,10 @@ kurz, wofuer: zum Zusammenschneiden des Materials.
 
 - **Kein Ton aus dem Videomodell steuerbar** — die Clips bringen eigene
   Umgebungsgeraeusche mit, die nur leiser oder stumm gestellt werden koennen
-- **Keine Lippensynchronitaet**, keine sprechenden Personen im Bild
+- **Lippensynchronitaet nur auf den H3-Modellen** und nur in einer eigenen
+  Szene: Portrait plus Sprecherspur ueber `mode = "reference"`, Ablauf in
+  **kim-video**, Step V0.6. In den aus Szenenbildern animierten Clips bewegen
+  sich keine Lippen passend zum Text
 - **Keine exakte Szenenlaenge ueber 15 Sekunden**
 - **Kein Text im Bild zuverlaessig** — Schrift in generierten Clips wird oft
   falsch. Titel und Beschriftungen gehoeren in die Untertitel oder in die

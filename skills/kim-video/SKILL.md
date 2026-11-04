@@ -1,7 +1,7 @@
 ---
 name: kim-video
-description: "Use whenever the user wants to generate, animate or EDIT a VIDEO clip, or make a photo talk. Triggers: generiere/erstelle ein Video, mach ein Video daraus, animiere dieses Bild, bring das zum Leben, Text-zu-Video, Bild-zu-Video, Reel, Clip, Kurzvideo, Video bearbeiten, Figur austauschen, Kleidung aendern, Hintergrund ersetzen, Lippensynchron, sprechendes Portrait, Avatar, generate/animate/edit a video, make this move, lip sync, talking head. FOUR models, four different prices -- show the user the choice before generating. Guides Claude through an interactive workflow: detect the mode (text / image / reference), upload reference images, clips and voice tracks via the binary upload flow, collect prompt, format, resolution and duration, warn about per-second cost AND the 1-5 minute wait, call KIMASTERMIND_IMAGES generate_video, then download or display the clip as a native video artifact. For still IMAGES use the kim-images skill, for SPEECH/text-to-voice use the kim-voice skill. Provider names are never mentioned."
-version: 1.2.0
+description: "Use whenever the user wants to generate, animate or EDIT a VIDEO clip, or make a photo talk. Triggers: generiere/erstelle ein Video, mach ein Video daraus, animiere dieses Bild, bring das zum Leben, Text-zu-Video, Bild-zu-Video, Reel, Clip, Kurzvideo, Video bearbeiten, Figur austauschen, Kleidung aendern, Hintergrund ersetzen, Lippensynchron, sprechendes Portrait, Avatar, generate/animate/edit a video, make this move, lip sync, talking head. FOUR models, four different prices -- show the user the choice before generating. Guides Claude through an interactive workflow: detect the mode (text / image / reference), upload reference images, clips and voice tracks via the binary upload flow, collect prompt, format, resolution and duration, warn about per-second cost AND the 1-5 minute wait, call KIMASTERMIND_IMAGES generate_video, then download or display the clip as a native video artifact. Any CUTTING runs on the user's own machine with FFmpeg and Python, never on the server: muxing a voice-over or music under a clip, joining several clips, trimming. The skill ships the script and checks for FFmpeg before promising it. For still IMAGES use the kim-images skill, for SPEECH/text-to-voice use the kim-voice skill. Provider names are never mentioned."
+version: 1.3.0
 ---
 
 # KIM Video Skill
@@ -81,8 +81,10 @@ A combined request is handled in sequence and announced as such. Typical chains:
 - "Video mit Sprecherstimme" -> this skill, then kim-voice for the narration. That
   skill will ask which speech engine to use; a voice-over someone else hears is
   usually a Studio case.
-  **Note:** the MCP cannot mux audio into the clip. Deliver the MP4 and the MP3
-  separately and say so -- do not imply the voice is inside the video.
+  **The MCP does not mux** — it generates, it does not edit. But you can put the
+  voice under the clip **on the user's machine**: see "Local post-processing"
+  below. Until that has run, deliver the MP4 and the MP3 separately and say so,
+  rather than implying the voice is already inside the video.
 
 `my_credits` and `list_models` are shared by all three skills.
 
@@ -333,6 +335,93 @@ ever disappears without the owner having been written to a week earlier.
 
 ---
 
+## Local post-processing — voice under the clip, joining clips
+
+The server **generates**; it does not edit. Cutting is plain computation on
+files the user gets anyway, and doing it on the server made every other customer
+wait. So it runs on the user's machine, with the script this skill ships:
+`scripts/film_cut.py` (the same one kim-lernfilm uses — one scene is exactly the
+"put this voice under this clip" case).
+
+Reach for it when the user wants any of:
+- a voice-over or music **inside** the clip instead of beside it,
+- several clips **joined** into one file,
+- a clip **padded** to the length of its narration, holding the last frame.
+
+### Step L1: Check FFmpeg and Python — and ask before installing
+
+```
+python film_cut.py check
+```
+
+Prints the versions of Python, ffmpeg and ffprobe and ends with `BEREIT` or
+`NICHT BEREIT`. If the command does not run at all, Python is missing.
+
+**Nothing gets installed without asking.** Say what is missing, what it is for,
+and wait for an explicit yes:
+
+> "Damit die Stimme im Video landet, brauche ich FFmpeg auf deinem Rechner — das
+> Zusammenfuegen laeuft lokal bei dir, nicht auf dem Server. Installieren mit
+> `winget install Gyan.FFmpeg`. Soll ich das ausfuehren?"
+
+| System | Befehl |
+|---|---|
+| Windows | `winget install Gyan.FFmpeg` |
+| macOS | `brew install ffmpeg` |
+| Linux (Debian/Ubuntu) | `sudo apt install ffmpeg` |
+| Python fehlt (Windows) | `winget install Python.Python.3.12` |
+
+After a yes, install, run `check` again, and **remember that it is there** — do
+not ask again on the next clip. After a no, hand over the MP4 and the MP3
+separately and say plainly that they stay separate. The cut is **not** moved to
+the server.
+
+### Step L2: A manifest, then two commands
+
+In a working folder, e.g. `%USERPROFILE%\Videos\KI-Videos\<thema>/`:
+
+```json
+{
+  "out": "clip-mit-stimme.mp4",
+  "subtitles": "none",
+  "music": "https://mcp.kimastermind.net/aud/<id>.mp3",
+  "scenes": [
+    {
+      "video": "https://mcp.kimastermind.net/vid/<id>.mp4",
+      "voice": "https://mcp.kimastermind.net/aud/<id>.mp3"
+    }
+  ]
+}
+```
+
+```
+python film_cut.py fetch manifest.json
+python film_cut.py cut manifest.json
+```
+
+`fetch` downloads every URL into the folder and rewrites the manifest to point
+at the local files — worth doing immediately, because generated speech and music
+are deleted from the server after 24 hours.
+
+What `cut` does by itself: levels the narration to a fixed loudness, keeps the
+clip's own ambience quietly underneath instead of muting it, ducks the music
+while someone speaks, holds the last frame if the narration outlasts the
+picture, and fades the music out at the end.
+
+**To join several clips**, list them as several scenes, in order. Each may carry
+its own `voice`. Leave `music` out if there is none, or set `"musicVolume": 0`.
+
+**For subtitles** set `"subtitles": "file"` (an .srt next to the video) or
+`"burn"` (written into the picture), and give each scene a `subtitle` text.
+
+### What it costs
+
+Nothing. No credits, no server time. A failed cut costs nothing either — the
+material is already local, so say that instead of letting the user think they
+have to generate again.
+
+---
+
 ## Environment Summary
 
 | Umgebung | Download-Methode | Speicherort |
@@ -341,6 +430,9 @@ ever disappears without the owner having been written to a week earlier.
 | Claude Desktop (Mac/Linux) | bash_tool + curl | ~/Videos/KI-Videos/ |
 | claude.ai Web | nicht moeglich | Widget + Download-Link |
 | Claude Mobile (iOS/Android) | nicht moeglich | Widget + Download-Link |
+
+Der Schnitt braucht einen echten Rechner. Auf Web und Mobil gibt es ihn nicht —
+dort bleiben MP4 und MP3 getrennt, und das gehoert gesagt statt umgangen.
 
 ---
 
