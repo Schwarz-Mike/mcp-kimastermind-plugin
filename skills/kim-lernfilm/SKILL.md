@@ -1,7 +1,7 @@
 ---
 name: kim-lernfilm
-description: "Use when the user wants a complete video produced, not a single clip -- a learning film, explainer, course video, tutorial, product film or social clip with several scenes, narration, music and subtitles. Triggers: Lernvideo, Lernfilm, Erklaervideo, Tutorial-Video, Kursvideo, Schulungsvideo, Imagefilm, Produktvideo, Reel mit Sprecher, Video mit mehreren Szenen, Storyboard, mach mir ein Video ueber, learning video, explainer video, course video, tutorial video. Runs the whole chain: questions, storyboard for approval, scene images, narration, clips, music, and the final cut on the server. Expensive -- a minute of finished film costs roughly 530 credits -- so the budget is named before anything is generated. For ONE clip use kim-video, for speech alone kim-voice, for music alone kim-music."
-version: 1.2.0
+description: "Use when the user wants a complete video produced, not a single clip -- a learning film, explainer, course video, tutorial, product film or social clip with several scenes, narration, music and subtitles. Triggers: Lernvideo, Lernfilm, Erklaervideo, Tutorial-Video, Kursvideo, Schulungsvideo, Imagefilm, Produktvideo, Reel mit Sprecher, Video mit mehreren Szenen, Storyboard, mach mir ein Video ueber, learning video, explainer video, course video, tutorial video. Runs the whole chain: questions, model choice, storyboard for approval, scene images, narration, clips, music, and the final cut. Expensive -- a minute of finished film costs between roughly 180 and 770 credits depending on the video model, so the model is chosen WITH the user and the budget is named before anything is generated. For ONE clip use kim-video, for speech alone kim-voice, for music alone kim-music."
+version: 1.3.0
 ---
 
 # KIM Lernfilm Skill
@@ -23,7 +23,7 @@ about two and a half seconds of film.
 Learn these before writing a storyboard; they are not negotiable and every one
 of them has cost someone money.
 
-**1. A clip is 3 to 15 seconds.** A scene cannot be longer. A two-minute film is
+**1. A clip is 4 to 15 seconds** (3 on the old `happyhorse-1.0`). A scene cannot be longer. A two-minute film is
 at least eight scenes, and each is generated separately.
 
 **2. The narration decides the scene length, never the picture.** Generate the
@@ -82,31 +82,76 @@ bevor etwas erzeugt wird — nicht am Schluss, wenn schon alles bezahlt ist.
 
 ---
 
+## Step 1.5: Das Videomodell mit dem Nutzer waehlen
+
+**Das ist der groesste Hebel im ganzen Film.** Die Clips sind rund 90 % der
+Kosten, und zwischen dem guenstigsten und dem teuersten Modell liegt Faktor
+fuenf. Einen Film still im teuersten Modell zu rendern ist der Fehler, der hier
+richtig Geld kostet — also **fragen, bevor gerechnet wird.**
+
+| Modell (`model`) | Credits/Sek | 60 s Clips | Wofuer |
+|---|---|---|---|
+| `minimax-h3-lite` 480p | 2,5 | 150 | Entwurf, interner Testlauf |
+| `minimax-h3-lite` 768p | 4 | 240 | Der vernuenftige Standard |
+| `minimax-h3-highspeed` 768p | 6 | 360 | Wenn Lite zu einfach wirkt |
+| `minimax-h3` 768p | 7,6 | 456 | Hoechste Stufe ohne 2K |
+| `minimax-h3` 2K | 12,4 | 744 | 2K, fuer grosse Projektion |
+| `happyhorse-1.0` 720p | 8,33 | 500 | Das bisherige Modell |
+
+Zahlen immer gegen `list_models` pruefen, nie aus dem Gedaechtnis zitieren.
+
+So fragen — mit einer Empfehlung, nicht als offene Liste:
+
+> Fuer die Clips hast du mehrere Modelle. Ich wuerde **H3 Lite in 768p** nehmen:
+> 60 Sekunden Film kosten damit etwa 240 Credits statt 500 beim alten Modell.
+> Wenn du 2K brauchst, geht nur **H3**, dann sind es rund 744. Oder wir machen
+> zuerst einen Entwurf in 480p fuer etwa 150 Credits und du schaust, ob die
+> Bildsprache passt.
+
+**Der Entwurfsweg ist der ehrlichste Rat bei einem ersten Film:** eine Minute in
+480p kostet ein Fuenftel und zeigt bereits, ob Storyboard, Schnittrhythmus und
+Stimme zusammenpassen. Erst danach lohnt die teure Fassung.
+
+> **Noch offen:** welches Modell das *schoenere Bild* macht, steht hier
+> absichtlich nicht. Die H3-Modelle sind neu (04.11.2026) und noch nicht am
+> eigenen Material geprueft. Bis dahin nach Preis, Aufloesung und Tempo beraten.
+
+Das gewaehlte Modell gilt fuer **alle** Clips des Films. Mitten im Film zu
+wechseln bricht die Bildsprache und faellt im Schnitt auf.
+
+---
+
 ## Step 2: Budget, bevor irgendetwas erzeugt wird
 
 Rechne die Summe aus und nenne sie. Die Zahlen gegen `list_models` und
 `voice_listing` pruefen, nie aus dem Gedaechtnis zitieren.
 
-| Posten | Preis | Beispiel: 60 s, 8 Szenen, 720p |
+| Posten | Preis | Beispiel: 60 s, 8 Szenen, H3 Lite 768p |
 |---|---|---|
-| Clips | **8,33 Credits/Sek** (720p), 14,82 (1080p) | 500 |
+| Clips | **nach Modell, siehe Step 1.5** | 240 |
 | Szenenbilder | 1 Credit je Bild (Qualitaet „low") | 8 |
 | Sprecher | je Szene mind. 1 Credit | 8 |
 | Musik | 10 Credits je Minute (Pro, Laenge einstellbar) | 10 |
 | Geraeusche | 1 Credit je Geraeusch, Laenge egal | 3 |
 | Schnitt | **0** | 0 |
-| | | **≈ 529 Credits ≈ 22 CHF** |
+| | | **≈ 269 Credits ≈ 11 CHF** |
+
+Nur die Clip-Zeile aendert sich mit dem Modell; alles andere bleibt. Dieselben
+60 Sekunden kosten im Entwurfsmodus rund **179**, in 2K rund **773** Credits.
 
 Sag es als einen Satz, mit dem Guthaben daneben:
 
-> „Das ergibt 8 Szenen zu je 7,5 Sekunden. Zusammen etwa **529 Credits**, davon
-> 500 fuer die Clips. Du hast aktuell **900 Credits**. Soll ich?"
+> Das ergibt 8 Szenen zu je 7,5 Sekunden. Mit H3 Lite in 768p zusammen etwa
+> **269 Credits**, davon 240 fuer die Clips. Du hast aktuell **900 Credits**.
+> Soll ich?
 
 **Ab 60 Sekunden Film ausdruecklich bestaetigen lassen** — nicht nur die Zahl
-nennen, sondern auf ein Ja warten. Zwei Minuten sind rund 1000 Credits.
+nennen, sondern auf ein Ja warten. Zwei Minuten sind beim Standardmodell rund
+520 Credits, in 2K rund 1500.
 
 Reicht das Guthaben nicht, rechne die Alternativen vor, statt nur abzulehnen:
-kuerzer, 720p statt 1080p, oder weniger Szenen bei gleicher Laenge.
+ein guenstigeres Modell (der grosse Hebel), kuerzer, oder weniger Szenen bei
+gleicher Laenge.
 
 ---
 
@@ -181,15 +226,30 @@ gerundet auf ganze Sekunden, begrenzt auf 3–15:
 
 ```
 generate_video(
-  model = "happyhorse-1.0",
+  model = <das in Step 1.5 gewaehlte Modell>,
   mode = "image",
   prompt = <Beschreibung aus dem Storyboard, plus der gewaehlte Stil>,
   reference_images = [<URL des Szenenbilds>],
   duration = <Sprechdauer der Szene>,
   aspect_ratio = <gewaehltes Format>,
-  quality = "720p" | "1080p"
+  quality = <zum Modell passend: 480p/768p, 768p, 768p/2k oder 720p/1080p>
 )
 ```
+
+`model` **immer mitgeben**. Ohne Angabe nimmt das Werkzeug `happyhorse-1.0`, und
+das ist in fast allen Faellen das falsche: teurer als H3 Lite bei nicht mehr
+Aufloesung. Eine vergessene Zeile kostet hier ueber 200 Credits pro Filmminute.
+
+Auf den H3-Modellen darf `reference_images` ein **zweites** Bild tragen, das
+Schlussbild der Szene. Das ist nuetzlich, wenn eine Szene von einem Zustand in
+einen anderen fuehrt (Diagramm leer, dann Diagramm gefuellt): beide Bilder in
+Step 4 erzeugen und als `[Startbild, Schlussbild]` uebergeben.
+
+Ein **sprechendes Portrait** als Moderator-Szene geht ebenfalls, aber nur auf
+den H3-Modellen und nur ueber `mode = "reference"` mit der Sprecherspur in
+`reference_audios` — der genaue Ablauf steht in **kim-video**,
+Step V0.6. Fuer eine solche Szene die Sprecherdauer auf maximal 15 Sekunden
+halten.
 
 **Vor dem ersten Aufruf sagen, dass es dauert**: jeder Clip braucht ein bis
 fuenf Minuten, bei acht Szenen also gut eine halbe Stunde. Nicht abbrechen, nicht

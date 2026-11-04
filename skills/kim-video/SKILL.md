@@ -1,7 +1,7 @@
 ---
 name: kim-video
-description: "Use whenever the user wants to generate or animate a VIDEO clip. Triggers: generiere/erstelle ein Video, mach ein Video daraus, animiere dieses Bild, bring das zum Leben, Text-zu-Video, Bild-zu-Video, Reel, Clip, Kurzvideo, generate/animate a video, make this move. Guides Claude through an interactive workflow: detect the mode (text / image / reference), upload reference images via the binary upload flow, collect prompt, format, resolution and duration, warn about per-second cost AND the 1-5 minute wait, call KIMASTERMIND_IMAGES generate_video, then download or display the clip as a native video artifact. For still IMAGES use the kim-images skill, for SPEECH/text-to-voice use the kim-voice skill. Provider and model names are never mentioned."
-version: 1.1.0
+description: "Use whenever the user wants to generate, animate or EDIT a VIDEO clip, or make a photo talk. Triggers: generiere/erstelle ein Video, mach ein Video daraus, animiere dieses Bild, bring das zum Leben, Text-zu-Video, Bild-zu-Video, Reel, Clip, Kurzvideo, Video bearbeiten, Figur austauschen, Kleidung aendern, Hintergrund ersetzen, Lippensynchron, sprechendes Portrait, Avatar, generate/animate/edit a video, make this move, lip sync, talking head. FOUR models, four different prices -- show the user the choice before generating. Guides Claude through an interactive workflow: detect the mode (text / image / reference), upload reference images, clips and voice tracks via the binary upload flow, collect prompt, format, resolution and duration, warn about per-second cost AND the 1-5 minute wait, call KIMASTERMIND_IMAGES generate_video, then download or display the clip as a native video artifact. For still IMAGES use the kim-images skill, for SPEECH/text-to-voice use the kim-voice skill. Provider names are never mentioned."
+version: 1.2.0
 ---
 
 # KIM Video Skill
@@ -14,6 +14,44 @@ capability is called the **Video-Generator**. All clips come from
 https://mcp.kimastermind.net/vid/. Clips are saved locally (Claude Desktop) or
 shown as a widget fallback (claude.ai web / mobile). Credits are shown after
 every generation.
+
+## The four video models -- show this choice BEFORE generating
+
+There is no longer a single video model, and the cheapest costs a third of the
+dearest. Picking silently either wastes the user's credits or hands them less
+than they wanted, so **name the options and let them choose** whenever the
+request is open. Only skip the question when the user already named a model, or
+when the job plainly settles it (2K -> only H3; a quick draft -> Lite).
+
+| Modell (`model`) | Aufloesungen | 5 Sek. | 10 Sek. | Besonderheit |
+|---|---|---|---|---|
+| `minimax-h3-lite` | 480p, 768p | 13 / 20 Credits | 25 / 40 Credits | Guenstigstes. Fuer Entwuerfe und fuer viele Clips |
+| `minimax-h3-highspeed` | 768p | 30 Credits | 60 Credits | Schneller, Bildsprache naeher am vollen Modell |
+| `minimax-h3` | 768p, 2K | 38 / 62 Credits | 76 / 124 Credits | Einziges mit 2K |
+| `happyhorse-1.0` | 720p, 1080p | 42 / 74 Credits | 83 / 148 Credits | Das bisherige Modell |
+
+(Two numbers mean: lower resolution / higher resolution. Always verify with
+`list_models` before quoting a price -- the table above is a guide, the tool is
+the truth.)
+
+**All three H3 models can do two things the old one cannot:** edit an existing
+clip, and animate a face in sync with a voice track. See Step V0.6.
+
+A worked phrasing when the user just says "mach mir ein Video":
+
+> "Dafuer hast du vier Modelle. Fuer einen schnellen Entwurf nehme ich **H3
+> Lite** (5 Sekunden in 768p ca. 20 Credits), fuer das beste Bild **H3** mit 2K
+> (ca. 62 Credits). Was soll es sein -- oder soll ich mit Lite anfangen und wir
+> schauen das Ergebnis an?"
+
+Starting cheap and re-running is usually the better advice: a 5-second Lite
+draft costs about a third of the same clip in 2K, and the prompt is what
+decides most of the result anyway.
+
+> **Noch offen:** eine Empfehlung nach *Bildqualitaet* steht hier absichtlich
+> nicht. Die drei H3-Modelle sind neu (04.11.2026) und noch nicht am eigenen
+> Material geprueft. Bis dahin: nach Preis, Aufloesung und Tempo beraten, nicht
+> nach vermuteter Qualitaet.
 
 ## Related Skills -- the KIM family
 
@@ -51,10 +89,13 @@ A combined request is handled in sequence and announced as such. Typical chains:
 ## Available MCP Commands
 
 - KIMASTERMIND_IMAGES:generate_video -- Generate a VIDEO clip with model, mode
-  (text/image/reference), prompt, aspect_ratio, quality (720p/1080p), duration
-  (3-15s), reference_images. Takes 1-5 minutes.
+  (text/image/reference), prompt, aspect_ratio, quality (model-dependent, see the
+  table above), duration (4-15s), reference_images, and on the H3 models
+  reference_videos and reference_audios. Takes 1-5 minutes.
 - KIMASTERMIND_IMAGES:request_upload_url -- PREFERRED for reference uploads.
-  Returns a short-lived HTTPS URL for direct binary PUT. Avoids base64 entirely.
+  Takes `kind`: "image" (default), "video" (a clip to edit) or "audio" (a voice
+  track for lip sync). Returns a short-lived HTTPS URL for direct binary PUT.
+  Avoids base64 entirely.
 - KIMASTERMIND_IMAGES:upload_reference -- Fallback ONLY for tiny inline base64 (< 100 KB).
 - KIMASTERMIND_IMAGES:list_models -- All models with prices, strengths, keywords
 - KIMASTERMIND_IMAGES:my_credits -- Current credit balance
@@ -84,12 +125,16 @@ There are three video modes. Pick based on what the user provides/asks:
 
 - **text** -- Text-zu-Video. No reference image. The video is generated purely
   from the text prompt. Default when no image is attached.
-- **image** -- Bild-zu-Video. Animates EXACTLY ONE attached/gallery image (it becomes
-  the first frame / is brought to life). Use when the user attaches one image and
-  says "mach ein Video daraus", "animiere das", "bring das zum Leben".
-- **reference** -- Referenz-zu-Video. Uses 1-9 reference images for subject/style
-  guidance (not a strict first frame). Use when the user provides multiple images
-  or wants a character/style carried into a new scene.
+- **image** -- Bild-zu-Video. `reference_images[0]` becomes the OPENING frame.
+  On the three H3 models an optional `reference_images[1]` becomes the CLOSING
+  frame, so the clip moves from one picture to another; `happyhorse-1.0` takes
+  the opening frame only. Use when the user attaches an image and says "mach ein
+  Video daraus", "animiere das", "bring das zum Leben".
+- **reference** -- Referenz-zu-Video, and on the H3 models also the mode for
+  **editing a clip** and for **lip sync**. Up to 9 reference images steer
+  subject, motion and style (not a strict first frame). Use when the user
+  provides several images, wants a character or style carried into a new scene,
+  wants an existing clip changed, or wants a portrait to speak.
 
 Check for attached or gallery images FIRST, every turn -- the mode follows from
 what is there, and asking for an image the user already attached looks careless.
@@ -121,15 +166,92 @@ hit token limits above ~50-100 KB.
 Gallery and external HTTPS URLs need no upload: pass them straight through.
 For mode `image` pass **exactly one** URL; for `reference` pass 1-9.
 
+### Step V0.6: Video editing and lip sync (H3 models only)
+
+Both run through mode `reference`, and both need a file the server can reach.
+`reference_videos` and `reference_audios` accept **only HTTPS URLs on
+mcp.kimastermind.net** -- an external link is refused, by design. Three sources
+qualify:
+
+1. a clip from the user's own library (`https://mcp.kimastermind.net/vid/...`),
+2. speech this server produced (`https://mcp.kimastermind.net/aud/...`),
+3. anything uploaded with `request_upload_url`, `kind="video"` or `kind="audio"`.
+
+The upload works exactly like the image flow in Step V0.5, with the kind set and
+the real Content-Type on the PUT:
+
+```
+request_upload_url(kind = "video")    ->  upload_url, ref_url
+curl -X PUT -H "Content-Type: video/mp4" --data-binary @clip.mp4 "<upload_url>"
+# PowerShell:
+Invoke-WebRequest -Uri "<upload_url>" -Method Put -ContentType "video/mp4" -InFile "C:\path\clip.mp4"
+```
+
+Accepted: MP4, MOV, WebM up to 60 MB; MP3, M4A, WAV, OGG up to 20 MB. Clips and
+voice tracks must be **2 to 15 seconds**, at most 15 seconds per kind in total.
+
+**Video bearbeiten** -- "tausche die Figur aus", "andere Kleidung", "anderer
+Hintergrund", "mach aus dem Greenscreen eine Kueche":
+
+```
+generate_video(
+  model = "minimax-h3-lite",
+  mode = "reference",
+  prompt = "Replace the background with a bright modern kitchen, keep the person and the camera motion unchanged",
+  reference_videos = ["https://mcp.kimastermind.net/ref/<user>/<id>.mp4"],
+  duration = 5, quality = "768p"
+)
+```
+No reference image is needed here -- the clip takes its place. **Warning about
+the price:** on `minimax-h3` the seconds of the reference clip are added to the
+billed duration, so editing a 5-second clip into a 5-second result is charged
+like 10 seconds. On Lite and Highspeed only the output is billed. Say this
+before generating.
+
+**Lippensynchronisation / sprechendes Portrait** -- the HeyGen-style case, "lass
+mein Foto sprechen", "Avatar", "Talking Head":
+
+1. Produce the speech first. Hand the text to **kim-voice** (`voice_generate`)
+   and keep the URL it returns -- it is already on our host, so no upload.
+   Keep it under 15 seconds, because that is the ceiling for a reference track.
+   For a longer talk, cut the text into pieces of at most 15 seconds, render one
+   clip per piece, and tell the user the pieces arrive separately.
+2. Get the portrait in as a reference image (Step V0.5).
+3. Then:
+
+```
+generate_video(
+  model = "minimax-h3-lite",
+  mode = "reference",
+  prompt = "The person speaks to the camera, natural head movement, friendly expression, static shot",
+  reference_images = ["https://mcp.kimastermind.net/img/ref/<user>/<id>.jpg"],
+  reference_audios = ["https://mcp.kimastermind.net/aud/<id>.mp3"],
+  duration = 10, quality = "768p"
+)
+```
+
+Rules that the server enforces, so do not fight them:
+- a voice track **never** stands alone -- it needs an image or a clip beside it,
+- `reference_videos`/`reference_audios` work in mode `reference` only; in mode
+  `image` they are refused,
+- `happyhorse-1.0` takes neither. If the user asks for editing or lip sync on
+  that model, switch to an H3 model and say why.
+
+Set `duration` to the length of the voice track, rounded up. A clip shorter than
+the audio cuts the sentence off.
+
 ### Step V1: Collect Parameters (ask only what's missing)
 
 1. **Prompt** -- what should happen in the video. Encourage a short shot description
    (camera movement, action, mood). "Was soll im Video passieren?"
 2. **Format (aspect_ratio)** -- 16:9 (default, Querformat), 9:16 (Hochformat/Reels),
    1:1, 4:3, 3:4.
-3. **Auflösung (quality)** -- 720p (Standard, günstiger) or 1080p (HD, teurer).
-   Default 720p.
-4. **Dauer (duration)** -- 3 to 15 seconds, default 5. Longer = more credits.
+3. **Auflösung (quality)** -- depends on the model, so never offer a value the
+   chosen model does not have: `minimax-h3-lite` 480p/768p, `minimax-h3-highspeed`
+   768p only, `minimax-h3` 768p/2k, `happyhorse-1.0` 720p/1080p. Omit the
+   parameter to take the model's default.
+4. **Dauer (duration)** -- 4 to 15 seconds (happyhorse from 3), default 5.
+   Longer = more credits, linearly.
 
 Smart defaults: Social/Reels/Stories -> 9:16; Web/YouTube -> 16:9.
 
@@ -139,7 +261,8 @@ aspect ratio is not asked and not sent.
 ### Step V2: Inform About Cost AND Wait Time (CRITICAL)
 
 Video is billed **per second**: cost = (credits per second for the resolution) ×
-duration. A 1080p or longer clip costs noticeably more. Call
+duration. A higher resolution or a longer clip costs noticeably more, and on
+`minimax-h3` the seconds of a reference clip are billed on top. Call
 `KIMASTERMIND_IMAGES:list_models` to get the current per-second credit price, compute
 the estimate, and tell the user before generating, e.g.:
 
@@ -155,17 +278,21 @@ still running -- it is working, not stuck.
 
 ```
 KIMASTERMIND_IMAGES:generate_video(
+  model = "minimax-h3-lite",   // pass it: the default is still happyhorse-1.0
   prompt = "A calm coffee cup on a wooden table, steam rising, slow zoom in, cinematic",
   mode = "text",            // or "image" / "reference"
   aspect_ratio = "16:9",
-  quality = "720p",
+  quality = "768p",
   duration = 5,
-  reference_images = []     // one URL for "image"; 1-9 for "reference"; omit for "text"
+  reference_images = [],    // [opening] or [opening, closing] for "image"; 1-9 for "reference"; omit for "text"
+  reference_videos = [],    // "reference" on H3 only: a clip to edit against
+  reference_audios = []     // "reference" on H3 only: the voice track for lip sync
 )
 ```
 
-Omit `model` unless the user explicitly asked for a specific one -- the default is
-the current video model. Returns
+**Pass `model` explicitly.** The tool still defaults to `happyhorse-1.0`, which
+is the most expensive of the four and cannot edit or lip-sync -- so leaving it
+out quietly picks the wrong one for most requests. Returns
 `Video URL: https://mcp.kimastermind.net/vid/UUID.mp4` plus credits used/remaining.
 NEVER reveal the technical model name -- call it the **Video-Generator**.
 
@@ -228,9 +355,24 @@ Generation error or API failure:
 - Retry once; if the second attempt also fails, inform the user
 
 Mode mismatch:
-- Mode `image` with more than one reference -> keep the first and say so
-- Mode `image`/`reference` with no reference at all -> ask for an image instead of
-  silently falling back to `text`
+- Mode `image` with more references than the model takes (1 on happyhorse, 2 on
+  the H3 models) -> keep the allowed ones and say so
+- Mode `image` with no reference at all -> ask for an image instead of silently
+  falling back to `text`
+- Mode `reference` with neither an image nor a clip -> ask; a clip alone is fine
+  on the H3 models
+
+Model cannot do what was asked:
+- Editing a clip or lip sync on `happyhorse-1.0` -> the server refuses it. Switch
+  to an H3 model, say that the old model cannot do it, and name the new price
+- 2K on anything but `minimax-h3` -> offer `minimax-h3` or the model's own top
+  resolution
+
+Reference clip or voice track rejected as "must be hosted on
+mcp.kimastermind.net":
+- the URL points somewhere else. Upload the file with
+  `request_upload_url(kind="video"/"audio")`, or take the clip from the user's
+  library and the voice from `voice_generate`
 
 Credits too low:
 - Inform user and link to https://mcp.kimastermind.net/login
