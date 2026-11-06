@@ -1,7 +1,7 @@
 ---
 name: kimastermind-setup
 description: "Prüft die Verbindung zu KI Mastermind und führt durch die Einrichtung. Verwende diesen Skill, wenn jemand die Einrichtung prüfen will, fragt ob die Verbindung steht, nach dem Credit-Guthaben fragt, wissen will welche Skills oder Möglichkeiten verfügbar sind, oder wenn ein Aufruf an KI Mastermind scheitert — Trigger: \"kimastermind setup\", \"einrichtung prüfen\", \"funktioniert kimastermind\", \"bin ich verbunden\", \"wie viele credits habe ich\", \"kimastermind geht nicht\", \"verbindung testen\", \"was kann ich hier machen\", \"welche modelle gibt es\", \"welche skills gibt es\", \"sind die skills installiert\", \"ist alles eingerichtet\", \"warum klappt das nicht\"."
-version: 1.4.2
+version: 1.5.0
 ---
 
 # KI Mastermind — Einrichtung prüfen
@@ -25,6 +25,7 @@ passende:
 | **kim-lernfilm** | Der ganze Film: Storyboard, Bilder, Stimme, Musik, Clips und Schnitt in einem Ablauf |
 | **kim-meditation** | Gefuehrte Meditation: Skript, Musik, Stimme und Abmischung in vier freigegebenen Schritten |
 | **kim-sfx** | Geraeusche und Atmosphaeren, Laenge frei waehlbar |
+| **kim-avatar** | Sprechende Personen: UGC-Reel, Talking Head, Foto mit eigener Stimme |
 
 ### Welche davon sind hier wirklich aktiv?
 
@@ -41,6 +42,7 @@ deine eigenen Skills — gleiche sie gegen die Liste oben ab und berichte als Ta
 | kim-lernfilm | ✅ aktiv / ❌ fehlt | Ganze Filme |
 | kim-meditation | ✅ aktiv / ❌ fehlt | Meditationen |
 | kim-sfx | ✅ aktiv / ❌ fehlt | Geraeusche |
+| kim-avatar | ✅ aktiv / ❌ fehlt | Sprechende Personen |
 
 `KIMASTERMIND_IMAGES:list_skills` nennt zusätzlich, welche Skill-Dateien der Server
 aktuell anbietet, mit Download-Link. Weicht das von dem ab, was hier geladen ist, ist
