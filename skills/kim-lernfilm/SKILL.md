@@ -1,7 +1,7 @@
 ---
 name: kim-lernfilm
 description: "Use when the user wants a complete video produced, not a single clip -- a learning film, explainer, course video, tutorial, product film or social clip with several scenes, narration, music and subtitles. Triggers: Lernvideo, Lernfilm, Erklaervideo, Tutorial-Video, Kursvideo, Schulungsvideo, Imagefilm, Produktvideo, Reel mit Sprecher, Video mit mehreren Szenen, Storyboard, mach mir ein Video ueber, learning video, explainer video, course video, tutorial video. Runs the whole chain: questions, local environment check (FFmpeg, Python, Pillow), model choice, storyboard for approval, scene images, narration, clips, music, and then the final cut ON THE USER'S OWN MACHINE with FFmpeg -- the server generates, it does not edit. Expensive -- a minute of finished film costs between roughly 180 and 770 credits depending on the video model, so the model is chosen WITH the user and the budget is named before anything is generated. For ONE clip use kim-video, for speech alone kim-voice, for music alone kim-music."
-version: 1.7.0
+version: 1.8.0
 ---
 
 # KIM Lernfilm Skill
@@ -59,6 +59,8 @@ spent.
 - `music_generate` — music. See kim-music
 - `generate_image` — one reference picture per scene
 - `generate_video` — the clips, mode `image` with the scene picture
+- `video_status` — only for a talking-head scene with `omnihuman-1.5`, which runs as a
+  job and answers with a Job ID instead of the clip
 - `my_credits` — balance. Fetch it fresh before the budget line
 
 Der Schnitt ist **kein** MCP-Werkzeug mehr. Er laeuft lokal ueber
@@ -381,6 +383,10 @@ der Sprecherspur in `reference_audios` — der genaue Ablauf steht in
 die Laenge, und die Rechenzeit betraegt 45 bis 60 Sekunden je Sekunde Video).
 Das ist ein bewusster Modellwechsel mitten im Film: mit dem Nutzer besprechen,
 und das Portrait muss eine Person klar zeigen, sonst wird trotzdem berechnet.
+`omnihuman-1.5` antwortet mit einer **Job-ID** statt mit dem Clip: danach alle 60
+bis 90 Sekunden `video_status` aufrufen, bis die URL kommt, und die Szene **nicht
+neu erzeugen** (das wuerde noch einmal abbuchen). Den Ablauf nennt **kim-video**,
+Step V0.6. Waehrend der Auftrag laeuft, bleibt Zeit fuer die uebrigen Szenen.
 
 **Vor dem ersten Aufruf sagen, dass es dauert**: jeder Clip braucht ein bis
 fuenf Minuten, bei acht Szenen also gut eine halbe Stunde. Nicht abbrechen, nicht

@@ -1,7 +1,7 @@
 ---
 name: kim-video
 description: "Use whenever the user wants to generate, animate or EDIT a VIDEO clip, or make a photo talk. Triggers: generiere/erstelle ein Video, mach ein Video daraus, animiere dieses Bild, bring das zum Leben, Text-zu-Video, Bild-zu-Video, Reel, Clip, Kurzvideo, Video bearbeiten, Figur austauschen, Kleidung aendern, Hintergrund ersetzen, Lippensynchron, sprechendes Portrait, Avatar, generate/animate/edit a video, make this move, lip sync, talking head. SIX models that differ in price AND in what they can do (one is a talking-portrait specialist) -- ALWAYS ask the user which one they want, explain the options and give a recommendation before generating. Guides Claude through an interactive workflow: detect the mode (text / image / reference), upload reference images, clips and voice tracks via the binary upload flow, collect prompt, format, resolution and duration, warn about per-second cost AND the 1-5 minute wait, call KIMASTERMIND_IMAGES generate_video, then download or display the clip as a native video artifact. Any CUTTING runs on the user's own machine with FFmpeg and Python, never on the server: muxing a voice-over or music under a clip, joining several clips, trimming. The skill ships the script and checks for FFmpeg before promising it. For still IMAGES use the kim-images skill, for SPEECH/text-to-voice use the kim-voice skill. Provider names are never mentioned."
-version: 1.6.0
+version: 1.7.0
 ---
 
 # KIM Video Skill
@@ -83,9 +83,14 @@ the others:
   three minutes, a 6,6 s clip with two people almost seven) and a request that
   runs past fifteen minutes is cut off. Longer speech is cut into parts and the
   clips joined locally.
-- **Say the wait BEFORE generating** -- a 10-second clip is 8 to 10 minutes -- and
-  never retry while it runs. If the chat gives up first, the clip still finishes
-  and lands in the gallery (`my_gallery`).
+- **It runs as a JOB.** `generate_video` answers AT ONCE with a **Job ID**, and the
+  credits are taken then. Say the wait up front (a 10-second clip is 8 to 10
+  minutes), then call `video_status` with the Job ID about every 60 to 90 seconds
+  until it says the clip is ready, and give the user the URL. **Never call
+  `generate_video` again for the same clip: that charges again.** If the chat is
+  closed first the clip still finishes: `video_status` (with the Job ID) or
+  `my_gallery` with `kind: "videos"` hands it over later, and a job that fails
+  refunds itself.
 - **The picture must show a person clearly.** A picture WITHOUT a person is not
   refused: it is rendered and billed (measured). Check what was uploaded.
 - **The track can be the user's OWN voice.** A recording they upload
@@ -186,7 +191,10 @@ A combined request is handled in sequence and announced as such. Typical chains:
 - KIMASTERMIND_IMAGES:upload_reference -- Fallback ONLY for tiny inline base64 (< 100 KB).
 - KIMASTERMIND_IMAGES:list_models -- All models with prices, strengths, keywords
 - KIMASTERMIND_IMAGES:my_credits -- Current credit balance
-- KIMASTERMIND_IMAGES:my_gallery -- The user's image gallery with URLs (source frames!)
+- KIMASTERMIND_IMAGES:video_status -- Checks a video JOB by its Job ID (`omnihuman-1.5`
+  runs as a job): still running, ready with the URL, or failed and refunded.
+- KIMASTERMIND_IMAGES:my_gallery -- The user's finished work with URLs: images (source
+  frames!), videos (`kind: "videos"`) and speech clips (`kind: "audio"`, kept 24 h)
 
 Login portal: https://mcp.kimastermind.net/login
 
@@ -344,7 +352,8 @@ KIMASTERMIND_IMAGES:generate_video(
 ```
 
 No `duration`, no `quality`, no `aspect_ratio`: the server measures the track and
-bills 16 Credits per second of it, rounded up. Work out the price from the
+bills 16 Credits per second of it, rounded up. The call returns a **Job ID**, not
+the clip: follow it with `video_status` (see above). Work out the price from the
 track's length and tell the user BEFORE the call, together with the wait (45 to 60
 seconds per second of video). The voice comes from `voice_generate`, or from a file
 the user uploads with `request_upload_url` (kind `audio`); a track of 13 seconds or
@@ -387,7 +396,8 @@ ich melde mich, sobald es fertig ist."
 Video generation runs synchronously and takes **longer than images (typically
 1-5 minutes** on the H3 models and `happyhorse-1.0`, more for 1080p/long clips;
 `gemini-omni-flash` is usually quicker, but still tell the user to expect a wait;
-`omnihuman-1.5` is the slowest by far, 45 to 60 seconds per second of video). Do NOT abort or retry while the call is
+`omnihuman-1.5` is the slowest by far, 45 to 60 seconds per second of video, and
+runs as a job instead of a wait: see Step V0.6). Do NOT abort or retry while the call is
 still running -- it is working, not stuck.
 
 ### Step V3: Generate
@@ -613,6 +623,9 @@ Model cannot do what was asked:
   is the likeliest trigger
 - `omnihuman-1.5` called without exactly one picture and one voice track, or in
   mode `text`/`image` -> the answer names the recipe; ask for the missing piece
+- The chat shows a timeout, or no answer, for a model that runs as a job -> it did
+  NOT fail. Ask `video_status` with the Job ID; if the id is lost, `my_gallery` with
+  `kind: "videos"` lists the finished clips. Do not generate again
 - "The voice track is N seconds long" (13 s or more) -> nothing was charged; cut
   the speech into parts of under 13 s and join the clips locally
 - A talking portrait that shows no person -> the service does NOT refuse it, so it
