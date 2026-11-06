@@ -1,7 +1,7 @@
 ---
 name: kim-images
 description: "Use whenever the user wants to generate, edit, restyle, vary or combine an IMAGE, attaches images asking to modify them, references their gallery, or asks about credits. Triggers: generiere/erstelle/bearbeite/aendere ein Bild, mache eine Variante, kombiniere Bilder, im Stil von, Logo, Grafik, Foto, generate/edit/restyle this image; meine Galerie, zeig meine Bilder, Credits/Guthaben. Guides Claude through an interactive workflow: detect attached or gallery reference images first, collect prompt/style/format/quality, recommend suitable models (reference-capable when refs are present), call KIMASTERMIND_IMAGES generate_image with up to 16 reference images, and display results as native image artifacts. For VIDEO clips use the kim-video skill, for SPEECH/text-to-voice use the kim-voice skill. Provider and model names are never mentioned."
-version: 1.2.0
+version: 1.3.0
 ---
 
 # KIM Images Skill
@@ -345,10 +345,14 @@ IMPORTANT rules for model presentation:
   -- Kinder-Generator (maps to gpt-image-1.5)
   -- Marketing-Spezialist (maps to gpt-image-2.5-flare -- newest OpenAI generation, up to 16 reference images, ideal for product photos, marketing assets, controlled multi-image edits, strong typography, fast)
   -- Marketing-Spezialist Premium (maps to gpt-image-2.5-sunburst -- same family, quality-optimised: highest fidelity, most precise edits, inpainting; a bit slower)
+  -- Marketing-Spezialist 2.6 (maps to gpt-image-2.6-flare -- the newest generation, fast, up to 16 reference images)
+  -- Marketing-Spezialist 2.6 Detail (maps to gpt-image-2.6-sunburst -- same family and price, finer detail and consistent edits, about twice as slow)
   -- (legacy: gpt-image-2 is still selectable but superseded by the two above -- do not offer it unless a user explicitly asks for the older model)
   -- Kino-Generator (maps to seedream-5)
   -- Budget-Generator (maps to sdxl)
   -- Praezisions-Generator (maps to sd-3.5-large, supports negative prompts)
+- The 2.6 models are NOT a replacement for the 2.5 ones: per tier they cost more (medium: 4 Credits against 1). Offer them when the user wants the
+  newest generation or asks for it; do not claim they look better, nobody has compared them here. Say so honestly and let the user choose.
 - Show price per image in Credits (get from list_models data)
 - Internally map the user choice back to the real model key for generate_image
 
@@ -414,6 +418,7 @@ Expected wait times (rough guide):
 - **Schnell-/Budget-Generator** (flux-schnell, z-image-turbo, sdxl, imagen-4-fast):
   a few seconds -- no notice needed.
 - **Standard generators** (flux-1.1-pro, ideogram-*, sd-3.5-*): ~10-30 seconds.
+- **Marketing-Spezialist 2.6** (gpt-image-2.6-flare): about 10 seconds at medium; **Detail** (gpt-image-2.6-sunburst): about 20 seconds.
 - **Marketing-Spezialist** (gpt-image-2.5-flare): noticeably faster than the rest
   of this group -- roughly half the latency of gpt-image-2, usually under a minute.
 - **Premium-/Marketing-Premium/Kino-/Kinder-Generator** (gpt-image-2.5-sunburst,
@@ -446,6 +451,11 @@ Quality mapping per model:
 - nano-banana-pro: 0.5K (Niedrig), 1K (Mittel), 2K (Hoch), 4K (Sehr hoch)
 - gpt-image-1.5: low, medium, high
 - gpt-image-2: low, medium, high (default medium, up to 4K)
+- gpt-image-2.6-flare / gpt-image-2.6-sunburst: low, medium, high, xhigh, max (default medium, up to 4K).
+  The tiers are NOT shifted here, so map the German levels one to one:
+    Niedrig -> low (3 Credits), Mittel -> medium (4 Credits, the normal choice),
+    Hoch -> high (5 Credits), Sehr hoch -> xhigh (9 Credits), max (21 Credits) only on request.
+  Warn before max: billing is token-based and max costs about 5x medium.
 - gpt-image-2.5-flare / gpt-image-2.5-sunburst: low, medium, high, xhigh, max
   (default high, up to 4K). IMPORTANT: these tiers are shifted one step down
   against gpt-image-2 -- "high" here produces the same output size as the old
@@ -518,6 +528,8 @@ KIMASTERMIND_IMAGES:generate_image(
 Models that support reference images and their limits:
 | Model key            | German label           | Max refs | Strengths                                |
 |----------------------|------------------------|----------|------------------------------------------|
+| gpt-image-2.6-flare  | Marketing-Spezialist 2.6 | 16     | newest gen, fast, text, product, edits |
+| gpt-image-2.6-sunburst | Marketing-Spezialist 2.6 Detail | 16 | same price as Flare, finer detail, about 2x slower |
 | gpt-image-2.5-flare  | Marketing-Spezialist   | 16       | newest OpenAI gen, fast, typography, product, transparent bg |
 | gpt-image-2.5-sunburst | Marketing-Spezialist Premium | 16 | highest fidelity, most precise edits, inpainting |
 | gpt-image-2          | (legacy, no label)     | 16       | typography, product, multi-image edit    |
