@@ -86,7 +86,8 @@ Manifest
   "musicVolume": 0.18,            // optional, 0 schaltet Musik aus
   "originalVolume": 0.1,          // optional, Eigenton der Clips
   "scenes": [
-    { "video": "szene-01.mp4", "voice": "szene-01.mp3", "subtitle": "Was gesagt wird" },
+    { "video": "szene-01.mp4", "voice": "szene-01.mp3", "subtitle": "Was gesagt wird",
+      "originalVolume": 0 },       // optional, ueberschreibt den Eigenton NUR dieser Szene
     { "image": "szene-02.jpg", "voice": "szene-02.mp3", "subtitle": "...",
       "motion": "zoom_in", "zoom": 0.12 }
   ],
@@ -699,8 +700,13 @@ def cmd_cut(manifest_path: str):
         args = ["-i", video]
         if voice:
             args += ["-i", voice]
-        ambience = has_audio(video) and original_volume > 0
-        amb_chain = f"[0:a]volume={original_volume}"
+        # Der Eigenton gilt filmweit, eine Szene darf ihn ueberschreiben: ein
+        # Clip mit mitgeneriertem Ton (er laesst sich beim Erzeugen nicht
+        # abschalten) gehoert unter den Sprecher auf 0, ein stiller Clip daneben
+        # braucht das nicht.
+        scene_volume = float(scene.get("originalVolume", original_volume))
+        ambience = has_audio(video) and scene_volume > 0
+        amb_chain = f"[0:a]volume={scene_volume}"
         if ambience and stretching:
             tempo = 1.0 / stretch
             # atempo kann nur 0.5 bis 2.0 -- darunter in Schritten.

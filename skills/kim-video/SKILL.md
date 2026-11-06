@@ -1,7 +1,7 @@
 ---
 name: kim-video
-description: "Use whenever the user wants to generate, animate or EDIT a VIDEO clip, or make a photo talk. Triggers: generiere/erstelle ein Video, mach ein Video daraus, animiere dieses Bild, bring das zum Leben, Text-zu-Video, Bild-zu-Video, Reel, Clip, Kurzvideo, Video bearbeiten, Figur austauschen, Kleidung aendern, Hintergrund ersetzen, Lippensynchron, sprechendes Portrait, Avatar, generate/animate/edit a video, make this move, lip sync, talking head. FOUR models, four different prices -- show the user the choice before generating. Guides Claude through an interactive workflow: detect the mode (text / image / reference), upload reference images, clips and voice tracks via the binary upload flow, collect prompt, format, resolution and duration, warn about per-second cost AND the 1-5 minute wait, call KIMASTERMIND_IMAGES generate_video, then download or display the clip as a native video artifact. Any CUTTING runs on the user's own machine with FFmpeg and Python, never on the server: muxing a voice-over or music under a clip, joining several clips, trimming. The skill ships the script and checks for FFmpeg before promising it. For still IMAGES use the kim-images skill, for SPEECH/text-to-voice use the kim-voice skill. Provider names are never mentioned."
-version: 1.4.0
+description: "Use whenever the user wants to generate, animate or EDIT a VIDEO clip, or make a photo talk. Triggers: generiere/erstelle ein Video, mach ein Video daraus, animiere dieses Bild, bring das zum Leben, Text-zu-Video, Bild-zu-Video, Reel, Clip, Kurzvideo, Video bearbeiten, Figur austauschen, Kleidung aendern, Hintergrund ersetzen, Lippensynchron, sprechendes Portrait, Avatar, generate/animate/edit a video, make this move, lip sync, talking head. FIVE models that differ in price AND in what they can do -- ALWAYS ask the user which one they want, explain the options and give a recommendation before generating. Guides Claude through an interactive workflow: detect the mode (text / image / reference), upload reference images, clips and voice tracks via the binary upload flow, collect prompt, format, resolution and duration, warn about per-second cost AND the 1-5 minute wait, call KIMASTERMIND_IMAGES generate_video, then download or display the clip as a native video artifact. Any CUTTING runs on the user's own machine with FFmpeg and Python, never on the server: muxing a voice-over or music under a clip, joining several clips, trimming. The skill ships the script and checks for FFmpeg before promising it. For still IMAGES use the kim-images skill, for SPEECH/text-to-voice use the kim-voice skill. Provider names are never mentioned."
+version: 1.5.0
 ---
 
 # KIM Video Skill
@@ -10,48 +10,95 @@ version: 1.4.0
 
 Guide the user through a complete VIDEO generation workflow using the
 KIMASTERMIND_IMAGES MCP tools. Provider names are NEVER mentioned -- the
-capability is called the **Video-Generator**. All clips come from
+capability is called the **Video-Generator**. The five MODELS may be named: choosing
+one is the user's decision. All clips come from
 https://mcp.kimastermind.net/vid/. Clips are saved locally (Claude Desktop) or
 shown as a widget fallback (claude.ai web / mobile). Credits are shown after
 every generation.
 
-## The four video models -- show this choice BEFORE generating
+## The five video models -- ALWAYS ask which one, explain, advise
 
-There is no longer a single video model, and the cheapest costs a third of the
-dearest. Picking silently either wastes the user's credits or hands them less
-than they wanted, so **name the options and let them choose** whenever the
-request is open. Only skip the question when the user already named a model, or
-when the job plainly settles it (2K -> only H3; a quick draft -> Lite).
+There is no single video model any more. The five differ in price by a factor
+of nine, and they do **different things**: only some can lip-sync or edit a
+clip, only one brings its own sound, only one reaches 2K. Picking silently
+either wastes the user's credits or hands them a model that cannot do the job.
+So **every time a clip is about to be generated:**
 
-| Modell (`model`) | Aufloesungen | 5 Sek. | 10 Sek. | Besonderheit |
+1. **Ask which model the user wants.** Never choose for them and never lean on
+   a default. The one exception is a model the user already NAMED in this
+   conversation -- and even then check that it can do the job (table below).
+2. **Explain the options** that can do the job, in plain words: what each is good
+   at, what it cannot do, what a second costs. Two or three sentences, not a spec
+   sheet.
+3. **Advise.** Give ONE recommendation with its reason, matched to what the user
+   wants (second table), and say what the alternative would change.
+4. **Name what dropped out.** When the job rules models out (a voice to sync, a
+   clip to edit, 2K), still show the choice among the rest and say in one line
+   which ones cannot do it and why. Do not narrow silently.
+
+| Modell (`model`) | Aufloesungen | Credits/Sek | 5 Sek. | Besonderheit |
 |---|---|---|---|---|
-| `minimax-h3-lite` | 480p, 768p | 13 / 20 Credits | 25 / 40 Credits | Guenstigstes. Fuer Entwuerfe und fuer viele Clips |
-| `minimax-h3-highspeed` | 768p | 30 Credits | 60 Credits | Schneller, Bildsprache naeher am vollen Modell |
-| `minimax-h3` | 768p, 2K | 38 / 62 Credits | 76 / 124 Credits | Einziges mit 2K |
-| `happyhorse-1.0` | 720p, 1080p | 42 / 74 Credits | 83 / 148 Credits | Das bisherige Modell |
+| `minimax-h3-lite` | 480p, 768p | 2,5 / 4 | 13 / 20 | Guenstigstes der H3-Reihe. Entwuerfe und viele Clips. Kann lippensynchron und Clips bearbeiten |
+| `gemini-omni-flash` | 360p, 720p, 1080p, 4K | 2,3 / 7 / 10,4 / 20,9 | 12 / 35 / 52 / 104 | **Schnell**, **Ton kommt mit**, 3 bis 15 Sekunden, Hoch- und Querformat. Kein Lip-Sync, keine Clip-Bearbeitung |
+| `minimax-h3-highspeed` | 768p | 6 | 30 | Schneller als H3, Bildsprache naeher am vollen Modell. Lippensynchron und Bearbeitung moeglich |
+| `minimax-h3` | 768p, 2K | 7,6 / 12,4 | 38 / 62 | Einziges mit 2K. Lippensynchron und Bearbeitung moeglich |
+| `happyhorse-1.0` | 720p, 1080p | 8,3 / 14,8 | 42 / 74 | Das bisherige Modell. Weder Lip-Sync noch Bearbeitung |
 
-(Two numbers mean: lower resolution / higher resolution. Always verify with
-`list_models` before quoting a price -- the table above is a guide, the tool is
+(Several numbers mean: one per resolution, in the order listed. Always verify
+with `list_models` before quoting a price -- the table is a guide, the tool is
 the truth.)
 
-**All three H3 models can do two things the old one cannot:** edit an existing
-clip, and animate a face in sync with a voice track. See Step V0.6.
+**What to tell the user about `gemini-omni-flash`**, because it behaves unlike
+the others:
+
+- **The sound comes with the clip** -- ambience, effects, sometimes speech or
+  music -- and there is no switch to turn it off. Good for a finished reel; a
+  problem when a voice-over goes on top (in a film the cut mutes it, see
+  kim-lernfilm). Whether a sentence like "ambient sound only, no speech, no music"
+  in the prompt keeps it quiet has NOT been measured; do not promise it.
+- **Native resolution is 720p.** 1080p and 4K are computed up from it: they cost
+  1,5x and 3x and add no detail. Recommend 720p unless the user needs a bigger
+  file; 360p is the cheap draft.
+- **In mode `image` the format follows the photo** (landscape gives 16:9, portrait
+  gives 9:16), whatever `aspect_ratio` says. Measured: a portrait photo asked for
+  as 16:9 comes back as a different picture. Only 16:9 and 9:16 exist.
+- **Two pictures in mode `image` are opening and closing frame** and cap the clip
+  at 10 seconds. Up to 6 pictures in mode `reference`.
+- **No reference clip, no reference voice track.** It cannot lip-sync to a given
+  voice and cannot edit a clip. No `seed`.
+- **Speed:** a 3-second clip at 360p arrived in under 20 seconds, much faster than
+  the H3 models. Longer clips and higher resolutions take longer; how much longer
+  has not been measured.
+
+| Was soll der Clip koennen? | Passt | Hinweis |
+|---|---|---|
+| Ein Foto spricht zu einer vorgegebenen Stimme (auch ein Foto des Nutzers) | `minimax-h3-lite`, `minimax-h3-highspeed`, `minimax-h3` | Omni Flash nimmt keine eigene Tonspur |
+| Einen vorhandenen Clip bearbeiten (Figur, Kleidung, Hintergrund) | die drei H3-Modelle | Nur sie nehmen Referenzvideos |
+| 2K | `minimax-h3` | Das einzige |
+| Ton gleich im Clip, schnell, Hochformat-Reel, bis 15 Sekunden am Stueck | `gemini-omni-flash` | Ton nicht abschaltbar |
+| So wenig Credits wie moeglich: Entwuerfe, viele Clips | `minimax-h3-lite` 480p oder `gemini-omni-flash` 360p | Rund 13 bzw. 12 Credits je 5 Sekunden. Omni bringt Ton mit, Lite kann Lip-Sync |
+| Ein Foto animieren, ohne dass jemand spricht | jedes | Omni Flash, wenn Ton erwuenscht ist |
+
+> **Noch offen:** welches Modell das *schoenere Bild* macht, ist nicht am eigenen
+> Material verglichen, und dazu gibt es hier absichtlich keine Behauptung. Wer
+> unsicher ist, bekommt den Vorschlag: **zwei Entwuerfe mit demselben Prompt**
+> (`minimax-h3-lite` in 480p und `gemini-omni-flash` in 360p, zusammen rund 25
+> Credits fuer je 5 Sekunden) und vergleicht selbst. Bis es Vergleichsmaterial
+> gibt: nach Faehigkeit, Preis, Tempo und Ton beraten, nicht nach vermuteter
+> Qualitaet.
 
 A worked phrasing when the user just says "mach mir ein Video":
 
-> "Dafuer hast du vier Modelle. Fuer einen schnellen Entwurf nehme ich **H3
-> Lite** (5 Sekunden in 768p ca. 20 Credits), fuer das beste Bild **H3** mit 2K
-> (ca. 62 Credits). Was soll es sein -- oder soll ich mit Lite anfangen und wir
-> schauen das Ergebnis an?"
+> "Dafuer hast du fuenf Modelle. Soll der Clip gleich Atmosphaere und Ton haben
+> und schnell da sein, empfehle ich **Omni Flash** in 720p (5 Sekunden ca. 35
+> Credits). Fuer einen billigen Entwurf ist **H3 Lite** die Wahl (ca. 13
+> Credits), und wenn jemand sprechen oder ein Clip bearbeitet werden soll, geht
+> nur ein **H3**-Modell. Welches soll es sein -- oder machen wir zwei Entwuerfe
+> mit demselben Prompt und du entscheidest?"
 
-Starting cheap and re-running is usually the better advice: a 5-second Lite
-draft costs about a third of the same clip in 2K, and the prompt is what
-decides most of the result anyway.
-
-> **Noch offen:** eine Empfehlung nach *Bildqualitaet* steht hier absichtlich
-> nicht. Die drei H3-Modelle sind neu (04.11.2026) und noch nicht am eigenen
-> Material geprueft. Bis dahin: nach Preis, Aufloesung und Tempo beraten, nicht
-> nach vermuteter Qualitaet.
+Starting cheap and re-running is usually the better advice: a 5-second draft
+costs a fraction of the same clip in the top tier, and the prompt decides most of
+the result anyway.
 
 ## Related Skills -- the KIM family
 
@@ -92,7 +139,7 @@ A combined request is handled in sequence and announced as such. Typical chains:
 
 - KIMASTERMIND_IMAGES:generate_video -- Generate a VIDEO clip with model, mode
   (text/image/reference), prompt, aspect_ratio, quality (model-dependent, see the
-  table above), duration (4-15s), reference_images, and on the H3 models
+  table above), duration (3-15s, the H3 models from 4), reference_images, and on the H3 models
   reference_videos and reference_audios. Takes 1-5 minutes.
 - KIMASTERMIND_IMAGES:request_upload_url -- PREFERRED for reference uploads.
   Takes `kind`: "image" (default), "video" (a clip to edit) or "audio" (a voice
@@ -128,9 +175,10 @@ There are three video modes. Pick based on what the user provides/asks:
 - **text** -- Text-zu-Video. No reference image. The video is generated purely
   from the text prompt. Default when no image is attached.
 - **image** -- Bild-zu-Video. `reference_images[0]` becomes the OPENING frame.
-  On the three H3 models an optional `reference_images[1]` becomes the CLOSING
-  frame, so the clip moves from one picture to another; `happyhorse-1.0` takes
-  the opening frame only. Use when the user attaches an image and says "mach ein
+  On the three H3 models and on `gemini-omni-flash` an optional
+  `reference_images[1]` becomes the CLOSING frame, so the clip moves from one
+  picture to another (on Omni that caps the clip at 10 s); `happyhorse-1.0` takes
+  the opening frame only. On Omni the clip's format follows the photo. Use when the user attaches an image and says "mach ein
   Video daraus", "animiere das", "bring das zum Leben".
 - **reference** -- Referenz-zu-Video, and on the H3 models also the mode for
   **editing a clip** and for **lip sync**. Up to 9 reference images steer
@@ -236,8 +284,9 @@ Rules that the server enforces, so do not fight them:
 - a voice track **never** stands alone -- it needs an image or a clip beside it,
 - `reference_videos`/`reference_audios` work in mode `reference` only; in mode
   `image` they are refused,
-- `happyhorse-1.0` takes neither. If the user asks for editing or lip sync on
-  that model, switch to an H3 model and say why.
+- `happyhorse-1.0` and `gemini-omni-flash` take neither. If the user asks for
+  editing or lip sync on one of them, say why it cannot and offer an H3 model,
+  with its price. Do not switch silently: the choice is the user's.
 
 Set `duration` to the length of the voice track, rounded up. A clip shorter than
 the audio cuts the sentence off.
@@ -247,18 +296,20 @@ the audio cuts the sentence off.
 1. **Prompt** -- what should happen in the video. Encourage a short shot description
    (camera movement, action, mood). "Was soll im Video passieren?"
 2. **Format (aspect_ratio)** -- 16:9 (default, Querformat), 9:16 (Hochformat/Reels),
-   1:1, 4:3, 3:4.
+   1:1, 4:3, 3:4. `gemini-omni-flash` knows only 16:9 and 9:16.
 3. **Auflösung (quality)** -- depends on the model, so never offer a value the
    chosen model does not have: `minimax-h3-lite` 480p/768p, `minimax-h3-highspeed`
-   768p only, `minimax-h3` 768p/2k, `happyhorse-1.0` 720p/1080p. Omit the
-   parameter to take the model's default.
-4. **Dauer (duration)** -- 4 to 15 seconds (happyhorse from 3), default 5.
+   768p only, `minimax-h3` 768p/2k, `happyhorse-1.0` 720p/1080p,
+   `gemini-omni-flash` 360p/720p/1080p/4k. Omit the parameter to take the
+   model's default.
+4. **Dauer (duration)** -- 4 to 15 seconds (happyhorse and Omni Flash from 3), default 5.
    Longer = more credits, linearly.
 
 Smart defaults: Social/Reels/Stories -> 9:16; Web/YouTube -> 16:9.
 
-In mode `image` the clip takes its dimensions from the source frame, so the
-aspect ratio is not asked and not sent.
+In mode `image` the clip takes its dimensions from the source frame (on Omni
+Flash from the photo's orientation), so the aspect ratio is not asked and not
+sent.
 
 ### Step V2: Inform About Cost AND Wait Time (CRITICAL)
 
@@ -273,14 +324,15 @@ the estimate, and tell the user before generating, e.g.:
 ich melde mich, sobald es fertig ist."
 
 Video generation runs synchronously and takes **longer than images (typically
-1-5 minutes**, more for 1080p/long clips). Do NOT abort or retry while the call is
+1-5 minutes** on the H3 models and `happyhorse-1.0`, more for 1080p/long clips;
+`gemini-omni-flash` is usually quicker, but still tell the user to expect a wait). Do NOT abort or retry while the call is
 still running -- it is working, not stuck.
 
 ### Step V3: Generate
 
 ```
 KIMASTERMIND_IMAGES:generate_video(
-  model = "minimax-h3-lite",   // pass it: the default is still happyhorse-1.0
+  model = "minimax-h3-lite",   // the one the user chose; the default is still happyhorse-1.0
   prompt = "A calm coffee cup on a wooden table, steam rising, slow zoom in, cinematic",
   mode = "text",            // or "image" / "reference"
   aspect_ratio = "16:9",
@@ -292,11 +344,14 @@ KIMASTERMIND_IMAGES:generate_video(
 )
 ```
 
-**Pass `model` explicitly.** The tool still defaults to `happyhorse-1.0`, which
-is the most expensive of the four and cannot edit or lip-sync -- so leaving it
-out quietly picks the wrong one for most requests. Returns
+**Pass `model` explicitly -- the one the user chose in the choice step.** The
+tool still defaults to `happyhorse-1.0`, which is not what the user picked unless
+they said so and cannot edit or lip-sync -- so leaving it out quietly picks the
+wrong one for most requests. Returns
 `Video URL: https://mcp.kimastermind.net/vid/UUID.mp4` plus credits used/remaining.
-NEVER reveal the technical model name -- call it the **Video-Generator**.
+The model's name may be said -- it is the choice the user makes. The supplier
+behind it, the endpoints and the prices we pay are never mentioned; the
+capability as a whole is the **Video-Generator**.
 
 ### Step V4: Download and Display the Video
 
@@ -480,15 +535,20 @@ Generation error or API failure:
 
 Mode mismatch:
 - Mode `image` with more references than the model takes (1 on happyhorse, 2 on
-  the H3 models) -> keep the allowed ones and say so
+  the H3 models and on Omni Flash) -> keep the allowed ones and say so
 - Mode `image` with no reference at all -> ask for an image instead of silently
   falling back to `text`
 - Mode `reference` with neither an image nor a clip -> ask; a clip alone is fine
   on the H3 models
 
 Model cannot do what was asked:
-- Editing a clip or lip sync on `happyhorse-1.0` -> the server refuses it. Switch
-  to an H3 model, say that the old model cannot do it, and name the new price
+- Editing a clip or lip sync on `happyhorse-1.0` or `gemini-omni-flash` -> the
+  server refuses it. Say that this model cannot do it, offer an H3 model with its
+  price, and let the user decide
+- The request was refused by the content filter (the message says the video
+  request was rejected by the content safety filter) -> nothing was charged. Tell
+  the user to rephrase the prompt or use a different picture; a photo of a person
+  is the likeliest trigger
 - 2K on anything but `minimax-h3` -> offer `minimax-h3` or the model's own top
   resolution
 

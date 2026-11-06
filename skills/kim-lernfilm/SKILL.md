@@ -1,7 +1,7 @@
 ---
 name: kim-lernfilm
 description: "Use when the user wants a complete video produced, not a single clip -- a learning film, explainer, course video, tutorial, product film or social clip with several scenes, narration, music and subtitles. Triggers: Lernvideo, Lernfilm, Erklaervideo, Tutorial-Video, Kursvideo, Schulungsvideo, Imagefilm, Produktvideo, Reel mit Sprecher, Video mit mehreren Szenen, Storyboard, mach mir ein Video ueber, learning video, explainer video, course video, tutorial video. Runs the whole chain: questions, local environment check (FFmpeg, Python, Pillow), model choice, storyboard for approval, scene images, narration, clips, music, and then the final cut ON THE USER'S OWN MACHINE with FFmpeg -- the server generates, it does not edit. Expensive -- a minute of finished film costs between roughly 180 and 770 credits depending on the video model, so the model is chosen WITH the user and the budget is named before anything is generated. For ONE clip use kim-video, for speech alone kim-voice, for music alone kim-music."
-version: 1.5.0
+version: 1.6.0
 ---
 
 # KIM Lernfilm Skill
@@ -23,7 +23,7 @@ about two and a half seconds of film.
 Learn these before writing a storyboard; they are not negotiable and every one
 of them has cost someone money.
 
-**1. A clip is 4 to 15 seconds** (3 on the old `happyhorse-1.0`). A scene cannot be longer. A two-minute film is
+**1. A clip is 4 to 15 seconds** (3 to 15 on `gemini-omni-flash` and the old `happyhorse-1.0`). A scene cannot be longer. A two-minute film is
 at least eight scenes, and each is generated separately.
 
 **2. The narration decides the scene length, never the picture.** Generate the
@@ -156,14 +156,29 @@ bevor etwas erzeugt wird — nicht am Schluss, wenn schon alles bezahlt ist.
 ## Step 1.5: Das Videomodell mit dem Nutzer waehlen
 
 **Das ist der groesste Hebel im ganzen Film.** Die Clips sind rund 90 % der
-Kosten, und zwischen dem guenstigsten und dem teuersten Modell liegt Faktor
-fuenf. Einen Film still im teuersten Modell zu rendern ist der Fehler, der hier
-richtig Geld kostet — also **fragen, bevor gerechnet wird.**
+Kosten, und zwischen dem guenstigsten und dem teuersten Modell liegt ein Vielfaches.
+Dazu koennen die Modelle **Verschiedenes**: eines bringt eigenen Ton mit, nur die
+H3-Modelle koennen lippensynchron sprechen, nur eines liefert 2K. Ein Modell
+still zu waehlen heisst, Geld oder Faehigkeiten zu verschenken. Also:
+
+1. **Immer fragen, welches Modell der Nutzer moechte** -- bevor gerechnet wird,
+   und auch dann, wenn die Anfrage es nicht erwaehnt. Nie ein Standardmodell
+   unterstellen. Nur wenn der Nutzer schon eines genannt hat, entfaellt die
+   Frage; passt es nicht zum Auftrag, sag es.
+2. **Die Moeglichkeiten erklaeren**, die fuer diesen Film in Frage kommen: was
+   jedes gut kann, was nicht, was 60 Sekunden kosten. Zwei, drei Saetze je Modell.
+3. **Beraten**: eine Empfehlung mit Grund, passend zum Film (zweite Tabelle), und
+   sagen, was die Alternative aendern wuerde.
+4. **Sagen, was ausgeschieden ist**, wenn der Film etwas verlangt, das nicht jedes
+   Modell kann (Moderator, der spricht; 2K) -- in einem Satz, nicht still.
 
 | Modell (`model`) | Credits/Sek | 60 s Clips | Wofuer |
 |---|---|---|---|
 | `minimax-h3-lite` 480p | 2,5 | 150 | Entwurf, interner Testlauf |
 | `minimax-h3-lite` 768p | 4 | 240 | Der vernuenftige Standard |
+| `gemini-omni-flash` 360p | 2,3 | 139 | Entwurf **mit Ton**, schnell |
+| `gemini-omni-flash` 720p | 7 | 417 | Schnell, Ton kommt mit, bis 15 s |
+| `gemini-omni-flash` 1080p / 4K | 10,4 / 20,9 | 626 / 1251 | Nur hochgerechnet aus 720p: teurer, kein Mehr an Detail |
 | `minimax-h3-highspeed` 768p | 6 | 360 | Wenn Lite zu einfach wirkt |
 | `minimax-h3` 768p | 7,6 | 456 | Hoechste Stufe ohne 2K |
 | `minimax-h3` 2K | 12,4 | 744 | 2K, fuer grosse Projektion |
@@ -171,24 +186,49 @@ richtig Geld kostet — also **fragen, bevor gerechnet wird.**
 
 Zahlen immer gegen `list_models` pruefen, nie aus dem Gedaechtnis zitieren.
 
-So fragen — mit einer Empfehlung, nicht als offene Liste:
+| Der Film braucht ... | Passt | Hinweis |
+|---|---|---|
+| So wenig Credits wie moeglich, Entwurf | `minimax-h3-lite` 480p oder `gemini-omni-flash` 360p | Etwa gleich teuer. Omni bringt Ton mit (im Schnitt stummzuschalten, siehe unten) |
+| Einen Standard fuer die fertige Fassung | `minimax-h3-lite` 768p | Guenstig, fuer die meisten Filme genug |
+| Lebendigen Ton in den Szenen (Atmosphaere), schnelle Clips, Hochformat | `gemini-omni-flash` 720p | Native Stufe; 1080p/4K nur hochgerechnet |
+| Einen Moderator, der mit der Stimme spricht (Lip-Sync) | ein H3-Modell | Omni nimmt keine eigene Tonspur; Ablauf in **kim-video**, Step V0.6 |
+| 2K | `minimax-h3` | Das einzige |
 
-> Fuer die Clips hast du mehrere Modelle. Ich wuerde **H3 Lite in 768p** nehmen:
-> 60 Sekunden Film kosten damit etwa 240 Credits statt 500 beim alten Modell.
-> Wenn du 2K brauchst, geht nur **H3**, dann sind es rund 744. Oder wir machen
-> zuerst einen Entwurf in 480p fuer etwa 150 Credits und du schaust, ob die
-> Bildsprache passt.
+**Was bei `gemini-omni-flash` im Film zu beachten ist:**
+
+- **Der Ton kommt immer mit** (Atmosphaere, Effekte, manchmal Sprache oder Musik)
+  und laesst sich beim Erzeugen nicht abschalten. Mit Sprecher darueber gehoert
+  er im Schnitt **pro Szene auf 0**: `"originalVolume": 0` in der Szene (Step 8a).
+  Ob ein Satz wie „ambient sound only, no speech, no music“ im Prompt ihn
+  zuverlaessig leise haelt, ist nicht gemessen -- nicht versprechen.
+- **Das Format folgt dem Szenenbild.** Die Szenenbilder in Step 4 im Filmformat
+  erzeugen (16:9 oder 9:16), dann stimmt der Clip. Zwei Bilder (Start- und
+  Schlussbild) begrenzen die Szene auf 10 Sekunden.
+- **Nur 16:9 und 9:16**, kein Seed.
+
+> **Noch offen:** welches Modell das *schoenere Bild* macht, ist nicht am eigenen
+> Material verglichen und steht hier absichtlich nicht. Bei Unsicherheit den
+> Vorschlag machen: **dieselbe Szene als Entwurf auf zwei Modellen** (H3 Lite 480p
+> und Omni Flash 360p, zusammen rund 25 Credits fuer 5 Sekunden) und selbst
+> vergleichen lassen. Bis dahin nach Faehigkeit, Preis, Tempo und Ton beraten.
+
+So fragen -- mit einer Empfehlung, nicht als offene Liste:
+
+> Fuer die Clips hast du fuenf Modelle. Ich wuerde **H3 Lite in 768p** nehmen: 60
+> Sekunden kosten etwa 240 Credits. Wenn die Szenen lebendigen Ton haben sollen,
+> ist **Omni Flash** in 720p die Alternative (rund 417 Credits, der Ton kommt mit
+> und wird unter dem Sprecher stummgeschaltet). Soll ein Moderator sprechen, geht
+> nur ein **H3**-Modell, und fuer 2K nur **H3**. Welches soll es sein -- oder
+> machen wir erst einen Entwurf auf zwei Modellen?
 
 **Der Entwurfsweg ist der ehrlichste Rat bei einem ersten Film:** eine Minute in
 480p kostet ein Fuenftel und zeigt bereits, ob Storyboard, Schnittrhythmus und
 Stimme zusammenpassen. Erst danach lohnt die teure Fassung.
 
-> **Noch offen:** welches Modell das *schoenere Bild* macht, steht hier
-> absichtlich nicht. Die H3-Modelle sind neu (04.11.2026) und noch nicht am
-> eigenen Material geprueft. Bis dahin nach Preis, Aufloesung und Tempo beraten.
-
 Das gewaehlte Modell gilt fuer **alle** Clips des Films. Mitten im Film zu
-wechseln bricht die Bildsprache und faellt im Schnitt auf.
+wechseln bricht die Bildsprache und faellt im Schnitt auf. Einzige sinnvolle
+Ausnahme: eine Moderator-Szene, die ein H3-Modell braucht -- das ausdruecklich
+mit dem Nutzer besprechen.
 
 ---
 
@@ -319,16 +359,17 @@ generate_video(
   reference_images = [<URL des Szenenbilds>],
   duration = <Sprechdauer der Szene>,
   aspect_ratio = <gewaehltes Format>,
-  quality = <zum Modell passend: 480p/768p, 768p, 768p/2k oder 720p/1080p>
+  quality = <zum Modell passend: 480p/768p, 768p, 768p/2k, 720p/1080p oder bei Omni Flash 360p/720p/1080p/4k>
 )
 ```
 
-`model` **immer mitgeben**. Ohne Angabe nimmt das Werkzeug `happyhorse-1.0`, und
-das ist in fast allen Faellen das falsche: teurer als H3 Lite bei nicht mehr
+`model` **immer mitgeben**, und zwar das, das der Nutzer in Step 1.5 gewaehlt hat.
+Ohne Angabe nimmt das Werkzeug `happyhorse-1.0`, und das ist in fast allen
+Faellen nicht das, was gewaehlt wurde: teurer als H3 Lite bei nicht mehr
 Aufloesung. Eine vergessene Zeile kostet hier ueber 200 Credits pro Filmminute.
 
-Auf den H3-Modellen darf `reference_images` ein **zweites** Bild tragen, das
-Schlussbild der Szene. Das ist nuetzlich, wenn eine Szene von einem Zustand in
+Auf den H3-Modellen und auf Omni Flash darf `reference_images` ein **zweites**
+Bild tragen, das Schlussbild der Szene (bei Omni Flash dann hoechstens 10 Sekunden). Das ist nuetzlich, wenn eine Szene von einem Zustand in
 einen anderen fuehrt (Diagramm leer, dann Diagramm gefuellt): beide Bilder in
 Step 4 erzeugen und als `[Startbild, Schlussbild]` uebergeben.
 
@@ -429,7 +470,7 @@ Storyboards**, mit den URLs, die die Erzeugung geliefert hat:
 |---|---|
 | `subtitles` | `"file"` legt eine .srt daneben, `"burn"` brennt sie ins Bild, `"none"` laesst sie weg |
 | `musicVolume` | Standard 0.18, `0` schaltet die Musik aus |
-| `originalVolume` | Standard 0.1, der Eigenton der Clips |
+| `originalVolume` | Standard 0.1, der Eigenton der Clips. **Eine Szene darf ihn ueberschreiben**: `"originalVolume": 0` in der Szene schaltet nur ihren Clipton aus -- der Weg fuer Clips von `gemini-omni-flash`, deren Ton sich nicht abschalten laesst |
 | `fps`, `width`, `height` | Nur setzen, wenn es einen Grund gibt. Ohne Angabe nimmt der Schnitt Groesse und Bildrate des **ersten Clips** und bringt alle anderen Szenen darauf |
 
 **Eine Szene ist entweder `video` oder `image`.** Bei `image` faehrt die Kamera
@@ -552,7 +593,9 @@ lokal. Sag das, damit niemand glaubt, er muesse neu erzeugen.
 ## Was nicht geht
 
 - **Kein Ton aus dem Videomodell steuerbar** — die Clips bringen eigene
-  Umgebungsgeraeusche mit, die nur leiser oder stumm gestellt werden koennen
+  Umgebungsgeraeusche mit, die nur leiser oder stumm gestellt werden koennen.
+  Bei `gemini-omni-flash` kommt der Ton immer, manchmal mit Sprache oder Musik:
+  dort pro Szene `originalVolume: 0` setzen
 - **Lippensynchronitaet nur auf den H3-Modellen** und nur in einer eigenen
   Szene: Portrait plus Sprecherspur ueber `mode = "reference"`, Ablauf in
   **kim-video**, Step V0.6. In den aus Szenenbildern animierten Clips bewegen
