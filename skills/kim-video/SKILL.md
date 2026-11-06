@@ -1,7 +1,7 @@
 ---
 name: kim-video
-description: "Use whenever the user wants to generate, animate or EDIT a VIDEO clip, or make a photo talk. Triggers: generiere/erstelle ein Video, mach ein Video daraus, animiere dieses Bild, bring das zum Leben, Text-zu-Video, Bild-zu-Video, Reel, Clip, Kurzvideo, Video bearbeiten, Figur austauschen, Kleidung aendern, Hintergrund ersetzen, Lippensynchron, sprechendes Portrait, Avatar, generate/animate/edit a video, make this move, lip sync, talking head. FIVE models that differ in price AND in what they can do -- ALWAYS ask the user which one they want, explain the options and give a recommendation before generating. Guides Claude through an interactive workflow: detect the mode (text / image / reference), upload reference images, clips and voice tracks via the binary upload flow, collect prompt, format, resolution and duration, warn about per-second cost AND the 1-5 minute wait, call KIMASTERMIND_IMAGES generate_video, then download or display the clip as a native video artifact. Any CUTTING runs on the user's own machine with FFmpeg and Python, never on the server: muxing a voice-over or music under a clip, joining several clips, trimming. The skill ships the script and checks for FFmpeg before promising it. For still IMAGES use the kim-images skill, for SPEECH/text-to-voice use the kim-voice skill. Provider names are never mentioned."
-version: 1.5.0
+description: "Use whenever the user wants to generate, animate or EDIT a VIDEO clip, or make a photo talk. Triggers: generiere/erstelle ein Video, mach ein Video daraus, animiere dieses Bild, bring das zum Leben, Text-zu-Video, Bild-zu-Video, Reel, Clip, Kurzvideo, Video bearbeiten, Figur austauschen, Kleidung aendern, Hintergrund ersetzen, Lippensynchron, sprechendes Portrait, Avatar, generate/animate/edit a video, make this move, lip sync, talking head. SIX models that differ in price AND in what they can do (one is a talking-portrait specialist) -- ALWAYS ask the user which one they want, explain the options and give a recommendation before generating. Guides Claude through an interactive workflow: detect the mode (text / image / reference), upload reference images, clips and voice tracks via the binary upload flow, collect prompt, format, resolution and duration, warn about per-second cost AND the 1-5 minute wait, call KIMASTERMIND_IMAGES generate_video, then download or display the clip as a native video artifact. Any CUTTING runs on the user's own machine with FFmpeg and Python, never on the server: muxing a voice-over or music under a clip, joining several clips, trimming. The skill ships the script and checks for FFmpeg before promising it. For still IMAGES use the kim-images skill, for SPEECH/text-to-voice use the kim-voice skill. Provider names are never mentioned."
+version: 1.6.0
 ---
 
 # KIM Video Skill
@@ -16,9 +16,9 @@ https://mcp.kimastermind.net/vid/. Clips are saved locally (Claude Desktop) or
 shown as a widget fallback (claude.ai web / mobile). Credits are shown after
 every generation.
 
-## The five video models -- ALWAYS ask which one, explain, advise
+## The six video models -- ALWAYS ask which one, explain, advise
 
-There is no single video model any more. The five differ in price by a factor
+There is no single video model any more. The six differ in price by a factor
 of nine, and they do **different things**: only some can lip-sync or edit a
 clip, only one brings its own sound, only one reaches 2K. Picking silently
 either wastes the user's credits or hands them a model that cannot do the job.
@@ -43,6 +43,7 @@ So **every time a clip is about to be generated:**
 | `minimax-h3-highspeed` | 768p | 6 | 30 | Schneller als H3, Bildsprache naeher am vollen Modell. Lippensynchron und Bearbeitung moeglich |
 | `minimax-h3` | 768p, 2K | 7,6 / 12,4 | 38 / 62 | Einziges mit 2K. Lippensynchron und Bearbeitung moeglich |
 | `happyhorse-1.0` | 720p, 1080p | 8,3 / 14,8 | 42 / 74 | Das bisherige Modell. Weder Lip-Sync noch Bearbeitung |
+| `omnihuman-1.5` | nur Bild + Tonspur | 16 je Sekunde **Tonspur** | 80 (bei 5 s) | **Sprechendes Portrait.** Ein Bild einer Person plus eine Tonspur unter 13 s, das Video ist so lang wie die Tonspur. Kein Text-zu-Video. Rechenzeit rund 45 bis 60 s je Sekunde Video |
 
 (Several numbers mean: one per resolution, in the order listed. Always verify
 with `list_models` before quoting a price -- the table is a guide, the tool is
@@ -70,9 +71,40 @@ the others:
   the H3 models. Longer clips and higher resolutions take longer; how much longer
   has not been measured.
 
+**What to tell the user about `omnihuman-1.5`**, a specialist unlike the rest:
+
+- **It does one thing: a person speaks to a voice track.** ONE picture of a person
+  plus ONE voice track (mode `reference`) gives a video in which that person speaks
+  or sings it, with expression, mouth and hands. No text-to-video, no picture
+  without a voice, no clip editing. There is **no duration setting**: the video is
+  as long as the track, and the price is per second of it (16 Credits).
+- **The track must be under 13 seconds.** The service takes more, but the compute
+  runs 45 to 60 seconds per second of video (measured: a 3,9 s clip took under
+  three minutes, a 6,6 s clip with two people almost seven) and a request that
+  runs past fifteen minutes is cut off. Longer speech is cut into parts and the
+  clips joined locally.
+- **Say the wait BEFORE generating** -- a 10-second clip is 8 to 10 minutes -- and
+  never retry while it runs. If the chat gives up first, the clip still finishes
+  and lands in the gallery (`my_gallery`).
+- **The picture must show a person clearly.** A picture WITHOUT a person is not
+  refused: it is rendered and billed (measured). Check what was uploaded.
+- **The track can be the user's OWN voice.** A recording they upload
+  (`request_upload_url`, kind `audio`) works exactly like a generated voice -- the
+  model does not change a voice, it only animates the mouth to it. So "my photo,
+  my voice" works; "my photo, a different voice" means generating that voice first
+  with `voice_generate`.
+- **Two people in the picture** work only in a limited sense, measured: both
+  animate and the listener turns to the speaker. There is still only ONE track,
+  and which person speaks is not kept cleanly apart -- the other mouth moves too.
+  There is no way to give each person their own voice. Put both voices in one track
+  and say in the prompt who speaks when, and expect that to be approximate.
+- `prompt` is optional and steers scene, camera and who speaks. No `aspect_ratio`
+  and no `quality`: the format follows the picture.
+
 | Was soll der Clip koennen? | Passt | Hinweis |
 |---|---|---|
-| Ein Foto spricht zu einer vorgegebenen Stimme (auch ein Foto des Nutzers) | `minimax-h3-lite`, `minimax-h3-highspeed`, `minimax-h3` | Omni Flash nimmt keine eigene Tonspur |
+| Ein Foto spricht zu einer vorgegebenen Stimme (auch ein Foto des Nutzers, auch mit der eigenen Aufnahme) | `minimax-h3-lite`, `minimax-h3-highspeed`, `minimax-h3` oder `omnihuman-1.5` | H3: bis 15 s, 4 bis 7,6 Credits/s, und es bearbeitet auch Clips. OmniHuman: nur dieser eine Zweck, Tonspur unter 13 s, 16 Credits/s und viel laenger in der Rechenzeit. Omni Flash nimmt keine eigene Tonspur |
+| Zwei Personen in einem Bild, eine Tonspur mit beiden Stimmen | `omnihuman-1.5` | Nur ungefaehr: beide bewegen sich, der Zuhoerer reagiert, aber wer spricht, ist nicht sauber getrennt. Eine eigene Stimme je Person gibt es nicht |
 | Einen vorhandenen Clip bearbeiten (Figur, Kleidung, Hintergrund) | die drei H3-Modelle | Nur sie nehmen Referenzvideos |
 | 2K | `minimax-h3` | Das einzige |
 | Ton gleich im Clip, schnell, Hochformat-Reel, bis 15 Sekunden am Stueck | `gemini-omni-flash` | Ton nicht abschaltbar |
@@ -86,6 +118,12 @@ the others:
 > Credits fuer je 5 Sekunden) und vergleicht selbst. Bis es Vergleichsmaterial
 > gibt: nach Faehigkeit, Preis, Tempo und Ton beraten, nicht nach vermuteter
 > Qualitaet.
+
+> **Auch offen:** ob `omnihuman-1.5` oder ein H3-Modell das *natuerlichere* sprechende
+> Portrait macht, ist nicht verglichen. Bei Unsicherheit der Vorschlag: **dasselbe
+> Foto mit derselben Tonspur auf beiden** (`minimax-h3-lite` und `omnihuman-1.5`,
+> bei 4 Sekunden zusammen rund 80 Credits) und selbst vergleichen lassen. Der
+> Preisunterschied ist gross, ein Qualitaetsvorsprung nicht belegt.
 
 A worked phrasing when the user just says "mach mir ein Video":
 
@@ -216,7 +254,7 @@ hit token limits above ~50-100 KB.
 Gallery and external HTTPS URLs need no upload: pass them straight through.
 For mode `image` pass **exactly one** URL; for `reference` pass 1-9.
 
-### Step V0.6: Video editing and lip sync (H3 models only)
+### Step V0.6: Video editing and lip sync (H3 models; lip sync also `omnihuman-1.5`)
 
 Both run through mode `reference`, and both need a file the server can reach.
 `reference_videos` and `reference_audios` accept **only HTTPS URLs on
@@ -291,6 +329,28 @@ Rules that the server enforces, so do not fight them:
 Set `duration` to the length of the voice track, rounded up. A clip shorter than
 the audio cuts the sentence off.
 
+#### `omnihuman-1.5`: the talking portrait
+
+Its own, shorter recipe, because it takes nothing else:
+
+```
+KIMASTERMIND_IMAGES:generate_video(
+  model = "omnihuman-1.5",
+  mode = "reference",
+  prompt = "",                     // optional: scene, camera, who speaks
+  reference_images = [<ONE portrait>],
+  reference_audios = [<ONE voice track, under 13 s>]
+)
+```
+
+No `duration`, no `quality`, no `aspect_ratio`: the server measures the track and
+bills 16 Credits per second of it, rounded up. Work out the price from the
+track's length and tell the user BEFORE the call, together with the wait (45 to 60
+seconds per second of video). The voice comes from `voice_generate`, or from a file
+the user uploads with `request_upload_url` (kind `audio`); a track of 13 seconds or
+more is refused before any credit is taken, and the answer is to cut it into
+parts. Check the picture shows a person: one without is billed anyway.
+
 ### Step V1: Collect Parameters (ask only what's missing)
 
 1. **Prompt** -- what should happen in the video. Encourage a short shot description
@@ -303,7 +363,8 @@ the audio cuts the sentence off.
    `gemini-omni-flash` 360p/720p/1080p/4k. Omit the parameter to take the
    model's default.
 4. **Dauer (duration)** -- 4 to 15 seconds (happyhorse and Omni Flash from 3), default 5.
-   Longer = more credits, linearly.
+   Longer = more credits, linearly. `omnihuman-1.5` has no duration: the voice
+   track is the length.
 
 Smart defaults: Social/Reels/Stories -> 9:16; Web/YouTube -> 16:9.
 
@@ -325,7 +386,8 @@ ich melde mich, sobald es fertig ist."
 
 Video generation runs synchronously and takes **longer than images (typically
 1-5 minutes** on the H3 models and `happyhorse-1.0`, more for 1080p/long clips;
-`gemini-omni-flash` is usually quicker, but still tell the user to expect a wait). Do NOT abort or retry while the call is
+`gemini-omni-flash` is usually quicker, but still tell the user to expect a wait;
+`omnihuman-1.5` is the slowest by far, 45 to 60 seconds per second of video). Do NOT abort or retry while the call is
 still running -- it is working, not stuck.
 
 ### Step V3: Generate
@@ -340,7 +402,7 @@ KIMASTERMIND_IMAGES:generate_video(
   duration = 5,
   reference_images = [],    // [opening] or [opening, closing] for "image"; 1-9 for "reference"; omit for "text"
   reference_videos = [],    // "reference" on H3 only: a clip to edit against
-  reference_audios = []     // "reference" on H3 only: the voice track for lip sync
+  reference_audios = []     // "reference" on H3 and omnihuman-1.5: the voice track for lip sync
 )
 ```
 
@@ -549,6 +611,12 @@ Model cannot do what was asked:
   request was rejected by the content safety filter) -> nothing was charged. Tell
   the user to rephrase the prompt or use a different picture; a photo of a person
   is the likeliest trigger
+- `omnihuman-1.5` called without exactly one picture and one voice track, or in
+  mode `text`/`image` -> the answer names the recipe; ask for the missing piece
+- "The voice track is N seconds long" (13 s or more) -> nothing was charged; cut
+  the speech into parts of under 13 s and join the clips locally
+- A talking portrait that shows no person -> the service does NOT refuse it, so it
+  was rendered and billed. Say so plainly, and check the picture before the next run
 - 2K on anything but `minimax-h3` -> offer `minimax-h3` or the model's own top
   resolution
 

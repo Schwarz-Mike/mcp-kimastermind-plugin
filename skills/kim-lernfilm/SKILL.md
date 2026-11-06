@@ -1,7 +1,7 @@
 ---
 name: kim-lernfilm
 description: "Use when the user wants a complete video produced, not a single clip -- a learning film, explainer, course video, tutorial, product film or social clip with several scenes, narration, music and subtitles. Triggers: Lernvideo, Lernfilm, Erklaervideo, Tutorial-Video, Kursvideo, Schulungsvideo, Imagefilm, Produktvideo, Reel mit Sprecher, Video mit mehreren Szenen, Storyboard, mach mir ein Video ueber, learning video, explainer video, course video, tutorial video. Runs the whole chain: questions, local environment check (FFmpeg, Python, Pillow), model choice, storyboard for approval, scene images, narration, clips, music, and then the final cut ON THE USER'S OWN MACHINE with FFmpeg -- the server generates, it does not edit. Expensive -- a minute of finished film costs between roughly 180 and 770 credits depending on the video model, so the model is chosen WITH the user and the budget is named before anything is generated. For ONE clip use kim-video, for speech alone kim-voice, for music alone kim-music."
-version: 1.6.0
+version: 1.7.0
 ---
 
 # KIM Lernfilm Skill
@@ -191,7 +191,7 @@ Zahlen immer gegen `list_models` pruefen, nie aus dem Gedaechtnis zitieren.
 | So wenig Credits wie moeglich, Entwurf | `minimax-h3-lite` 480p oder `gemini-omni-flash` 360p | Etwa gleich teuer. Omni bringt Ton mit (im Schnitt stummzuschalten, siehe unten) |
 | Einen Standard fuer die fertige Fassung | `minimax-h3-lite` 768p | Guenstig, fuer die meisten Filme genug |
 | Lebendigen Ton in den Szenen (Atmosphaere), schnelle Clips, Hochformat | `gemini-omni-flash` 720p | Native Stufe; 1080p/4K nur hochgerechnet |
-| Einen Moderator, der mit der Stimme spricht (Lip-Sync) | ein H3-Modell | Omni nimmt keine eigene Tonspur; Ablauf in **kim-video**, Step V0.6 |
+| Einen Moderator, der mit der Stimme spricht (Lip-Sync) | ein H3-Modell oder `omnihuman-1.5` | H3: bis 15 s, 4 bis 7,6 Credits/s. OmniHuman: nur Bild + Tonspur unter 13 s, 16 Credits/s, rund 45 bis 60 s Rechenzeit je Sekunde Video. Omni Flash nimmt keine eigene Tonspur. Ablauf in **kim-video**, Step V0.6 |
 | 2K | `minimax-h3` | Das einzige |
 
 **Was bei `gemini-omni-flash` im Film zu beachten ist:**
@@ -374,10 +374,13 @@ einen anderen fuehrt (Diagramm leer, dann Diagramm gefuellt): beide Bilder in
 Step 4 erzeugen und als `[Startbild, Schlussbild]` uebergeben.
 
 Ein **sprechendes Portrait** als Moderator-Szene geht ebenfalls, aber nur auf
-den H3-Modellen und nur ueber `mode = "reference"` mit der Sprecherspur in
-`reference_audios` — der genaue Ablauf steht in **kim-video**,
-Step V0.6. Fuer eine solche Szene die Sprecherdauer auf maximal 15 Sekunden
-halten.
+den H3-Modellen und auf `omnihuman-1.5`, und nur ueber `mode = "reference"` mit
+der Sprecherspur in `reference_audios` — der genaue Ablauf steht in
+**kim-video**, Step V0.6. Fuer eine solche Szene die Sprecherdauer auf maximal
+15 Sekunden halten, bei `omnihuman-1.5` auf **unter 13** (dort ist die Tonspur
+die Laenge, und die Rechenzeit betraegt 45 bis 60 Sekunden je Sekunde Video).
+Das ist ein bewusster Modellwechsel mitten im Film: mit dem Nutzer besprechen,
+und das Portrait muss eine Person klar zeigen, sonst wird trotzdem berechnet.
 
 **Vor dem ersten Aufruf sagen, dass es dauert**: jeder Clip braucht ein bis
 fuenf Minuten, bei acht Szenen also gut eine halbe Stunde. Nicht abbrechen, nicht
@@ -596,7 +599,7 @@ lokal. Sag das, damit niemand glaubt, er muesse neu erzeugen.
   Umgebungsgeraeusche mit, die nur leiser oder stumm gestellt werden koennen.
   Bei `gemini-omni-flash` kommt der Ton immer, manchmal mit Sprache oder Musik:
   dort pro Szene `originalVolume: 0` setzen
-- **Lippensynchronitaet nur auf den H3-Modellen** und nur in einer eigenen
+- **Lippensynchronitaet nur auf den H3-Modellen und auf `omnihuman-1.5`** und nur in einer eigenen
   Szene: Portrait plus Sprecherspur ueber `mode = "reference"`, Ablauf in
   **kim-video**, Step V0.6. In den aus Szenenbildern animierten Clips bewegen
   sich keine Lippen passend zum Text
